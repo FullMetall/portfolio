@@ -9,7 +9,6 @@ portfolio focused on web systems development and process automation.
 - a detailed anonymized automation case study
 - direct email and Telegram contacts
 - privacy pages in both languages
-- consent-gated Yandex Metrica integration
 - Open Graph social card
 - responsive layout and reduced-motion support
 
@@ -32,17 +31,6 @@ npm run lint
 node --test tests/rendered-html.test.mjs
 npm audit --omit=dev
 ```
-
-## Yandex Metrica
-
-Set the counter ID at build time:
-
-```text
-NEXT_PUBLIC_YANDEX_METRIKA_ID=12345678
-```
-
-The counter is not loaded until a visitor accepts analytics. Session replay is
-disabled by default.
 
 ## Content
 
