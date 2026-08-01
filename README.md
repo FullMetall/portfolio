@@ -1,7 +1,7 @@
 # Daniil Uglovskiy — Portfolio
 
-Public source for [fullmetall.ru](https://fullmetall.ru): a bilingual personal
-portfolio focused on web systems development and process automation.
+Source code for a bilingual personal portfolio focused on web systems
+development and process automation.
 
 ## What is included
 
@@ -29,14 +29,7 @@ The local site is available at `http://localhost:3000`.
 npm run build
 npm run lint
 node --test tests/rendered-html.test.mjs
-npm audit --omit=dev
 ```
-
-## Content
-
-Portfolio content is kept in `app/content.ts`. The detailed case study and
-privacy copy are stored in their page components. No resume file, customer
-database, credentials, or production-system source code is included.
 
 ## License
 

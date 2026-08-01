@@ -40,6 +40,7 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+/.openai/
 
 # private source screenshots; only anonymized exports belong in /public/case
 /SS/
