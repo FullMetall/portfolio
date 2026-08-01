@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import "@fontsource-variable/manrope";
+import "@fontsource/ibm-plex-mono";
 import { AnalyticsConsent } from "./_components/AnalyticsConsent";
 import "./globals.css";
 

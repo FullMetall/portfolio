@@ -4,7 +4,7 @@ import { CasePage } from "../../../_components/CasePage";
 export const metadata: Metadata = {
   title: "Testing laboratory automation",
   description:
-    "Web system case study: reducing document-set preparation from 60 to 7 minutes across an annual workflow of 2,400 inspections.",
+    "Web system case study: reducing document-set preparation from 60 to 9 minutes across 2,400 annual inspections and document sets.",
   alternates: {
     canonical: "/en/projects/lift-automation",
     languages: {

@@ -46,6 +46,13 @@ export function SiteHeader({
           <Link href={`${home}#experience`}>{t.nav.experience}</Link>
           <Link href={`${home}#contact`}>{t.nav.contact}</Link>
         </nav>
+        <nav
+          className="mobile-nav"
+          aria-label={locale === "ru" ? "Быстрая навигация" : "Quick navigation"}
+        >
+          <Link href={`${home}#project`}>{t.nav.work}</Link>
+          <Link href={`${home}#contact`}>{t.nav.contact}</Link>
+        </nav>
         <Link
           className="language-switch"
           href={languageHref}

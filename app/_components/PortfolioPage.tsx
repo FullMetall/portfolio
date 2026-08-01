@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Locale } from "../content";
 import { copy, profile } from "../content";
 import { ProcessFlow } from "./ProcessFlow";
+import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
 function Arrow() {
@@ -18,7 +19,6 @@ export function PortfolioPage({ locale }: { locale: Locale }) {
     locale === "ru"
       ? "/projects/lift-automation"
       : "/en/projects/lift-automation";
-  const privacyHref = locale === "ru" ? "/privacy" : "/en/privacy";
 
   return (
     <>
@@ -97,30 +97,14 @@ export function PortfolioPage({ locale }: { locale: Locale }) {
               href={caseHref}
               aria-label={`${t.caseAction}: ${t.projectTitle}`}
             >
-              <div className="project-visual" aria-hidden="true">
-                <div className="document-stack">
-                  <div className="document document-back">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <div className="document document-front">
-                    <div className="doc-head">
-                      <span>ACT / 02400</span>
-                      <span className="doc-status">READY</span>
-                    </div>
-                    <div className="doc-line doc-line-wide" />
-                    <div className="doc-line" />
-                    <div className="doc-grid">
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                    <div className="doc-line doc-line-short" />
-                  </div>
+              <div className="project-visual project-visual-product" aria-hidden="true">
+                <div className="project-screen-desktop">
+                  <img src="/case/lift-diagnostics-desktop.png" alt="" />
                 </div>
-                <span className="visual-caption">DATA → DOCUMENTS</span>
+                <div className="project-screen-mobile">
+                  <img src="/case/lift-diagnostics-mobile.png" alt="" />
+                </div>
+                <span className="visual-caption">WORKING PRODUCT · IN OPERATION</span>
               </div>
               <div className="project-content">
                 <div className="project-metrics">
@@ -142,6 +126,36 @@ export function PortfolioPage({ locale }: { locale: Locale }) {
                 </span>
               </div>
             </Link>
+          </div>
+        </section>
+
+        <section className="section tools-section" id="tools">
+          <div className="shell">
+            <div className="section-heading split-heading">
+              <div>
+                <p className="eyebrow">{t.otherWorkEyebrow}</p>
+                <h2>{t.otherWorkTitle}</h2>
+              </div>
+              <p>{t.otherWorkLead}</p>
+            </div>
+            <div className="tools-grid">
+              {t.tools.map((tool) => (
+                <article className="tool-card" key={tool.number}>
+                  <div className="tool-card-top">
+                    <span>{tool.number}</span>
+                    <span>{tool.kicker}</span>
+                  </div>
+                  <h3>{tool.title}</h3>
+                  <p>{tool.body}</p>
+                  <strong className="tool-result">{tool.result}</strong>
+                  <div className="tool-tags" aria-label={t.stackLabel}>
+                    {tool.tags.map((tag) => (
+                      <span key={tag}>{tag}</span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -236,15 +250,7 @@ export function PortfolioPage({ locale }: { locale: Locale }) {
           </div>
         </section>
       </main>
-      <footer>
-        <div className="shell footer-inner">
-          <span>
-            © {new Date().getFullYear()} {profile.name[locale]}
-          </span>
-          <span>{t.footer}</span>
-          <Link href={privacyHref}>{t.privacy}</Link>
-        </div>
-      </footer>
+      <SiteFooter locale={locale} />
     </>
   );
 }

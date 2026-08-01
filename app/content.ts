@@ -30,8 +30,8 @@ export const copy = {
     secondaryAction: "Написать в Telegram",
     facts: [
       ["12 лет", "в веб-разработке"],
-      ["60 → 7 мин", "подготовка комплекта документов"],
-      ["2 400", "комплектов в рабочем процессе за год"],
+      ["до 10", "специалистов в команде"],
+      ["Полный цикл", "от анализа процесса до эксплуатации"],
     ],
     flowTitle: "От процесса к работающей системе",
     flowSteps: ["Процесс", "Модель", "Интерфейс", "Логика", "Документы", "Продукт"],
@@ -40,8 +40,8 @@ export const copy = {
     projectLead:
       "Продукт объединяет данные освидетельствования, учёт средств измерений и выпуск документов в одном рабочем контуре.",
     projectMetrics: [
-      ["7 минут", "вместо часа на комплект"],
-      ["−88%", "времени на подготовку"],
+      ["9 минут", "вместо часа на комплект"],
+      ["−85%", "времени на подготовку"],
       ["4 процесса", "переведены из ручного режима"],
     ],
     projectFeatures: [
@@ -51,6 +51,28 @@ export const copy = {
       "устранение расхождений внутри комплекта",
     ],
     caseAction: "Разобрать кейс",
+    otherWorkEyebrow: "Небольшие прикладные инструменты",
+    otherWorkTitle: "Автоматизация точечных задач без лишней сложности.",
+    otherWorkLead:
+      "Два компактных продукта для обработки файлов и подготовки понятного результата.",
+    tools: [
+      {
+        number: "01",
+        kicker: "XLSX → СВОДКА",
+        title: "Анализ обращений",
+        body: "Обрабатывает входящий XLSX, рассчитывает рабочее время и SLA, группирует обращения и формирует готовую сводку.",
+        result: "XLSX → отчёт из 4 связанных листов",
+        tags: ["Python", "XLSX", "Аналитика"],
+      },
+      {
+        number: "02",
+        kicker: "PDF → XLSX",
+        title: "Подсчёт печатных знаков",
+        body: "Пакетно обрабатывает PDF, считает печатные знаки и авторские листы, сохраняет историю и выгружает результат в XLSX.",
+        result: "1–50 PDF → проверяемая таблица",
+        tags: ["Python", "PDF", "Desktop"],
+      },
+    ],
     expertiseEyebrow: "Что я делаю",
     expertiseTitle: "Разработка, которая начинается с понимания работы.",
     expertise: [
@@ -73,7 +95,7 @@ export const copy = {
     stackLabel: "Рабочий стек",
     stack: ["React", "TypeScript", "Python", "FastAPI", "PostgreSQL", "PWA", "Git"],
     experienceEyebrow: "Профессиональный путь",
-    experienceTitle: "В веб-разработке с 2014 года.",
+    experienceTitle: "Создаю веб-продукты с 2014 года.",
     experienceIntro:
       "Начал с разработки и поддержки сайтов, вырос до создания прикладных систем и технического руководства.",
     timeline: [
@@ -121,8 +143,8 @@ export const copy = {
     secondaryAction: "Message on Telegram",
     facts: [
       ["12 years", "in web development"],
-      ["60 → 7 min", "to prepare a document set"],
-      ["2,400", "document sets in the annual workflow"],
+      ["up to 10", "specialists in the team"],
+      ["Full cycle", "from process analysis to operation"],
     ],
     flowTitle: "From a process to a working system",
     flowSteps: ["Process", "Model", "Interface", "Logic", "Documents", "Product"],
@@ -131,8 +153,8 @@ export const copy = {
     projectLead:
       "The product brings inspection data, measuring equipment records, and document generation into one workflow.",
     projectMetrics: [
-      ["7 minutes", "instead of one hour per set"],
-      ["−88%", "preparation time"],
+      ["9 minutes", "instead of one hour per set"],
+      ["−85%", "preparation time"],
       ["4 processes", "moved out of manual work"],
     ],
     projectFeatures: [
@@ -142,6 +164,28 @@ export const copy = {
       "no discrepancies within a document set",
     ],
     caseAction: "Explore the case",
+    otherWorkEyebrow: "Small applied tools",
+    otherWorkTitle: "Focused automation without unnecessary complexity.",
+    otherWorkLead:
+      "Two compact products that turn source files into clear, usable results.",
+    tools: [
+      {
+        number: "01",
+        kicker: "XLSX → REPORT",
+        title: "Appeals analysis",
+        body: "Processes an incoming XLSX, calculates working time and SLA, groups requests, and produces a ready-to-use summary.",
+        result: "XLSX → a four-sheet report",
+        tags: ["Python", "XLSX", "Analytics"],
+      },
+      {
+        number: "02",
+        kicker: "PDF → XLSX",
+        title: "Publication character counter",
+        body: "Batch-processes PDFs, counts printable characters and author sheets, keeps history, and exports the result to XLSX.",
+        result: "1–50 PDFs → a verifiable table",
+        tags: ["Python", "PDF", "Desktop"],
+      },
+    ],
     expertiseEyebrow: "What I do",
     expertiseTitle: "Development that starts with understanding the work.",
     expertise: [
@@ -164,7 +208,7 @@ export const copy = {
     stackLabel: "Working stack",
     stack: ["React", "TypeScript", "Python", "FastAPI", "PostgreSQL", "PWA", "Git"],
     experienceEyebrow: "Career",
-    experienceTitle: "In web development since 2014.",
+    experienceTitle: "Building web products since 2014.",
     experienceIntro:
       "I started with website development and support, then moved into applied systems and technical leadership.",
     timeline: [

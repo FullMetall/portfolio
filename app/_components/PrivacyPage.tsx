@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "../content";
 import { profile } from "../content";
+import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
 const privacyCopy = {
@@ -100,6 +101,7 @@ export function PrivacyPage({ locale }: { locale: Locale }) {
           </article>
         </div>
       </main>
+      <SiteFooter locale={locale} />
     </>
   );
 }

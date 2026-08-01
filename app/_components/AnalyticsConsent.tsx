@@ -38,7 +38,7 @@ function enableMetrica(id: number) {
 }
 
 export function AnalyticsConsent() {
-  const [visible, setVisible] = useState(false);
+  const [visibleLocale, setVisibleLocale] = useState<"ru" | "en" | null>(null);
 
   useEffect(() => {
     if (!counterId) return;
@@ -46,32 +46,35 @@ export function AnalyticsConsent() {
     if (saved === "accepted") {
       enableMetrica(Number(counterId));
     } else if (saved !== "declined") {
-      const timer = window.setTimeout(() => setVisible(true), 0);
+      const locale = window.location.pathname.startsWith("/en") ? "en" : "ru";
+      const timer = window.setTimeout(() => setVisibleLocale(locale), 0);
       return () => window.clearTimeout(timer);
     }
   }, []);
 
-  if (!visible || !counterId) return null;
+  if (!visibleLocale || !counterId) return null;
+
+  const isEnglish = visibleLocale === "en";
 
   return (
-    <aside className="consent-banner" aria-label="Analytics consent">
+    <aside
+      className="consent-banner"
+      aria-label={isEnglish ? "Analytics consent" : "Согласие на аналитику"}
+    >
       <p>
-        <span className="consent-ru">
-          Использовать Яндекс Метрику для улучшения сайта?
-        </span>
-        <span className="consent-en">
-          Allow Yandex Metrica to help improve this site?
-        </span>
+        {isEnglish
+          ? "Allow Yandex Metrica to help improve this site?"
+          : "Использовать Яндекс Метрику для улучшения сайта?"}
       </p>
       <div>
         <button
           type="button"
           onClick={() => {
             window.localStorage.setItem(consentKey, "declined");
-            setVisible(false);
+            setVisibleLocale(null);
           }}
         >
-          Нет / No
+          {isEnglish ? "No" : "Нет"}
         </button>
         <button
           className="consent-accept"
@@ -79,10 +82,10 @@ export function AnalyticsConsent() {
           onClick={() => {
             window.localStorage.setItem(consentKey, "accepted");
             enableMetrica(Number(counterId));
-            setVisible(false);
+            setVisibleLocale(null);
           }}
         >
-          Да / Yes
+          {isEnglish ? "Yes" : "Да"}
         </button>
       </div>
     </aside>

@@ -40,3 +40,6 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# private source screenshots; only anonymized exports belong in /public/case
+/SS/

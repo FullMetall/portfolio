@@ -1,18 +1,25 @@
 import Link from "next/link";
 import type { Locale } from "../content";
 import { profile } from "../content";
+import { CaseGallery } from "./CaseGallery";
+import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
 const caseCopy = {
   ru: {
     back: "На главную",
     eyebrow: "Кейс · автоматизация процессов",
-    title: "Как сократить подготовку комплекта документов с часа до 7 минут.",
+    title: "Как сократить подготовку комплекта документов с часа до 9 минут.",
     lead: "Веб-система для процесса технического освидетельствования лифтов в испытательной лаборатории.",
+    meta: [
+      ["Срок", "3 месяца"],
+      ["Команда", "1 человек"],
+      ["Статус", "В эксплуатации"],
+    ],
     metrics: [
-      ["60 → 7 мин", "время подготовки одного комплекта"],
-      ["2 400", "освидетельствований в год"],
-      ["2 роли", "диагност и руководитель"],
+      ["60 → 9 мин", "время подготовки одного комплекта"],
+      ["2 400", "освидетельствований и комплектов в год"],
+      ["4 процесса", "переведены из ручного режима"],
     ],
     contextLabel: "Контекст",
     contextTitle:
@@ -31,7 +38,7 @@ const caseCopy = {
       "один источник данных для всего комплекта",
       "журнал и средства измерений встроены в процесс",
       "акт и протокол генерируются системой",
-      "готовый комплект формируется за 7 минут",
+      "готовый комплект формируется за 9 минут",
     ],
     systemLabel: "Решение",
     systemTitle:
@@ -60,10 +67,47 @@ const caseCopy = {
         "Учёт приборов и их использование в конкретном освидетельствовании.",
       ],
     ],
+    galleryLabel: "Интерфейс",
+    galleryTitle: "Рабочие экраны системы.",
+    galleryBody:
+      "Десктопные и мобильные сценарии одного процесса. Производственные данные на изображениях заменены демонстрационными.",
+    galleryPrevious: "Предыдущий экран",
+    galleryNext: "Следующий экран",
+    galleryOpen: "Открыть в полном размере",
+    gallery: [
+      {
+        src: "/case/lift-diagnostics-desktop.png",
+        alt: "Список диагностик лифтов в десктопной версии системы",
+        caption: "Реестр диагностик и статусы документов",
+        width: 1672,
+        height: 941,
+      },
+      {
+        src: "/case/lift-diagnostics-mobile.png",
+        alt: "Мобильный чек-лист функциональных испытаний",
+        caption: "Полевой чек-лист функциональных испытаний",
+        width: 964,
+        height: 1631,
+      },
+      {
+        src: "/case/lift-insulation-mobile.png",
+        alt: "Мобильная форма измерения сопротивления изоляции",
+        caption: "Ввод результатов измерений на объекте",
+        width: 963,
+        height: 1633,
+      },
+      {
+        src: "/case/lift-document-journal.png",
+        alt: "Журнал освидетельствований и сформированных документов",
+        caption: "Журнал и единый статус комплекта документов",
+        width: 1672,
+        height: 940,
+      },
+    ],
     roleLabel: "Моя работа",
-    roleTitle: "Соединил знание процесса и разработку продукта.",
+    roleTitle: "Самостоятельно провёл проект через полный цикл разработки.",
     roleBody:
-      "В проекте я занимался анализом рабочего процесса, формализацией требований и технической реализацией веб-системы. Это включало интерфейсы, серверную логику, модель данных, алгоритмы формирования документов, тестирование и подготовку к эксплуатации.",
+      "Я собрал и интерпретировал исходные документы, разобрал реальный рабочий процесс, спроектировал его модель и самостоятельно реализовал продукт. В зону ответственности вошли требования, UX/UI, архитектура, интерфейсы, серверная логика, база данных, генерация документов, тестирование, запуск и развитие системы в эксплуатации.",
     stackLabel: "Технологии",
     stack: [
       "React",
@@ -79,7 +123,7 @@ const caseCopy = {
     resultTitle:
       "Меньше ручной работы, быстрее выпуск, согласованные данные.",
     resultBody:
-      "Время подготовки комплекта сократилось на 88%. Ручное ведение журнала, учёт средств измерений и отдельная сборка акта с протоколом перенесены в систему. Опечатки и различающиеся данные внутри одного комплекта устранены.",
+      "Время подготовки комплекта сократилось на 85%. Ручное ведение журнала, учёт средств измерений и отдельная сборка акта с протоколом перенесены в систему. Опечатки и различающиеся данные внутри одного комплекта устранены.",
     confidentiality:
       "Название лаборатории и производственные данные не раскрываются. Показатели опубликованы с разрешения владельца процесса.",
     contactTitle: "Нужно автоматизировать похожий процесс?",
@@ -91,12 +135,17 @@ const caseCopy = {
   en: {
     back: "Back home",
     eyebrow: "Case study · process automation",
-    title: "Reducing document-set preparation from one hour to 7 minutes.",
+    title: "Reducing document-set preparation from one hour to 9 minutes.",
     lead: "A web system for the lift inspection workflow in a testing laboratory.",
+    meta: [
+      ["Timeline", "3 months"],
+      ["Team", "1 person"],
+      ["Status", "In operation"],
+    ],
     metrics: [
-      ["60 → 7 min", "to prepare one document set"],
-      ["2,400", "inspections per year"],
-      ["2 roles", "diagnostician and manager"],
+      ["60 → 9 min", "to prepare one document set"],
+      ["2,400", "inspections and document sets per year"],
+      ["4 processes", "moved out of manual work"],
     ],
     contextLabel: "Context",
     contextTitle:
@@ -115,7 +164,7 @@ const caseCopy = {
       "one source of data for the whole set",
       "journal and equipment records are built into the flow",
       "acts and protocols are generated by the system",
-      "a complete set is ready in 7 minutes",
+      "a complete set is ready in 9 minutes",
     ],
     systemLabel: "Solution",
     systemTitle:
@@ -144,10 +193,47 @@ const caseCopy = {
         "Measuring instrument records linked to each inspection.",
       ],
     ],
+    galleryLabel: "Interface",
+    galleryTitle: "The system in everyday use.",
+    galleryBody:
+      "Desktop and mobile scenarios within one workflow. Operational data in the images has been replaced with demonstration values.",
+    galleryPrevious: "Previous screen",
+    galleryNext: "Next screen",
+    galleryOpen: "Open full-size image",
+    gallery: [
+      {
+        src: "/case/lift-diagnostics-desktop.png",
+        alt: "Lift diagnostics list in the desktop system",
+        caption: "Diagnostics register and document statuses",
+        width: 1672,
+        height: 941,
+      },
+      {
+        src: "/case/lift-diagnostics-mobile.png",
+        alt: "Mobile functional inspection checklist",
+        caption: "On-site functional inspection checklist",
+        width: 964,
+        height: 1631,
+      },
+      {
+        src: "/case/lift-insulation-mobile.png",
+        alt: "Mobile insulation resistance measurement form",
+        caption: "Entering measurements on site",
+        width: 963,
+        height: 1633,
+      },
+      {
+        src: "/case/lift-document-journal.png",
+        alt: "Inspection and generated-document journal",
+        caption: "Journal and unified document-set status",
+        width: 1672,
+        height: 940,
+      },
+    ],
     roleLabel: "My work",
-    roleTitle: "Connected process knowledge with product development.",
+    roleTitle: "Led the product through the full development cycle alone.",
     roleBody:
-      "I worked on process analysis, requirements formalization, and technical implementation of the web system. This covered interfaces, backend logic, the data model, document-generation algorithms, tests, and operational readiness.",
+      "I collected and interpreted the source documents, mapped the real workflow, designed its model, and built the product independently. My scope covered requirements, UX/UI, architecture, interfaces, backend logic, the database, document generation, testing, launch, and continued development in operation.",
     stackLabel: "Technology",
     stack: [
       "React",
@@ -162,7 +248,7 @@ const caseCopy = {
     resultLabel: "Result",
     resultTitle: "Less manual work, faster output, consistent data.",
     resultBody:
-      "Preparation time fell by 88%. Manual journal management, measuring equipment records, and separate act and protocol assembly moved into the system. Typos and inconsistent data within a set were eliminated.",
+      "Preparation time fell by 85%. Manual journal management, measuring equipment records, and separate act and protocol assembly moved into the system. Typos and inconsistent data within a set were eliminated.",
     confidentiality:
       "The laboratory name and operational data remain confidential. The published metrics are approved by the process owner.",
     contactTitle: "Have a similar process to automate?",
@@ -189,6 +275,14 @@ export function CasePage({ locale }: { locale: Locale }) {
             <p className="eyebrow">{t.eyebrow}</p>
             <h1>{t.title}</h1>
             <p className="case-lead">{t.lead}</p>
+            <dl className="case-meta">
+              {t.meta.map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
             <div className="case-metrics">
               {t.metrics.map(([value, label], index) => (
                 <div
@@ -255,6 +349,25 @@ export function CasePage({ locale }: { locale: Locale }) {
           </div>
         </section>
 
+        <section className="case-section case-gallery-section">
+          <div className="shell">
+            <div className="case-two-column">
+              <div>
+                <p className="eyebrow">{t.galleryLabel}</p>
+                <h2>{t.galleryTitle}</h2>
+              </div>
+              <p className="case-body">{t.galleryBody}</p>
+            </div>
+            <CaseGallery
+              items={t.gallery}
+              label={t.galleryTitle}
+              previousLabel={t.galleryPrevious}
+              nextLabel={t.galleryNext}
+              openLabel={t.galleryOpen}
+            />
+          </div>
+        </section>
+
         <section className="case-section">
           <div className="shell role-grid">
             <div className="role-copy">
@@ -314,6 +427,7 @@ export function CasePage({ locale }: { locale: Locale }) {
           </div>
         </section>
       </main>
+      <SiteFooter locale={locale} />
     </>
   );
 }
