@@ -34,7 +34,7 @@ type Bottleneck = {
   detail: string;
 };
 
-type ConceptVariant = "editorial" | "workflow" | "studio";
+type ConceptVariant = "editorial" | "workflow" | "studio" | "editorial-workflow";
 type PresetKey = keyof typeof processPresets;
 
 const variantCopy: Record<
@@ -75,7 +75,25 @@ const variantCopy: Record<
     action: "Открыть конструктор",
     proofTitle: "Интерфейс показывает, как я думаю.",
   },
+  "editorial-workflow": {
+    index: "04 / Editorial workflow",
+    label: "Архитектура рабочих процессов",
+    title: "Из ручного процесса — в рабочую систему.",
+    lead:
+      "Сначала разбираю путь данных, ролей и решений. Затем собираю интерфейс, логику и документы в один управляемый контур.",
+    action: "Пройти по процессу",
+    proofTitle: "От гипотезы — к системе в эксплуатации.",
+  },
 };
+
+function RailMarker({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="concept-rail-marker" aria-label={`${number} ${label}`}>
+      <span>{number}</span>
+      <strong>{label}</strong>
+    </div>
+  );
+}
 
 const flagLabels: Record<ProcessFlag, string> = {
   "duplicate-input": "Повторный ввод данных",
@@ -348,6 +366,7 @@ function TechnicalPanel({
 }
 
 function ProcessBuilder({ variant }: { variant: ConceptVariant }) {
+  const hasProcessRail = variant === "editorial-workflow";
   const [activePreset, setActivePreset] = useState<PresetKey>("documents");
   const [steps, setSteps] = useState<ProcessStep[]>(() =>
     cloneSteps(processPresets.documents.steps),
@@ -409,6 +428,7 @@ function ProcessBuilder({ variant }: { variant: ConceptVariant }) {
 
   return (
     <section className="concept-builder" id="constructor">
+      {hasProcessRail && <RailMarker number="02" label="Конструктор" />}
       <header className="concept-builder-head">
         <div>
           <span className="concept-kicker">Интерактивный экспонат</span>
@@ -575,6 +595,91 @@ function ProcessBuilder({ variant }: { variant: ConceptVariant }) {
 
 export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
   const copy = variantCopy[variant];
+  const hasProcessRail = variant === "editorial-workflow";
+
+  const hero = (
+    <section className="concept-hero" id="positioning">
+      {hasProcessRail && <RailMarker number="01" label="Позиционирование" />}
+      <div className="concept-hero-copy">
+        <span className="concept-kicker">{copy.label}</span>
+        <h1>{copy.title}</h1>
+        <p>{copy.lead}</p>
+        <a className="concept-button concept-button-primary" href="#constructor">
+          {copy.action} ↓
+        </a>
+      </div>
+      {hasProcessRail ? (
+        <aside className="concept-hero-brief" aria-label="Подход к проектированию">
+          <span>Что связывает решение</span>
+          <ol>
+            <li><strong>Процесс</strong><p>Роли, действия, ожидания и исключения.</p></li>
+            <li><strong>Система</strong><p>Интерфейс, данные, логика и документы.</p></li>
+            <li><strong>Результат</strong><p>Рабочий сценарий, проверенный в эксплуатации.</p></li>
+          </ol>
+        </aside>
+      ) : (
+        <div className="concept-hero-proof" aria-label="Ключевые результаты">
+          <div><strong>60 → 9</strong><span>минут на комплект</span></div>
+          <div><strong>−85%</strong><span>ручной подготовки</span></div>
+          <div><strong>2014</strong><span>в веб-разработке</span></div>
+        </div>
+      )}
+      {hasProcessRail ? (
+        <div className="concept-hero-transition" aria-hidden="true">
+          <span>Ручной сценарий</span>
+          <i />
+          <span>Управляемая система</span>
+        </div>
+      ) : (
+        <div className="concept-hero-visual" aria-hidden="true">
+          <span>Входные данные</span>
+          <i />
+          <span>Рабочий процесс</span>
+          <i />
+          <span>Готовый результат</span>
+        </div>
+      )}
+    </section>
+  );
+
+  const proof = (
+    <section className="concept-proof" id="proof">
+      {hasProcessRail && <RailMarker number="03" label="Работающий кейс" />}
+      <header>
+        <span className="concept-kicker">Проект в эксплуатации</span>
+        <h2>{copy.proofTitle}</h2>
+      </header>
+      <div className="concept-proof-grid">
+        <div className="concept-proof-screen">
+          <img
+            src="/case/lift-diagnostics-desktop.png"
+            alt="Интерфейс реестра диагностик лифтов"
+          />
+        </div>
+        <div className="concept-proof-copy">
+          <strong>Автоматизация испытательной лаборатории</strong>
+          <p>
+            Требования, UX/UI, архитектура, frontend, backend, база данных, документы, тестирование и запуск — один завершённый цикл.
+          </p>
+          {hasProcessRail ? (
+            <dl aria-label="Метрики проекта автоматизации">
+              <div><dt>Подготовка</dt><dd>60 → 9 минут</dd></div>
+              <div><dt>Ручная работа</dt><dd>−85%</dd></div>
+              <div><dt>Объём</dt><dd>2 400 комплектов в год</dd></div>
+              <div><dt>Статус</dt><dd>В эксплуатации</dd></div>
+            </dl>
+          ) : (
+            <dl>
+              <div><dt>Срок</dt><dd>3 месяца</dd></div>
+              <div><dt>Статус</dt><dd>В эксплуатации</dd></div>
+              <div><dt>Объём</dt><dd>2 400 комплектов в год</dd></div>
+            </dl>
+          )}
+          <Link href="/projects/lift-automation">Разобрать кейс ↗</Link>
+        </div>
+      </div>
+    </section>
+  );
 
   return (
     <main className={`concept concept-${variant}`}>
@@ -591,57 +696,19 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
         <span>{copy.index}</span>
       </header>
 
-      <section className="concept-hero">
-        <div className="concept-hero-copy">
-          <span className="concept-kicker">{copy.label}</span>
-          <h1>{copy.title}</h1>
-          <p>{copy.lead}</p>
-          <a className="concept-button concept-button-primary" href="#constructor">
-            {copy.action} ↓
-          </a>
+      {hasProcessRail ? (
+        <div className="concept-process-story" aria-label="Сквозной маршрут процесса">
+          {hero}
+          <ProcessBuilder variant={variant} />
+          {proof}
         </div>
-        <div className="concept-hero-proof" aria-label="Ключевые результаты">
-          <div><strong>60 → 9</strong><span>минут на комплект</span></div>
-          <div><strong>−85%</strong><span>ручной подготовки</span></div>
-          <div><strong>2014</strong><span>в веб-разработке</span></div>
-        </div>
-        <div className="concept-hero-visual" aria-hidden="true">
-          <span>Входные данные</span>
-          <i />
-          <span>Рабочий процесс</span>
-          <i />
-          <span>Готовый результат</span>
-        </div>
-      </section>
-
-      <ProcessBuilder variant={variant} />
-
-      <section className="concept-proof" id="proof">
-        <header>
-          <span className="concept-kicker">Проект в эксплуатации</span>
-          <h2>{copy.proofTitle}</h2>
-        </header>
-        <div className="concept-proof-grid">
-          <div className="concept-proof-screen">
-            <img
-              src="/case/lift-diagnostics-desktop.png"
-              alt="Интерфейс реестра диагностик лифтов"
-            />
-          </div>
-          <div className="concept-proof-copy">
-            <strong>Автоматизация испытательной лаборатории</strong>
-            <p>
-              Требования, UX/UI, архитектура, frontend, backend, база данных, документы, тестирование и запуск — один завершённый цикл.
-            </p>
-            <dl>
-              <div><dt>Срок</dt><dd>3 месяца</dd></div>
-              <div><dt>Статус</dt><dd>В эксплуатации</dd></div>
-              <div><dt>Объём</dt><dd>2 400 комплектов в год</dd></div>
-            </dl>
-            <Link href="/projects/lift-automation">Разобрать кейс ↗</Link>
-          </div>
-        </div>
-      </section>
+      ) : (
+        <>
+          {hero}
+          <ProcessBuilder variant={variant} />
+          {proof}
+        </>
+      )}
 
       <section className="concept-contact" id="contact">
         <span className="concept-kicker">Контакт</span>

@@ -157,20 +157,22 @@ test("renders English, case, and privacy routes", async () => {
   }
 });
 
-test("exports the comparison index and three isolated redesign concepts", async () => {
+test("exports the comparison index and four isolated redesign concepts", async () => {
   const conceptRoutes = [
     "/concepts/editorial-product",
     "/concepts/workflow-motif",
     "/concepts/product-studio",
+    "/concepts/editorial-workflow",
   ];
   const index = await render("/concepts");
 
   assert.equal(index.status, 200);
   const indexHtml = await index.text();
-  assert.match(indexHtml, /Три способа показать работу/);
+  assert.match(indexHtml, /Четыре способа показать работу/);
   assert.match(indexHtml, /Editorial Product/);
   assert.match(indexHtml, /Workflow Motif/);
   assert.match(indexHtml, /Product Studio/);
+  assert.match(indexHtml, /Editorial Workflow/);
   assert.match(indexHtml, /noindex/);
 
   for (const route of conceptRoutes) {
@@ -187,6 +189,25 @@ test("exports the comparison index and three isolated redesign concepts", async 
   }
 });
 
+test("editorial workflow carries one process rail and keeps product metrics in the case", async () => {
+  const response = await render("/concepts/editorial-workflow");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Сквозной маршрут процесса/);
+  assert.match(html, /01[^<]*Позиционирование/);
+  assert.match(html, /02[^<]*Конструктор/);
+  assert.match(html, /03[^<]*Работающий кейс/);
+  assert.doesNotMatch(html, /concept-hero-proof/);
+  assert.doesNotMatch(html, />2014</);
+
+  const proofStart = html.indexOf('id="proof"');
+  assert.notEqual(proofStart, -1);
+  const proofHtml = html.slice(proofStart);
+  assert.match(proofHtml, /60 → 9 минут/);
+  assert.match(proofHtml, /−85%/);
+});
+
 test("serves every local asset referenced by the exported pages", async () => {
   const pages = [
     "/",
@@ -197,6 +218,7 @@ test("serves every local asset referenced by the exported pages", async () => {
     "/concepts/editorial-product",
     "/concepts/workflow-motif",
     "/concepts/product-studio",
+    "/concepts/editorial-workflow",
   ];
   const assetPaths = new Set();
 

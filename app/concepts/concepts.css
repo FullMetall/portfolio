@@ -1101,6 +1101,301 @@
   border-color: var(--concept-line);
 }
 
+/* Variant 4 — editorial hierarchy with the workflow palette and one continuous process rail. */
+.concept-editorial-workflow {
+  --concept-bg: #101b22;
+  --concept-surface: #172831;
+  --concept-ink: #edf7f1;
+  --concept-muted: #9cb0b1;
+  --concept-line: rgba(237, 247, 241, 0.2);
+  --concept-accent: #f26d3d;
+  --concept-accent-2: #9fe870;
+  --concept-positive: #9fe870;
+  --concept-display: "Oswald Variable", sans-serif;
+  --concept-body: "Golos Text Variable", sans-serif;
+  background:
+    radial-gradient(circle at 84% 3%, rgba(159, 232, 112, 0.1), transparent 27%),
+    var(--concept-bg);
+}
+
+.concept-editorial-workflow .concept-nav {
+  position: sticky;
+  top: 0;
+  background: rgba(16, 27, 34, 0.91);
+}
+
+.concept-editorial-workflow .concept-mark {
+  color: #101b22;
+  background: var(--concept-accent-2);
+}
+
+.concept-editorial-workflow .concept-button-primary {
+  border-color: var(--concept-accent-2);
+  color: #101b22;
+  background: var(--concept-accent-2);
+}
+
+.concept-process-story {
+  --rail-x: clamp(28px, 3vw, 46px);
+  --content-left: clamp(128px, 10vw, 160px);
+  position: relative;
+}
+
+.concept-process-story::before {
+  position: absolute;
+  z-index: 1;
+  top: 92px;
+  bottom: 94px;
+  left: var(--rail-x);
+  width: 2px;
+  background: linear-gradient(var(--concept-accent), var(--concept-accent-2));
+  box-shadow: 0 0 22px rgba(159, 232, 112, 0.18);
+  content: "";
+}
+
+.concept-process-story::after {
+  position: absolute;
+  z-index: 2;
+  bottom: 86px;
+  left: calc(var(--rail-x) - 5px);
+  width: 0;
+  height: 0;
+  border-top: 9px solid var(--concept-accent-2);
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  content: "";
+}
+
+.concept-editorial-workflow .concept-process-story > :where(.concept-hero, .concept-builder, .concept-proof) {
+  position: relative;
+  width: calc(100% - var(--content-left) - clamp(32px, 4vw, 64px));
+  margin-right: 0;
+  margin-left: var(--content-left);
+}
+
+.concept-editorial-workflow .concept-hero {
+  overflow: visible;
+}
+
+.concept-rail-marker {
+  position: absolute;
+  z-index: 5;
+  top: clamp(56px, 6vw, 86px);
+  left: calc(var(--rail-x) - var(--content-left) - 20px);
+  width: 112px;
+  display: grid;
+  justify-items: start;
+  gap: 9px;
+  pointer-events: none;
+}
+
+.concept-rail-marker span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--concept-accent-2);
+  border-radius: 50%;
+  color: #101b22;
+  background: var(--concept-accent-2);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 0 0 7px var(--concept-bg);
+}
+
+.concept-rail-marker strong {
+  max-width: 96px;
+  color: var(--concept-muted);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.concept-editorial-workflow .concept-proof .concept-rail-marker span {
+  border-color: var(--concept-accent);
+  color: #101b22;
+  background: var(--concept-accent);
+}
+
+.concept-editorial-workflow .concept-hero {
+  min-height: 720px;
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
+  padding-top: clamp(84px, 9vw, 136px);
+}
+
+.concept-editorial-workflow .concept-hero h1 {
+  max-width: 960px;
+  font-size: clamp(70px, 9vw, 142px);
+}
+
+.concept-hero-brief {
+  align-self: stretch;
+  display: grid;
+  align-content: end;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-hero-brief > span {
+  padding: 15px 0;
+  color: var(--concept-accent-2);
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.concept-hero-brief ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.concept-hero-brief li {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 15px;
+  padding: 18px 0;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-hero-brief strong {
+  color: var(--concept-ink);
+  font-size: 12px;
+}
+
+.concept-hero-brief p {
+  margin: 0;
+  color: var(--concept-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.concept-hero-transition {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--concept-line);
+  color: var(--concept-muted);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.concept-hero-transition i {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(90deg, var(--concept-accent), var(--concept-accent-2));
+}
+
+.concept-hero-transition i::after {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid var(--concept-accent-2);
+  content: "";
+}
+
+.concept-editorial-workflow .concept-builder,
+.concept-editorial-workflow .concept-proof {
+  scroll-margin-top: 80px;
+}
+
+.concept-editorial-workflow .concept-builder,
+.concept-editorial-workflow .concept-proof,
+.concept-editorial-workflow .concept-contact {
+  border-color: var(--concept-line);
+}
+
+.concept-editorial-workflow .concept-builder-head h2,
+.concept-editorial-workflow .concept-proof h2 {
+  text-transform: uppercase;
+}
+
+.concept-editorial-workflow .concept-presets,
+.concept-editorial-workflow .concept-workspace,
+.concept-editorial-workflow .concept-proof-grid {
+  border-color: var(--concept-line);
+}
+
+.concept-editorial-workflow .concept-presets button {
+  border-color: var(--concept-line);
+}
+
+.concept-editorial-workflow .concept-presets button:hover,
+.concept-editorial-workflow .concept-presets button.is-active {
+  color: #101b22;
+  background: var(--concept-accent-2);
+}
+
+.concept-editorial-workflow .concept-presets button:hover span,
+.concept-editorial-workflow .concept-presets button.is-active span {
+  color: rgba(16, 27, 34, 0.67);
+}
+
+.concept-editorial-workflow .concept-workspace {
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.34);
+}
+
+.concept-editorial-workflow .concept-canvas {
+  background:
+    linear-gradient(rgba(237, 247, 241, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(237, 247, 241, 0.07) 1px, transparent 1px),
+    #0c171d;
+  background-size: 26px 26px;
+}
+
+.concept-editorial-workflow .concept-step-list {
+  position: relative;
+}
+
+.concept-editorial-workflow .concept-step-list::before {
+  position: absolute;
+  top: 50%;
+  right: 3%;
+  left: 3%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--concept-accent), var(--concept-accent-2));
+  content: "";
+}
+
+.concept-editorial-workflow .concept-step {
+  z-index: 2;
+  border-color: var(--concept-line);
+  color: var(--concept-ink);
+  background: #172831;
+  box-shadow: 6px 6px 0 rgba(159, 232, 112, 0.12);
+}
+
+.concept-editorial-workflow .concept-step-main > span:last-child,
+.concept-editorial-workflow .concept-step-number,
+.concept-editorial-workflow .concept-drag-handle {
+  color: var(--concept-muted);
+}
+
+.concept-editorial-workflow .concept-findings {
+  border-color: var(--concept-line);
+  color: var(--concept-ink);
+  background: #071014;
+}
+
+.concept-editorial-workflow .concept-proof-screen {
+  background: linear-gradient(145deg, #071014, #1b3b42);
+}
+
+.concept-editorial-workflow .concept-proof-copy {
+  border-color: var(--concept-line);
+}
+
 /* Variant 3 — tool-first studio with a permanent rail and vertical process stack. */
 .concept-studio {
   --concept-bg: #f4f6f8;
@@ -1369,6 +1664,17 @@
 .concept-index-card.is-editorial h2 { font-family: "Oswald Variable", sans-serif; text-transform: uppercase; }
 .concept-index-card.is-workflow h2 { font-family: "Unbounded Variable", sans-serif; font-size: clamp(22px, 2.5vw, 38px); }
 .concept-index-card.is-studio h2 { font-family: "Source Serif 4 Variable", serif; }
+.concept-index-card.is-editorial-workflow {
+  border-color: rgba(237, 247, 241, 0.42);
+  color: #edf7f1;
+  background: #101b22;
+}
+.concept-index-card.is-editorial-workflow h2 { font-family: "Oswald Variable", sans-serif; text-transform: uppercase; }
+.concept-index-card.is-editorial-workflow .concept-index-number,
+.concept-index-card.is-editorial-workflow > strong { color: #9fe870; }
+.concept-index-card.is-editorial-workflow > div > span,
+.concept-index-card.is-editorial-workflow dt { color: #9cb0b1; }
+.concept-index-card.is-editorial-workflow dl div { border-color: rgba(237, 247, 241, 0.2); }
 
 .concept-index-card dl {
   display: grid;
@@ -1721,6 +2027,90 @@
 
   .concept-index-foot {
     flex-direction: column;
+  }
+
+  .concept-process-story {
+    --rail-x: 24px;
+    --content-left: 58px;
+  }
+
+  .concept-process-story::before {
+    top: 58px;
+    bottom: 54px;
+  }
+
+  .concept-editorial-workflow .concept-process-story > :where(.concept-hero, .concept-builder, .concept-proof) {
+    width: calc(100% - var(--content-left) - 14px);
+    margin-left: var(--content-left);
+  }
+
+  .concept-editorial-workflow .concept-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .concept-editorial-workflow .concept-hero h1 {
+    font-size: clamp(48px, 15vw, 78px);
+  }
+
+  .concept-rail-marker {
+    top: 20px;
+    left: calc(var(--rail-x) - var(--content-left) - 18px);
+    width: 190px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .concept-rail-marker span {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
+
+  .concept-rail-marker strong {
+    max-width: 140px;
+  }
+
+  .concept-editorial-workflow .concept-hero,
+  .concept-editorial-workflow .concept-builder,
+  .concept-editorial-workflow .concept-proof {
+    padding-top: 84px;
+  }
+
+  .concept-hero-brief li {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .concept-hero-transition {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .concept-hero-transition i {
+    width: 2px;
+    height: 26px;
+    margin-left: 8px;
+    background: linear-gradient(var(--concept-accent), var(--concept-accent-2));
+  }
+
+  .concept-hero-transition i::after {
+    top: auto;
+    right: -4px;
+    bottom: -1px;
+    border-top: 8px solid var(--concept-accent-2);
+    border-right: 5px solid transparent;
+    border-bottom: 0;
+    border-left: 5px solid transparent;
+  }
+
+  .concept-editorial-workflow .concept-step-list::before {
+    top: 3%;
+    bottom: 3%;
+    left: 25px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(var(--concept-accent), var(--concept-accent-2));
   }
 }
 

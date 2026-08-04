@@ -28,8 +28,18 @@ const concepts = [
     title: "Меньше рутины. Больше контроля.",
     type: "Source Serif 4 + Roboto Flex",
     strength: "Лучше всего показывает продуктовые состояния и инженерный подход.",
-    tradeoff: "Есть риск выглядеть как SaaS, если убрать личные доказательства.",
+    tradeoff: "Исключён из дальнейшей проработки после сравнения.",
     className: "is-studio",
+  },
+  {
+    href: "/concepts/editorial-workflow",
+    number: "04",
+    name: "Editorial Workflow",
+    title: "Из ручного процесса — в рабочую систему.",
+    type: "Oswald Variable + Golos Text",
+    strength: "Редакционная иерархия, тёмная палитра и одна сквозная process rail.",
+    tradeoff: "Нужно оценить, не перетягивает ли rail внимание с содержания.",
+    className: "is-editorial-workflow",
   },
 ];
 
@@ -39,10 +49,10 @@ export default function ConceptsIndexPage() {
       <header className="concept-index-head">
         <div>
           <span>Локальное сравнение · не для production</span>
-          <h1>Три способа показать работу, а не обещания.</h1>
+          <h1>Четыре способа показать работу, а не обещания.</h1>
         </div>
         <p>
-          Одинаковый конструктор и один контент помещены в три разные визуальные системы. Открой каждый вариант на desktop и телефоне.
+          Три исходные концепции и четвёртый синтез структуры Editorial Product с палитрой и процессным языком Workflow Motif.
         </p>
       </header>
 
