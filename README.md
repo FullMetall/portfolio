@@ -31,6 +31,16 @@ npm run lint
 node --test tests/rendered-html.test.mjs
 ```
 
+## Docker deployment
+
+The production image contains the statically exported site served by Nginx and
+listens on port `80`.
+
+```bash
+docker build -t fullmetall-portfolio .
+docker run --rm -p 3000:80 fullmetall-portfolio
+```
+
 ## License
 
 No license is granted for reuse of the source code, visual identity, or

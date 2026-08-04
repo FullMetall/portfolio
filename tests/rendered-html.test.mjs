@@ -1,25 +1,81 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { createReadStream } from "node:fs";
+import { stat } from "node:fs/promises";
+import { createServer } from "node:http";
+import path from "node:path";
+import { after, before, test } from "node:test";
 
-async function render(path = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
-  const { default: worker } = await import(workerUrl.href);
+let baseUrl;
+let staticServer;
+const exportRoot = path.resolve("out");
+const contentTypes = new Map([
+  [".css", "text/css"],
+  [".html", "text/html; charset=utf-8"],
+  [".js", "application/javascript"],
+  [".png", "image/png"],
+  [".svg", "image/svg+xml"],
+  [".woff", "font/woff"],
+  [".woff2", "font/woff2"],
+]);
 
-  return worker.fetch(
-    new Request(`http://localhost${path}`, {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+async function resolveExportedFile(urlPath) {
+  const decodedPath = decodeURIComponent(urlPath.split("?")[0]);
+  const relativePath = decodedPath.replace(/^\/+/, "");
+  const candidates = path.extname(relativePath)
+    ? [relativePath]
+    : [
+        relativePath,
+        `${relativePath}.html`,
+        path.join(relativePath, "index.html"),
+      ];
+
+  if (decodedPath === "/") candidates.unshift("index.html");
+
+  for (const candidate of candidates) {
+    const filePath = path.resolve(exportRoot, candidate);
+    if (!filePath.startsWith(`${exportRoot}${path.sep}`)) continue;
+    try {
+      if ((await stat(filePath)).isFile()) return filePath;
+    } catch {
+      // Try the next static-export filename convention.
+    }
+  }
+  return null;
+}
+
+before(async () => {
+  staticServer = createServer(async (request, response) => {
+    const filePath = await resolveExportedFile(request.url ?? "/");
+    if (!filePath) {
+      response.writeHead(404).end("Not found");
+      return;
+    }
+    response.setHeader(
+      "content-type",
+      contentTypes.get(path.extname(filePath)) ?? "application/octet-stream",
+    );
+    createReadStream(filePath).pipe(response);
+  });
+
+  await new Promise((resolve, reject) => {
+    staticServer.once("error", reject);
+    staticServer.listen(0, "127.0.0.1", resolve);
+  });
+  const address = staticServer.address();
+  assert(address && typeof address === "object");
+  baseUrl = `http://127.0.0.1:${address.port}`;
+});
+
+after(async () => {
+  await new Promise((resolve, reject) => {
+    staticServer.close((error) => (error ? reject(error) : resolve()));
+  });
+});
+
+async function render(pathname = "/") {
+  return fetch(`${baseUrl}${pathname}`, {
+    headers: { accept: "text/html" },
+  });
 }
 
 test("renders the Russian portfolio without starter or private content", async () => {
@@ -97,5 +153,43 @@ test("renders English, case, and privacy routes", async () => {
   for (const html of [englishHtml, englishCaseStudyHtml, englishPrivacyHtml]) {
     assert.match(html, /<footer/);
     assert.match(html, /href="\/en\/privacy"/);
+  }
+});
+
+test("serves every local asset referenced by the exported pages", async () => {
+  const pages = [
+    "/",
+    "/en",
+    "/projects/lift-automation",
+    "/en/projects/lift-automation",
+  ];
+  const assetPaths = new Set();
+
+  for (const page of pages) {
+    const response = await render(page);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    for (const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
+      const assetPath = match[1].split("#")[0];
+      if (
+        assetPath.startsWith("/") &&
+        /\.(?:css|js|png|svg|woff2?)(?:\?|$)/i.test(assetPath)
+      ) {
+        assetPaths.add(assetPath);
+      }
+    }
+  }
+
+  assert(assetPaths.has("/case/lift-diagnostics-desktop.png"));
+  assert([...assetPaths].some((assetPath) => assetPath.endsWith(".css")));
+  assert([...assetPaths].some((assetPath) => assetPath.endsWith(".js")));
+
+  for (const assetPath of assetPaths) {
+    const response = await fetch(`${baseUrl}${assetPath}`);
+    assert.equal(response.status, 200, `Missing exported asset: ${assetPath}`);
+    assert(
+      Number(response.headers.get("content-length") ?? 1) !== 0,
+      `Empty exported asset: ${assetPath}`,
+    );
   }
 });
