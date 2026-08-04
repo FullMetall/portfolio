@@ -94,7 +94,8 @@ test("renders the Russian portfolio without starter or private content", async (
   assert.match(html, /Подсчёт печатных знаков/);
   assert.match(html, /XLSX → СВОДКА/);
   assert.doesNotMatch(html, /UTILITY/);
-  assert.match(html, /daniil@fullmetall\.ru/);
+  assert.match(html, /abc-xyz9@yandex\.ru/);
+  assert.doesNotMatch(html, /daniil@fullmetall\.ru/);
   assert.match(html, /\/projects\/lift-automation/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
   assert.doesNotMatch(html, /Вертикаль ИЛ|Руководитель проектов\.pdf/i);

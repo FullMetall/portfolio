@@ -5,7 +5,7 @@ export const profile = {
     ru: "Даниил Угловский",
     en: "Daniil Uglovskiy",
   },
-  email: "daniil@fullmetall.ru",
+  email: "abc-xyz9@yandex.ru",
   telegram: "https://t.me/FullMetall_EGGS",
   resume:
     "https://syktyvkar.hh.ru/resume/ac74a2a5ff0bd171c30039ed1f5a5838647357",
