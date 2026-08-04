@@ -1,0 +1,1788 @@
+/* Local redesign concepts. These selectors are intentionally isolated from production pages. */
+
+.concept,
+.concept-index {
+  --concept-bg: #f3efe5;
+  --concept-surface: #fffdf8;
+  --concept-ink: #181b1d;
+  --concept-muted: #5d6264;
+  --concept-line: rgba(24, 27, 29, 0.22);
+  --concept-accent: #b8321b;
+  --concept-accent-2: #155e4b;
+  --concept-positive: #0d8068;
+  --concept-display: "Oswald Variable", sans-serif;
+  --concept-body: "Golos Text Variable", sans-serif;
+  min-height: 100vh;
+  overflow-x: clip;
+  color: var(--concept-ink);
+  background: var(--concept-bg);
+  font-family: var(--concept-body);
+}
+
+.concept *,
+.concept-index * {
+  box-sizing: border-box;
+}
+
+.concept button,
+.concept input,
+.concept select,
+.concept-index button {
+  color: inherit;
+  font: inherit;
+}
+
+.concept button,
+.concept a,
+.concept-index a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.concept :where(a, button, input, select):focus-visible,
+.concept-index :where(a, button):focus-visible {
+  outline: 3px solid var(--concept-accent);
+  outline-offset: 3px;
+}
+
+.concept button {
+  cursor: pointer;
+}
+
+.concept button:disabled {
+  cursor: not-allowed;
+  opacity: 0.28;
+}
+
+.concept-nav {
+  position: relative;
+  z-index: 20;
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 0 clamp(20px, 4vw, 64px);
+  border-bottom: 1px solid var(--concept-line);
+  background: color-mix(in srgb, var(--concept-bg) 90%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.concept-nav > a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: max-content;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.concept-nav > span {
+  justify-self: end;
+  color: var(--concept-muted);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.concept-nav nav {
+  display: flex;
+  gap: 26px;
+  font-size: 12px;
+}
+
+.concept-nav nav a {
+  color: var(--concept-muted);
+}
+
+.concept-nav nav a:hover {
+  color: var(--concept-accent);
+}
+
+.concept-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--concept-bg);
+  background: var(--concept-ink);
+  font-family: var(--concept-display);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.concept-hero,
+.concept-builder,
+.concept-proof,
+.concept-contact {
+  width: min(1440px, calc(100% - clamp(32px, 8vw, 128px)));
+  margin: 0 auto;
+}
+
+.concept-hero {
+  position: relative;
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(270px, 0.65fr);
+  grid-template-rows: 1fr auto;
+  gap: 34px 72px;
+  align-items: end;
+  padding: clamp(64px, 8vw, 118px) 0 42px;
+  overflow: hidden;
+}
+
+.concept-hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.concept-kicker {
+  display: block;
+  margin-bottom: 18px;
+  color: var(--concept-accent);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.concept-hero h1,
+.concept-builder h2,
+.concept-proof h2,
+.concept-contact h2,
+.concept-index h1,
+.concept-index h2 {
+  margin: 0;
+  font-family: var(--concept-display);
+  text-wrap: balance;
+}
+
+.concept-hero h1 {
+  max-width: 980px;
+  font-size: clamp(72px, 10vw, 154px);
+  font-weight: 570;
+  line-height: 0.83;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.concept-hero-copy > p {
+  max-width: 720px;
+  margin: 34px 0 30px;
+  color: var(--concept-muted);
+  font-size: clamp(17px, 1.8vw, 23px);
+  line-height: 1.45;
+}
+
+.concept-button {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 18px;
+  border: 1px solid var(--concept-ink);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.concept-button-primary {
+  border-color: var(--concept-accent);
+  color: #fff;
+  background: var(--concept-accent);
+}
+
+.concept-button-primary:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+.concept-button-danger {
+  border-color: color-mix(in srgb, var(--concept-accent) 65%, transparent);
+  color: var(--concept-accent);
+}
+
+.concept-hero-proof {
+  align-self: stretch;
+  display: grid;
+  align-content: end;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-hero-proof > div {
+  display: grid;
+  grid-template-columns: 125px 1fr;
+  align-items: baseline;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--concept-line);
+}
+
+.concept-hero-proof strong {
+  color: var(--concept-accent);
+  font-family: var(--concept-display);
+  font-size: 34px;
+  font-weight: 600;
+}
+
+.concept-hero-proof span {
+  color: var(--concept-muted);
+  font-size: 12px;
+}
+
+.concept-hero-visual {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--concept-line);
+  color: var(--concept-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-hero-visual i {
+  position: relative;
+  height: 1px;
+  background: var(--concept-line);
+}
+
+.concept-hero-visual i::after {
+  position: absolute;
+  top: -3px;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--concept-accent);
+  content: "";
+  animation: conceptPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes conceptPulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+.concept-builder {
+  padding: clamp(56px, 7vw, 96px) 0;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-builder-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  gap: 64px;
+  align-items: end;
+  margin-bottom: 34px;
+}
+
+.concept-builder h2,
+.concept-proof h2,
+.concept-contact h2 {
+  max-width: 880px;
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 570;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.concept-builder-head > p {
+  margin: 0;
+  color: var(--concept-muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.concept-presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--concept-ink);
+  background: var(--concept-surface);
+}
+
+.concept-presets button {
+  min-height: 110px;
+  display: grid;
+  align-content: space-between;
+  gap: 13px;
+  padding: 18px;
+  border: 0;
+  border-right: 1px solid var(--concept-line);
+  text-align: left;
+  background: transparent;
+}
+
+.concept-presets button:last-child {
+  border-right: 0;
+}
+
+.concept-presets button:hover,
+.concept-presets button.is-active {
+  color: #fff;
+  background: var(--concept-ink);
+}
+
+.concept-presets strong {
+  font-size: 13px;
+}
+
+.concept-presets span {
+  color: var(--concept-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.concept-presets button:hover span,
+.concept-presets button.is-active span {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.concept-workspace {
+  border: 1px solid var(--concept-ink);
+  border-top: 0;
+  background: var(--concept-surface);
+  box-shadow: 0 25px 80px rgba(21, 24, 25, 0.12);
+}
+
+.concept-workspace-toolbar {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--concept-line);
+}
+
+.concept-segmented {
+  display: flex;
+  padding: 4px;
+  background: color-mix(in srgb, var(--concept-ink) 8%, transparent);
+}
+
+.concept-segmented button,
+.concept-tech-toggle {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 0;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.concept-segmented button span {
+  min-width: 21px;
+  display: inline-grid;
+  place-items: center;
+  margin-left: 6px;
+  padding: 3px 5px;
+  color: var(--concept-muted);
+  background: var(--concept-surface);
+  font-size: 9px;
+}
+
+.concept-segmented button.is-active {
+  color: #fff;
+  background: var(--concept-ink);
+}
+
+.concept-tech-toggle {
+  border: 1px solid var(--concept-line);
+}
+
+.concept-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  min-height: 570px;
+}
+
+.concept-canvas {
+  position: relative;
+  min-width: 0;
+  padding: 28px;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--concept-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--concept-line) 1px, transparent 1px),
+    color-mix(in srgb, var(--concept-bg) 72%, #fff);
+  background-size: 26px 26px;
+}
+
+.concept-canvas[data-view="after"] {
+  background:
+    radial-gradient(circle at 80% 15%, color-mix(in srgb, var(--concept-positive) 18%, transparent), transparent 36%),
+    color-mix(in srgb, var(--concept-bg) 72%, #fff);
+}
+
+.concept-canvas-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  color: var(--concept-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-canvas-label em {
+  font-style: normal;
+}
+
+.concept-step-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.concept-step {
+  position: relative;
+  min-width: 0;
+  min-height: 190px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  padding: 14px;
+  border: 1px solid var(--concept-ink);
+  background: var(--concept-surface);
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--concept-ink) 11%, transparent);
+}
+
+.concept-step:hover {
+  border-color: var(--concept-accent);
+  transform: translateY(-2px);
+}
+
+.concept-step-number {
+  align-self: center;
+  color: var(--concept-muted);
+  font-family: var(--concept-display);
+  font-size: 16px;
+}
+
+.concept-drag-handle {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  color: var(--concept-muted);
+  background: transparent;
+  font-size: 18px;
+}
+
+.concept-step-main {
+  grid-column: 1 / -1;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 17px 0;
+  border: 0;
+  text-align: left;
+  background: transparent;
+}
+
+.concept-step-kind {
+  color: var(--concept-accent);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.concept-step-main strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.concept-step-main > span:last-child {
+  color: var(--concept-muted);
+  font-size: 10px;
+}
+
+.concept-step-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.concept-step-actions button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--concept-line);
+  background: transparent;
+}
+
+.concept-step-alert {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--concept-surface);
+  border-radius: 50%;
+  color: #fff;
+  background: var(--concept-accent);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.concept-add-step {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 18px;
+  border: 1px dashed var(--concept-line);
+  color: var(--concept-muted);
+  background: color-mix(in srgb, var(--concept-surface) 80%, transparent);
+  font-size: 11px;
+}
+
+.concept-add-step:hover {
+  border-color: var(--concept-accent);
+  color: var(--concept-accent);
+}
+
+.concept-findings {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-left: 1px solid var(--concept-ink);
+  background: var(--concept-ink);
+  color: #fff;
+}
+
+.concept-findings > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.concept-findings > header span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.concept-findings > header strong {
+  color: var(--concept-accent);
+  font-family: var(--concept-display);
+  font-size: 42px;
+}
+
+.concept-findings ul {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.concept-findings li {
+  display: grid;
+  gap: 5px;
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.concept-findings li span {
+  color: var(--concept-accent);
+  font-size: 9px;
+}
+
+.concept-findings li strong {
+  font-size: 12px;
+}
+
+.concept-findings li p,
+.concept-clean-state p,
+.concept-consultation p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.concept-clean-state {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 28px 22px;
+}
+
+.concept-clean-state > span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--concept-positive);
+}
+
+.concept-consultation {
+  display: grid;
+  gap: 16px;
+  margin-top: auto;
+  padding: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.concept-consultation a {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 730;
+}
+
+.concept-technical {
+  padding: 24px;
+  border-top: 1px solid var(--concept-ink);
+  color: #dff9ed;
+  background: #071713;
+}
+
+.concept-technical > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+}
+
+.concept-technical > header span {
+  color: #61d5a6;
+}
+
+.concept-api-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr;
+  gap: 24px;
+}
+
+.concept-api-flow {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(223, 249, 237, 0.24);
+}
+
+.concept-api-flow li {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(223, 249, 237, 0.16);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+
+.concept-api-flow span,
+.concept-api-flow em {
+  color: rgba(223, 249, 237, 0.52);
+  font-style: normal;
+}
+
+.concept-technical pre {
+  margin: 0;
+  padding: 18px;
+  overflow: auto;
+  border: 1px solid rgba(223, 249, 237, 0.2);
+  background: #020b08;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.concept-technical > p {
+  margin: 18px 0 0;
+  color: rgba(223, 249, 237, 0.58);
+  font-size: 10px;
+}
+
+.concept-editor-backdrop {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  justify-items: end;
+  background: rgba(5, 9, 10, 0.62);
+}
+
+.concept-editor {
+  width: min(520px, 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  padding: 28px;
+  overflow: auto;
+  color: var(--concept-ink);
+  background: var(--concept-surface);
+  box-shadow: -30px 0 90px rgba(0, 0, 0, 0.24);
+}
+
+.concept-editor header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--concept-line);
+}
+
+.concept-editor header span {
+  color: var(--concept-accent);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.concept-editor h2 {
+  margin: 6px 0 0;
+  font-family: var(--concept-display);
+  font-size: 34px;
+}
+
+.concept-editor header button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--concept-line);
+  background: transparent;
+  font-size: 24px;
+}
+
+.concept-editor > label {
+  display: grid;
+  gap: 8px;
+  color: var(--concept-muted);
+  font-size: 11px;
+}
+
+.concept-editor input,
+.concept-editor select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--concept-line);
+  border-radius: 0;
+  color: var(--concept-ink);
+  background: var(--concept-bg);
+}
+
+.concept-editor fieldset {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--concept-line);
+}
+
+.concept-editor legend {
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.concept-flag-grid {
+  display: grid;
+  gap: 9px;
+}
+
+.concept-flag-grid label {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-bottom: 1px solid var(--concept-line);
+  font-size: 11px;
+}
+
+.concept-flag-grid input {
+  width: 18px;
+  min-height: 18px;
+}
+
+.concept-editor footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.concept-proof {
+  padding: clamp(56px, 7vw, 96px) 0;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-proof > header {
+  margin-bottom: 34px;
+}
+
+.concept-proof-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  border: 1px solid var(--concept-ink);
+  background: var(--concept-surface);
+}
+
+.concept-proof-screen {
+  min-width: 0;
+  padding: clamp(18px, 3vw, 42px);
+  overflow: hidden;
+  background: var(--concept-ink);
+}
+
+.concept-proof-screen img {
+  display: block;
+  width: 115%;
+  max-width: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+}
+
+.concept-proof-copy {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(28px, 4vw, 58px);
+  border-left: 1px solid var(--concept-ink);
+}
+
+.concept-proof-copy > strong {
+  max-width: 480px;
+  font-family: var(--concept-display);
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 570;
+  line-height: 1;
+}
+
+.concept-proof-copy > p {
+  margin: 24px 0;
+  color: var(--concept-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.concept-proof-copy dl {
+  display: grid;
+  margin: 0 0 28px;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-proof-copy dl div {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--concept-line);
+  font-size: 11px;
+}
+
+.concept-proof-copy dt {
+  color: var(--concept-muted);
+}
+
+.concept-proof-copy dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.concept-proof-copy > a {
+  margin-top: auto;
+  color: var(--concept-accent);
+  font-size: 12px;
+  font-weight: 730;
+}
+
+.concept-contact {
+  display: grid;
+  grid-template-columns: 0.35fr 1fr 0.6fr;
+  gap: 44px;
+  align-items: end;
+  padding: clamp(70px, 10vw, 150px) 0;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-contact h2 {
+  font-size: clamp(54px, 7vw, 108px);
+}
+
+.concept-contact > div {
+  display: grid;
+  border-top: 1px solid var(--concept-line);
+}
+
+.concept-contact a {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--concept-line);
+  font-size: 12px;
+}
+
+/* Variant 1 — editorial hierarchy, reduced whitespace, strong condensed display. */
+.concept-editorial {
+  --concept-bg: #f1ece0;
+  --concept-surface: #fffdf7;
+  --concept-ink: #201e1b;
+  --concept-muted: #6c665f;
+  --concept-accent: #b8321b;
+  --concept-accent-2: #1e5c49;
+  --concept-display: "Oswald Variable", sans-serif;
+  --concept-body: "Golos Text Variable", sans-serif;
+}
+
+.concept-editorial .concept-hero::before {
+  position: absolute;
+  top: 68px;
+  right: 24%;
+  color: color-mix(in srgb, var(--concept-accent) 18%, transparent);
+  content: "СИСТЕМА";
+  font-family: var(--concept-display);
+  font-size: clamp(130px, 20vw, 330px);
+  font-weight: 700;
+  line-height: 0.8;
+  writing-mode: vertical-rl;
+}
+
+.concept-editorial .concept-builder-head h2,
+.concept-editorial .concept-proof h2 {
+  text-transform: uppercase;
+}
+
+/* Variant 2 — process motif, dark field, connected states. */
+.concept-workflow {
+  --concept-bg: #101b22;
+  --concept-surface: #172831;
+  --concept-ink: #edf7f1;
+  --concept-muted: #9cb0b1;
+  --concept-line: rgba(237, 247, 241, 0.2);
+  --concept-accent: #f26d3d;
+  --concept-accent-2: #9fe870;
+  --concept-positive: #9fe870;
+  --concept-display: "Unbounded Variable", sans-serif;
+  --concept-body: "Golos Text Variable", sans-serif;
+  background:
+    radial-gradient(circle at 84% 4%, rgba(159, 232, 112, 0.11), transparent 28%),
+    var(--concept-bg);
+}
+
+.concept-workflow .concept-nav {
+  position: sticky;
+  top: 0;
+  background: rgba(16, 27, 34, 0.9);
+}
+
+.concept-workflow .concept-mark {
+  color: #101b22;
+  background: var(--concept-accent-2);
+  border-radius: 50%;
+}
+
+.concept-workflow .concept-hero {
+  min-height: 720px;
+  align-items: center;
+}
+
+.concept-workflow .concept-hero h1 {
+  font-size: clamp(52px, 7vw, 105px);
+  font-weight: 610;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-transform: none;
+}
+
+.concept-workflow .concept-hero-visual {
+  position: relative;
+  padding: 24px;
+  border: 1px solid var(--concept-line);
+  border-radius: 999px;
+  background: rgba(237, 247, 241, 0.035);
+}
+
+.concept-workflow .concept-hero-visual span {
+  position: relative;
+  z-index: 2;
+  padding: 8px 12px;
+  border: 1px solid var(--concept-line);
+  border-radius: 999px;
+  color: var(--concept-ink);
+  background: var(--concept-bg);
+}
+
+.concept-workflow .concept-hero-visual i {
+  height: 2px;
+  background: linear-gradient(90deg, var(--concept-accent), var(--concept-accent-2));
+}
+
+.concept-workflow .concept-builder,
+.concept-workflow .concept-proof,
+.concept-workflow .concept-contact {
+  border-color: var(--concept-line);
+}
+
+.concept-workflow .concept-presets,
+.concept-workflow .concept-workspace,
+.concept-workflow .concept-proof-grid {
+  border-color: var(--concept-line);
+}
+
+.concept-workflow .concept-presets button {
+  border-color: var(--concept-line);
+}
+
+.concept-workflow .concept-presets button:hover,
+.concept-workflow .concept-presets button.is-active {
+  color: #101b22;
+  background: var(--concept-accent-2);
+}
+
+.concept-workflow .concept-presets button:hover span,
+.concept-workflow .concept-presets button.is-active span {
+  color: rgba(16, 27, 34, 0.66);
+}
+
+.concept-workflow .concept-workspace {
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.35);
+}
+
+.concept-workflow .concept-canvas {
+  background:
+    radial-gradient(circle, rgba(159, 232, 112, 0.18) 1px, transparent 1.5px),
+    #0c171d;
+  background-size: 24px 24px;
+}
+
+.concept-workflow .concept-step-list {
+  position: relative;
+}
+
+.concept-workflow .concept-step-list::before {
+  position: absolute;
+  top: 50%;
+  right: 3%;
+  left: 3%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--concept-accent), var(--concept-accent-2));
+  content: "";
+}
+
+.concept-workflow .concept-step {
+  border-color: var(--concept-line);
+  color: var(--concept-ink);
+  background: #16262e;
+  box-shadow: 6px 6px 0 rgba(159, 232, 112, 0.12);
+}
+
+.concept-workflow .concept-step-main > span:last-child,
+.concept-workflow .concept-step-number,
+.concept-workflow .concept-drag-handle {
+  color: var(--concept-muted);
+}
+
+.concept-workflow .concept-findings {
+  border-color: var(--concept-line);
+  color: var(--concept-ink);
+  background: #071014;
+}
+
+.concept-workflow .concept-proof-screen {
+  background: linear-gradient(145deg, #071014, #1b3b42);
+}
+
+.concept-workflow .concept-proof-copy {
+  border-color: var(--concept-line);
+}
+
+/* Variant 3 — tool-first studio with a permanent rail and vertical process stack. */
+.concept-studio {
+  --concept-bg: #f4f6f8;
+  --concept-surface: #ffffff;
+  --concept-ink: #17202a;
+  --concept-muted: #637080;
+  --concept-line: rgba(23, 32, 42, 0.18);
+  --concept-accent: #3157f5;
+  --concept-accent-2: #b8ef52;
+  --concept-positive: #0f8a66;
+  --concept-display: "Source Serif 4 Variable", serif;
+  --concept-body: "Roboto Flex Variable", sans-serif;
+  padding-left: 88px;
+}
+
+.concept-studio .concept-nav {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 88px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-right: 1px solid var(--concept-line);
+  border-bottom: 0;
+  background: rgba(244, 246, 248, 0.94);
+}
+
+.concept-studio .concept-nav > a {
+  flex-direction: column;
+}
+
+.concept-studio .concept-nav > a > span:last-child,
+.concept-studio .concept-nav > span {
+  display: none;
+}
+
+.concept-studio .concept-nav nav {
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+}
+
+.concept-studio .concept-nav nav a {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.concept-studio .concept-mark {
+  border-radius: 12px;
+  color: #fff;
+  background: var(--concept-accent);
+}
+
+.concept-studio .concept-hero {
+  min-height: 590px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+  padding-top: 74px;
+}
+
+.concept-studio .concept-hero h1 {
+  font-size: clamp(64px, 8vw, 126px);
+  font-weight: 520;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  text-transform: none;
+}
+
+.concept-studio .concept-hero-proof {
+  align-self: center;
+  padding: 18px;
+  border: 1px solid var(--concept-ink);
+  border-radius: 20px;
+  background: var(--concept-surface);
+  box-shadow: 0 20px 60px rgba(37, 52, 67, 0.12);
+}
+
+.concept-studio .concept-hero-proof > div {
+  padding: 14px;
+}
+
+.concept-studio .concept-hero-proof strong {
+  color: var(--concept-accent);
+  font-family: var(--concept-body);
+  font-weight: 760;
+}
+
+.concept-studio .concept-button,
+.concept-studio .concept-presets,
+.concept-studio .concept-workspace,
+.concept-studio .concept-step,
+.concept-studio .concept-proof-grid,
+.concept-studio .concept-editor input,
+.concept-studio .concept-editor select {
+  border-radius: 14px;
+}
+
+.concept-studio .concept-presets {
+  gap: 8px;
+  padding: 8px;
+  border-color: var(--concept-line);
+  background: #e8edf2;
+}
+
+.concept-studio .concept-presets button {
+  border: 0;
+  border-radius: 10px;
+}
+
+.concept-studio .concept-presets button:hover,
+.concept-studio .concept-presets button.is-active {
+  color: #fff;
+  background: var(--concept-accent);
+}
+
+.concept-studio .concept-workspace {
+  margin-top: 12px;
+  border: 1px solid var(--concept-line);
+  overflow: hidden;
+}
+
+.concept-studio .concept-workspace-grid {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+.concept-studio .concept-canvas {
+  background: #eef2f6;
+}
+
+.concept-studio .concept-step-list {
+  grid-template-columns: 1fr;
+}
+
+.concept-studio .concept-step {
+  min-height: 86px;
+  grid-template-columns: 42px 1fr auto auto;
+  grid-template-rows: 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-color: var(--concept-line);
+  box-shadow: none;
+}
+
+.concept-studio .concept-step-number,
+.concept-studio .concept-drag-handle,
+.concept-studio .concept-step-main,
+.concept-studio .concept-step-actions {
+  grid-column: auto;
+  grid-row: 1;
+}
+
+.concept-studio .concept-step-main {
+  padding: 4px 0;
+}
+
+.concept-studio .concept-step-actions {
+  display: flex;
+}
+
+.concept-studio .concept-step-alert {
+  top: 50%;
+  right: -9px;
+  transform: translateY(-50%);
+}
+
+.concept-studio .concept-findings {
+  border-color: var(--concept-line);
+  background: #111923;
+}
+
+.concept-studio .concept-proof-grid {
+  overflow: hidden;
+  border-color: var(--concept-line);
+  box-shadow: 0 24px 75px rgba(37, 52, 67, 0.12);
+}
+
+.concept-studio .concept-proof-copy {
+  border-color: var(--concept-line);
+}
+
+/* Comparison index */
+.concept-index {
+  --concept-display: "Unbounded Variable", sans-serif;
+  width: min(1360px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 100px) 0 40px;
+}
+
+.concept-index-head {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 70px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+
+.concept-index-head span {
+  display: block;
+  margin-bottom: 18px;
+  color: #e34627;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.concept-index h1 {
+  max-width: 950px;
+  font-size: clamp(48px, 7vw, 100px);
+  font-weight: 580;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.concept-index-head p {
+  margin: 0;
+  color: var(--concept-muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.concept-index-list {
+  display: grid;
+  gap: 12px;
+}
+
+.concept-index-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px minmax(260px, 0.8fr) minmax(350px, 1.2fr) auto;
+  gap: 28px;
+  align-items: center;
+  padding: 28px;
+  border: 1px solid var(--concept-ink);
+  background: var(--concept-surface);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.concept-index-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 10px 10px 0 var(--concept-ink);
+}
+
+.concept-index-number {
+  color: #e34627;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+}
+
+.concept-index-card > div > span {
+  color: var(--concept-muted);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.concept-index h2 {
+  margin-top: 9px;
+  font-size: clamp(28px, 3.4vw, 50px);
+  font-weight: 580;
+  line-height: 1;
+}
+
+.concept-index-card.is-editorial h2 { font-family: "Oswald Variable", sans-serif; text-transform: uppercase; }
+.concept-index-card.is-workflow h2 { font-family: "Unbounded Variable", sans-serif; font-size: clamp(22px, 2.5vw, 38px); }
+.concept-index-card.is-studio h2 { font-family: "Source Serif 4 Variable", serif; }
+
+.concept-index-card dl {
+  display: grid;
+  margin: 0;
+}
+
+.concept-index-card dl div {
+  display: grid;
+  grid-template-columns: 105px 1fr;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--concept-line);
+  font-size: 10px;
+}
+
+.concept-index-card dt {
+  color: var(--concept-muted);
+}
+
+.concept-index-card dd {
+  margin: 0;
+}
+
+.concept-index-card > strong {
+  color: #e34627;
+  font-size: 11px;
+}
+
+.concept-index-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 0;
+  color: var(--concept-muted);
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  .concept-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .concept-hero-proof {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .concept-hero-proof > div {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-builder-head,
+  .concept-proof-grid,
+  .concept-contact,
+  .concept-index-head {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .concept-proof-copy {
+    border-top: 1px solid var(--concept-ink);
+    border-left: 0;
+  }
+
+  .concept-index-card {
+    grid-template-columns: 50px 1fr;
+  }
+
+  .concept-index-card dl,
+  .concept-index-card > strong {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 800px) {
+  .concept-studio {
+    padding-left: 0;
+  }
+
+  .concept-studio .concept-nav,
+  .concept-nav {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    width: auto;
+    min-height: 60px;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 0 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--concept-line);
+  }
+
+  .concept-studio .concept-nav > a {
+    flex-direction: row;
+  }
+
+  .concept-studio .concept-nav > a > span:last-child {
+    display: inline;
+  }
+
+  .concept-studio .concept-nav nav,
+  .concept-nav nav,
+  .concept-nav > span {
+    display: none;
+  }
+
+  .concept-hero,
+  .concept-builder,
+  .concept-proof,
+  .concept-contact {
+    width: min(100% - 28px, 1440px);
+  }
+
+  .concept-hero {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 54px 0 28px;
+  }
+
+  .concept-studio .concept-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .concept-hero-copy,
+  .concept-hero-proof,
+  .concept-hero-proof > div {
+    min-width: 0;
+  }
+
+  .concept-hero h1,
+  .concept-studio .concept-hero h1,
+  .concept-workflow .concept-hero h1 {
+    font-size: clamp(48px, 15vw, 78px);
+  }
+
+  .concept-workflow .concept-hero h1 {
+    font-size: clamp(38px, 11.8vw, 60px);
+  }
+
+  .concept-hero-proof {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: hidden;
+  }
+
+  .concept-hero-proof > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 12px 5px;
+  }
+
+  .concept-hero-proof strong {
+    font-size: clamp(19px, 6vw, 26px);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .concept-hero-proof span {
+    font-size: 9px;
+  }
+
+  .concept-hero-visual {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .concept-hero-visual i {
+    width: 1px;
+    height: 18px;
+    margin-left: 8px;
+  }
+
+  .concept-workflow .concept-hero-visual {
+    align-items: start;
+    border-radius: 18px;
+  }
+
+  .concept-workflow .concept-hero-visual span {
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .concept-workflow .concept-hero-visual i {
+    width: 2px;
+    background: linear-gradient(var(--concept-accent), var(--concept-accent-2));
+  }
+
+  .concept-builder h2,
+  .concept-proof h2,
+  .concept-contact h2 {
+    font-size: clamp(40px, 12vw, 62px);
+  }
+
+  .concept-presets {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    border-bottom: 0;
+  }
+
+  .concept-presets button,
+  .concept-studio .concept-presets button {
+    min-width: 220px;
+    min-height: 100px;
+    border: 1px solid var(--concept-line);
+    scroll-snap-align: start;
+  }
+
+  .concept-workspace {
+    border-top: 1px solid var(--concept-ink);
+  }
+
+  .concept-workspace-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .concept-segmented {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .concept-workspace-grid,
+  .concept-studio .concept-workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-canvas {
+    padding: 18px;
+  }
+
+  .concept-step-list,
+  .concept-studio .concept-step-list {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .concept-workflow .concept-step-list::before {
+    top: 3%;
+    bottom: 3%;
+    left: 25px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(var(--concept-accent), var(--concept-accent-2));
+  }
+
+  .concept-step,
+  .concept-studio .concept-step {
+    min-height: 100px;
+    grid-template-columns: 36px 1fr auto;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 11px;
+  }
+
+  .concept-step-number,
+  .concept-studio .concept-step-number {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .concept-drag-handle,
+  .concept-studio .concept-drag-handle {
+    grid-column: 3;
+    grid-row: 1;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .concept-step-main,
+  .concept-studio .concept-step-main {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 6px;
+  }
+
+  .concept-step-actions,
+  .concept-studio .concept-step-actions {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    justify-content: flex-end;
+  }
+
+  .concept-step-actions button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .concept-findings {
+    border-top: 1px solid var(--concept-ink);
+    border-left: 0;
+  }
+
+  .concept-api-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-api-flow li {
+    grid-template-columns: 28px 1fr;
+  }
+
+  .concept-api-flow em {
+    grid-column: 2;
+  }
+
+  .concept-editor {
+    width: 100%;
+    padding: 18px;
+  }
+
+  .concept-editor footer {
+    position: sticky;
+    bottom: -18px;
+    padding: 14px 0 18px;
+    background: var(--concept-surface);
+  }
+
+  .concept-proof-screen img {
+    width: 155%;
+  }
+
+  .concept-contact {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-index {
+    width: min(100% - 28px, 1360px);
+    padding-top: 48px;
+  }
+
+  .concept-index h1 {
+    font-size: clamp(42px, 12vw, 64px);
+  }
+
+  .concept-index-card {
+    grid-template-columns: 32px 1fr;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .concept-index-card dl div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .concept-index-foot {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 430px) {
+  .concept-hero-copy > p {
+    margin: 24px 0;
+    font-size: 16px;
+  }
+
+  .concept-button {
+    width: 100%;
+    min-height: 50px;
+  }
+
+  .concept-hero-proof strong {
+    font-size: 22px;
+  }
+
+  .concept-builder {
+    padding-top: 48px;
+  }
+
+  .concept-presets {
+    margin-right: -14px;
+    margin-left: -14px;
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .concept-workspace {
+    margin-right: -14px;
+    margin-left: -14px;
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .concept-proof-grid {
+    margin-right: -14px;
+    margin-left: -14px;
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .concept-editor footer {
+    flex-direction: column-reverse;
+  }
+
+  .concept-editor footer .concept-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .concept *,
+  .concept *::before,
+  .concept *::after,
+  .concept-index *,
+  .concept-index *::before,
+  .concept-index *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

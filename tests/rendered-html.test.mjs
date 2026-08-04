@@ -157,12 +157,46 @@ test("renders English, case, and privacy routes", async () => {
   }
 });
 
+test("exports the comparison index and three isolated redesign concepts", async () => {
+  const conceptRoutes = [
+    "/concepts/editorial-product",
+    "/concepts/workflow-motif",
+    "/concepts/product-studio",
+  ];
+  const index = await render("/concepts");
+
+  assert.equal(index.status, 200);
+  const indexHtml = await index.text();
+  assert.match(indexHtml, /Три способа показать работу/);
+  assert.match(indexHtml, /Editorial Product/);
+  assert.match(indexHtml, /Workflow Motif/);
+  assert.match(indexHtml, /Product Studio/);
+  assert.match(indexHtml, /noindex/);
+
+  for (const route of conceptRoutes) {
+    const response = await render(route);
+    assert.equal(response.status, 200, `Missing concept route: ${route}`);
+    const html = await response.text();
+    assert.match(html, /Покажи процесс\. Найдём потери/);
+    assert.match(html, /Обработка документов/);
+    assert.match(html, /Собрать свой процесс/);
+    assert.match(html, /Технический разбор/);
+    assert.match(html, /abc-xyz9@yandex\.ru/);
+    assert.doesNotMatch(html, /daniil@fullmetall\.ru/);
+    assert.match(html, /noindex/);
+  }
+});
+
 test("serves every local asset referenced by the exported pages", async () => {
   const pages = [
     "/",
     "/en",
     "/projects/lift-automation",
     "/en/projects/lift-automation",
+    "/concepts",
+    "/concepts/editorial-product",
+    "/concepts/workflow-motif",
+    "/concepts/product-studio",
   ];
   const assetPaths = new Set();
 
