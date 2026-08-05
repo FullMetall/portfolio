@@ -88,10 +88,22 @@ const variantCopy: Record<
 
 function RailMarker({ number, label }: { number: string; label: string }) {
   return (
-    <div className="concept-rail-marker" aria-label={`${number} ${label}`}>
+    <div className="concept-rail-marker" aria-hidden="true">
       <span>{number}</span>
       <strong>{label}</strong>
     </div>
+  );
+}
+
+function ProcessRail() {
+  return (
+    <aside className="concept-process-rail" aria-label="Сквозной маршрут процесса">
+      <ol>
+        <li aria-label="01 Позиционирование"><span>01</span><strong>Позиционирование</strong></li>
+        <li aria-label="02 Демонстрация"><span>02</span><strong>Демонстрация</strong></li>
+        <li aria-label="03 Работающий кейс"><span>03</span><strong>Работающий кейс</strong></li>
+      </ol>
+    </aside>
   );
 }
 
@@ -365,8 +377,87 @@ function TechnicalPanel({
   );
 }
 
-function ProcessBuilder({ variant }: { variant: ConceptVariant }) {
-  const hasProcessRail = variant === "editorial-workflow";
+function CompactProcessDemo() {
+  const [view, setView] = useState<"before" | "after">("before");
+  const steps = processPresets.documents.steps as ProcessStep[];
+  const bottlenecks = useMemo(() => analyzeProcess(steps), [steps]);
+  const proposedSteps = useMemo(() => createProposedProcess(steps), [steps]);
+  const visibleSteps = view === "before" ? steps : proposedSteps;
+  const summary = view === "before"
+    ? ["Ручная передача между ролями", "Повторный ввод данных", "Сборка документов из нескольких источников"]
+    : ["Единый вход данных", "Автоматическая сборка комплекта", "Статусы и журнал в одном контуре"];
+
+  return (
+    <section className="concept-builder concept-compact-demo" id="demonstration">
+      <RailMarker number="02" label="Демонстрация" />
+      <header className="concept-builder-head">
+        <div>
+          <span className="concept-kicker">Короткая демонстрация</span>
+          <h2>Один процесс. Два состояния.</h2>
+        </div>
+        <p>
+          Переключи режим: сначала виден ручной сценарий, затем — предлагаемая схема. Расчёт выполняется локальными правилами в браузере.
+        </p>
+      </header>
+
+      <div className="concept-compact-workspace">
+        <div className="concept-compact-toolbar">
+          <div className="concept-segmented" aria-label="Сравнение короткого сценария">
+            <button
+              type="button"
+              className={view === "before" ? "is-active" : ""}
+              aria-pressed={view === "before"}
+              onClick={() => setView("before")}
+            >
+              Сейчас <span>{bottlenecks.length}</span>
+            </button>
+            <button
+              type="button"
+              className={view === "after" ? "is-active" : ""}
+              aria-pressed={view === "after"}
+              onClick={() => setView("after")}
+            >
+              После <span>{proposedSteps.flatMap((step) => step.remediations ?? []).length}</span>
+            </button>
+          </div>
+          <span>{view === "before" ? "Ручной сценарий" : "Предлагаемая схема"}</span>
+        </div>
+
+        <div className="concept-compact-grid">
+          <ol className="concept-compact-flow" aria-label={view === "before" ? "Текущий процесс" : "Предлагаемая схема"}>
+            {visibleSteps.map((step, index) => (
+              <li key={step.id}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <small>{kindLabels[step.kind]}</small>
+                  <strong>{step.title}</strong>
+                  <em>{step.role}</em>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <aside className="concept-compact-summary" aria-live="polite">
+            <span>{view === "before" ? "Что мешает" : "Что меняется"}</span>
+            <ul>
+              {summary.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+            <p>Это демонстрация подхода, а не обещание эффекта без обследования процесса.</p>
+          </aside>
+        </div>
+      </div>
+
+      <div className="concept-compact-actions">
+        <Link className="concept-button concept-button-primary" href="/concepts/process-builder">
+          Открыть полный конструктор ↗
+        </Link>
+        <a href="#contact">Обсудить свой процесс →</a>
+      </div>
+    </section>
+  );
+}
+
+function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVariant; standalone?: boolean }) {
+  const hasProcessRail = variant === "editorial-workflow" && !standalone;
   const [activePreset, setActivePreset] = useState<PresetKey>("documents");
   const [steps, setSteps] = useState<ProcessStep[]>(() =>
     cloneSteps(processPresets.documents.steps),
@@ -593,6 +684,114 @@ function ProcessBuilder({ variant }: { variant: ConceptVariant }) {
   );
 }
 
+function ExperienceSection() {
+  return (
+    <section className="concept-experience" id="experience">
+      <header>
+        <span className="concept-kicker">Опыт и ответственность</span>
+        <h2>Создаю веб-продукты с 2014 года.</h2>
+        <p>
+          Начинал с frontend-разработки и вырос до проектирования прикладных систем и руководства разработкой.
+        </p>
+      </header>
+      <div className="concept-experience-grid">
+        <article>
+          <span>2021 — сейчас</span>
+          <h3>Начальник отдела веб-разработки</h3>
+          <strong>10 человек в отделе</strong>
+          <p>Планирование, распределение задач, технические решения, контроль качества и ответственность за результат команды.</p>
+        </article>
+        <article>
+          <span>Инженерная роль</span>
+          <h3>Разработчик систем полного цикла</h3>
+          <p>Связываю исследование процесса, UX/UI, frontend, backend, данные, документы, тестирование и запуск.</p>
+        </article>
+        <article>
+          <span>Подход</span>
+          <h3>Сначала работа, затем интерфейс</h3>
+          <p>Разбираю роли, исключения и движение данных до выбора технологий и визуального решения.</p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function SelectedWorkSection() {
+  const works = [
+    {
+      number: "01",
+      kicker: "XLSX → сводка",
+      title: "Анализ обращений",
+      body: "Обрабатывает входящий XLSX, рассчитывает рабочее время и SLA, группирует обращения и формирует отчёт из четырёх связанных листов.",
+      tags: ["Python", "XLSX", "Аналитика"],
+    },
+    {
+      number: "02",
+      kicker: "PDF → XLSX",
+      title: "Подсчёт печатных знаков",
+      body: "Пакетно обрабатывает PDF, считает печатные знаки и авторские листы, хранит историю и выгружает проверяемую таблицу.",
+      tags: ["Python", "PDF", "Desktop"],
+    },
+  ];
+
+  return (
+    <section className="concept-selected-work" id="selected-work">
+      <header>
+        <span className="concept-kicker">Небольшие прикладные инструменты</span>
+        <h2>Точечная автоматизация без лишней сложности.</h2>
+        <p>Два компактных решения для обработки файлов и подготовки проверяемого результата.</p>
+      </header>
+      <div className="concept-selected-work-grid">
+        {works.map((work) => (
+          <article key={work.number}>
+            <span>{work.number}</span>
+            <small>{work.kicker}</small>
+            <h3>{work.title}</h3>
+            <p>{work.body}</p>
+            <ul aria-label={`Технологии проекта «${work.title}»`}>
+              {work.tags.map((tag) => <li key={tag}>{tag}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function ProcessBuilderProduct() {
+  return (
+    <main className="concept concept-editorial-workflow concept-builder-product">
+      <header className="concept-nav">
+        <Link href="/concepts/editorial-workflow" aria-label="Вернуться к портфолио">
+          <span className="concept-mark">DU</span>
+          <span>Вернуться к портфолио</span>
+        </Link>
+        <nav aria-label="Навигация конструктора">
+          <a href="#constructor">Конструктор</a>
+          <a href="#contact">Контакт</a>
+        </nav>
+        <span>Демонстрационный продукт</span>
+      </header>
+      <section className="concept-builder-product-hero">
+        <span className="concept-kicker">Демонстрационный продукт</span>
+        <h1>Конструктор процессов</h1>
+        <p>
+          Опиши ручной сценарий, отметь проблемные места и сравни его с предлагаемой схемой. Всё работает локально, без аккаунта, внешнего ИИ и сохранения данных.
+        </p>
+      </section>
+      <ProcessBuilder variant="editorial-workflow" standalone />
+      <section className="concept-contact" id="contact">
+        <span className="concept-kicker">Нужен разбор реального процесса?</span>
+        <div className="concept-contact-copy"><h2>Напиши мне.</h2></div>
+        <div className="concept-contact-links">
+          <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
+          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram ↗</a>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
   const copy = variantCopy[variant];
   const hasProcessRail = variant === "editorial-workflow";
@@ -604,9 +803,18 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
         <span className="concept-kicker">{copy.label}</span>
         <h1>{copy.title}</h1>
         <p>{copy.lead}</p>
-        <a className="concept-button concept-button-primary" href="#constructor">
-          {copy.action} ↓
-        </a>
+        {hasProcessRail ? (
+          <div className="concept-hero-actions">
+            <a className="concept-button concept-button-primary" href="#contact">
+              Написать мне ↗
+            </a>
+            <a href="#demonstration">Смотреть демонстрацию ↓</a>
+          </div>
+        ) : (
+          <a className="concept-button concept-button-primary" href="#constructor">
+            {copy.action} ↓
+          </a>
+        )}
       </div>
       {hasProcessRail ? (
         <aside className="concept-hero-brief" aria-label="Подход к проектированию">
@@ -689,17 +897,30 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
           <span>Даниил Угловский</span>
         </Link>
         <nav aria-label="Навигация концепта">
-          <a href="#constructor">Конструктор</a>
-          <a href="#proof">Кейс</a>
-          <a href="#contact">Контакт</a>
+          {hasProcessRail ? (
+            <>
+              <a href="#demonstration">Демонстрация</a>
+              <a href="#proof">Кейс</a>
+              <a href="#experience">Опыт</a>
+              <a href="#selected-work">Работы</a>
+              <a href="#contact">Контакт</a>
+            </>
+          ) : (
+            <>
+              <a href="#constructor">Конструктор</a>
+              <a href="#proof">Кейс</a>
+              <a href="#contact">Контакт</a>
+            </>
+          )}
         </nav>
         <span>{copy.index}</span>
       </header>
 
       {hasProcessRail ? (
-        <div className="concept-process-story" aria-label="Сквозной маршрут процесса">
+        <div className="concept-process-story">
+          <ProcessRail />
           {hero}
-          <ProcessBuilder variant={variant} />
+          <CompactProcessDemo />
           {proof}
         </div>
       ) : (
@@ -710,12 +931,20 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
         </>
       )}
 
+      {hasProcessRail && <ExperienceSection />}
+      {hasProcessRail && <SelectedWorkSection />}
+
       <section className="concept-contact" id="contact">
         <span className="concept-kicker">Контакт</span>
-        <h2>Есть ручной процесс?<br />Разберём его.</h2>
-        <div>
+        <div className="concept-contact-copy">
+          <h2>{hasProcessRail ? "Есть задача? Напиши мне." : <>Есть ручной процесс?<br />Разберём его.</>}</h2>
+          {hasProcessRail && (
+            <p>Расскажи о процессе, продукте или роли. Отвечаю в Telegram и по электронной почте.</p>
+          )}
+        </div>
+        <div className="concept-contact-links">
+          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
           <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
-          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram ↗</a>
         </div>
       </section>
     </main>

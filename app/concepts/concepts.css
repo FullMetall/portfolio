@@ -916,7 +916,19 @@
   font-size: clamp(54px, 7vw, 108px);
 }
 
-.concept-contact > div {
+.concept-contact-copy {
+  min-width: 0;
+}
+
+.concept-contact-copy p {
+  max-width: 620px;
+  margin: 24px 0 0;
+  color: var(--concept-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.concept-contact-links {
   display: grid;
   border-top: 1px solid var(--concept-line);
 }
@@ -1396,6 +1408,360 @@
   border-color: var(--concept-line);
 }
 
+.concept-process-rail {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.concept-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.concept-hero-actions > a:last-child,
+.concept-compact-actions > a:last-child {
+  color: var(--concept-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.concept-hero-actions > a:last-child:hover,
+.concept-compact-actions > a:last-child:hover {
+  color: var(--concept-accent-2);
+}
+
+.concept-compact-demo {
+  padding-bottom: clamp(66px, 8vw, 112px);
+}
+
+.concept-compact-workspace {
+  overflow: hidden;
+  border: 1px solid var(--concept-line);
+  background: #0c171d;
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.28);
+}
+
+.concept-compact-toolbar {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--concept-line);
+  background: var(--concept-surface);
+}
+
+.concept-compact-toolbar > span {
+  color: var(--concept-muted);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.concept-compact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.34fr);
+}
+
+.concept-compact-flow {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(128px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: clamp(22px, 3vw, 40px);
+  overflow-x: auto;
+  background:
+    linear-gradient(rgba(237, 247, 241, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(237, 247, 241, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+  list-style: none;
+}
+
+.concept-compact-flow::before {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  left: 5%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--concept-accent), var(--concept-accent-2));
+  content: "";
+}
+
+.concept-compact-flow > li {
+  position: relative;
+  z-index: 1;
+  min-height: 150px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 14px;
+  border: 1px solid var(--concept-line);
+  background: #172831;
+  box-shadow: 5px 5px 0 rgba(159, 232, 112, 0.1);
+}
+
+.concept-compact-flow > li > span {
+  color: var(--concept-muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+}
+
+.concept-compact-flow > li div {
+  align-self: end;
+  display: grid;
+  gap: 5px;
+}
+
+.concept-compact-flow small {
+  color: var(--concept-accent);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-compact-flow strong {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.concept-compact-flow em {
+  color: var(--concept-muted);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.concept-compact-summary {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(22px, 3vw, 36px);
+  border-left: 1px solid var(--concept-line);
+  background: #071014;
+}
+
+.concept-compact-summary > span {
+  color: var(--concept-accent-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.concept-compact-summary ul {
+  display: grid;
+  gap: 0;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.concept-compact-summary li {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--concept-line);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.concept-compact-summary p {
+  margin: auto 0 0;
+  color: var(--concept-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.concept-compact-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.concept-experience,
+.concept-selected-work {
+  width: min(1280px, calc(100% - 96px));
+  margin: 0 auto;
+  padding: clamp(72px, 9vw, 132px) 0;
+  border-top: 1px solid var(--concept-line);
+  scroll-margin-top: 80px;
+}
+
+.concept-experience > header,
+.concept-selected-work > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 22px 70px;
+  align-items: end;
+  margin-bottom: 42px;
+}
+
+.concept-experience > header .concept-kicker,
+.concept-selected-work > header .concept-kicker {
+  grid-column: 1 / -1;
+}
+
+.concept-experience h2,
+.concept-selected-work h2 {
+  max-width: 900px;
+  font-family: var(--concept-display);
+  font-size: clamp(54px, 7vw, 104px);
+  font-weight: 650;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+
+.concept-experience > header p,
+.concept-selected-work > header p {
+  margin: 0;
+  color: var(--concept-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.concept-experience-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
+  border-top: 1px solid var(--concept-line);
+  border-left: 1px solid var(--concept-line);
+}
+
+.concept-experience-grid article {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 3vw, 40px);
+  border-right: 1px solid var(--concept-line);
+  border-bottom: 1px solid var(--concept-line);
+  background: color-mix(in srgb, var(--concept-surface) 68%, transparent);
+}
+
+.concept-experience-grid article > span,
+.concept-selected-work-grid article > small {
+  color: var(--concept-accent);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.concept-experience-grid h3,
+.concept-selected-work-grid h3 {
+  margin: 28px 0 18px;
+  font-family: var(--concept-display);
+  font-size: clamp(30px, 3vw, 48px);
+  font-weight: 570;
+  line-height: 1;
+}
+
+.concept-experience-grid article > strong {
+  color: var(--concept-accent-2);
+  font-size: 13px;
+}
+
+.concept-experience-grid p,
+.concept-selected-work-grid p {
+  margin: auto 0 0;
+  color: var(--concept-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.concept-selected-work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--concept-line);
+}
+
+.concept-selected-work-grid article {
+  position: relative;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(28px, 4vw, 52px);
+  overflow: hidden;
+  border-right: 1px solid var(--concept-line);
+  background: #0c171d;
+}
+
+.concept-selected-work-grid article:last-child {
+  border-right: 0;
+}
+
+.concept-selected-work-grid article > span {
+  position: absolute;
+  top: 20px;
+  right: 26px;
+  color: rgba(237, 247, 241, 0.08);
+  font-family: var(--concept-display);
+  font-size: clamp(92px, 12vw, 170px);
+  line-height: 0.8;
+}
+
+.concept-selected-work-grid p {
+  max-width: 620px;
+  margin-top: 18px;
+}
+
+.concept-selected-work-grid ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: auto 0 0;
+  padding: 28px 0 0;
+  list-style: none;
+}
+
+.concept-selected-work-grid li {
+  padding: 7px 10px;
+  border: 1px solid var(--concept-line);
+  color: var(--concept-muted);
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.concept-editorial-workflow .concept-contact {
+  width: min(1280px, calc(100% - 96px));
+  margin: 0 auto;
+}
+
+.concept-builder-product-hero {
+  width: min(1280px, calc(100% - 96px));
+  margin: 0 auto;
+  padding: clamp(72px, 9vw, 132px) 0 52px;
+}
+
+.concept-builder-product-hero h1 {
+  max-width: 1050px;
+  margin: 18px 0 28px;
+  font-family: var(--concept-display);
+  font-size: clamp(76px, 11vw, 170px);
+  font-weight: 650;
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.concept-builder-product-hero p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--concept-muted);
+  font-size: clamp(16px, 1.7vw, 22px);
+  line-height: 1.55;
+}
+
+.concept-builder-product .concept-builder {
+  padding-top: 54px;
+}
+
 /* Variant 3 — tool-first studio with a permanent rail and vertical process stack. */
 .concept-studio {
   --concept-bg: #f4f6f8;
@@ -1746,6 +2112,34 @@
   .concept-index-card dl,
   .concept-index-card > strong {
     grid-column: 2;
+  }
+
+  .concept-compact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-compact-summary {
+    min-height: 260px;
+    border-top: 1px solid var(--concept-line);
+    border-left: 0;
+  }
+
+  .concept-experience > header,
+  .concept-selected-work > header {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-experience > header .concept-kicker,
+  .concept-selected-work > header .concept-kicker {
+    grid-column: auto;
+  }
+
+  .concept-experience-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-experience-grid article {
+    min-height: 240px;
   }
 }
 
@@ -2111,6 +2505,83 @@
     width: 2px;
     height: auto;
     background: linear-gradient(var(--concept-accent), var(--concept-accent-2));
+  }
+
+  .concept-process-story::after {
+    bottom: 46px;
+  }
+
+  .concept-hero-actions,
+  .concept-compact-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .concept-hero-actions > a:last-child,
+  .concept-compact-actions > a:last-child {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .concept-compact-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .concept-compact-flow {
+    grid-template-columns: 1fr;
+    padding: 18px;
+    overflow-x: visible;
+  }
+
+  .concept-compact-flow::before {
+    top: 24px;
+    right: auto;
+    bottom: 24px;
+    left: 38px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(var(--concept-accent), var(--concept-accent-2));
+  }
+
+  .concept-compact-flow > li {
+    min-height: 118px;
+    padding-left: 58px;
+  }
+
+  .concept-compact-summary {
+    min-height: 250px;
+  }
+
+  .concept-experience,
+  .concept-selected-work,
+  .concept-editorial-workflow .concept-contact,
+  .concept-builder-product-hero {
+    width: calc(100% - 28px);
+  }
+
+  .concept-experience h2,
+  .concept-selected-work h2 {
+    font-size: clamp(44px, 13vw, 68px);
+  }
+
+  .concept-selected-work-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-selected-work-grid article {
+    min-height: 300px;
+    border-right: 0;
+    border-bottom: 1px solid var(--concept-line);
+  }
+
+  .concept-selected-work-grid article:last-child {
+    border-bottom: 0;
+  }
+
+  .concept-builder-product-hero h1 {
+    font-size: clamp(58px, 17vw, 90px);
   }
 }
 

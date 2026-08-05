@@ -157,12 +157,11 @@ test("renders English, case, and privacy routes", async () => {
   }
 });
 
-test("exports the comparison index and four isolated redesign concepts", async () => {
-  const conceptRoutes = [
+test("exports the comparison index and keeps the three original concepts functional", async () => {
+  const originalConceptRoutes = [
     "/concepts/editorial-product",
     "/concepts/workflow-motif",
     "/concepts/product-studio",
-    "/concepts/editorial-workflow",
   ];
   const index = await render("/concepts");
 
@@ -175,7 +174,7 @@ test("exports the comparison index and four isolated redesign concepts", async (
   assert.match(indexHtml, /Editorial Workflow/);
   assert.match(indexHtml, /noindex/);
 
-  for (const route of conceptRoutes) {
+  for (const route of originalConceptRoutes) {
     const response = await render(route);
     assert.equal(response.status, 200, `Missing concept route: ${route}`);
     const html = await response.text();
@@ -189,23 +188,54 @@ test("exports the comparison index and four isolated redesign concepts", async (
   }
 });
 
-test("editorial workflow carries one process rail and keeps product metrics in the case", async () => {
+test("editorial workflow is contact-first, concise, and keeps product metrics in the case", async () => {
   const response = await render("/concepts/editorial-workflow");
   assert.equal(response.status, 200);
 
   const html = await response.text();
   assert.match(html, /Сквозной маршрут процесса/);
+  assert.match(html, /concept-process-rail/);
   assert.match(html, /01[^<]*Позиционирование/);
-  assert.match(html, /02[^<]*Конструктор/);
+  assert.match(html, /02[^<]*Демонстрация/);
   assert.match(html, /03[^<]*Работающий кейс/);
+  assert.match(html, /Написать мне/);
+  assert.match(html, /href="#contact"/);
+  assert.match(html, /Короткая демонстрация/);
+  assert.match(html, /Открыть полный конструктор/);
+  assert.match(html, /href="\/concepts\/process-builder"/);
+  assert.doesNotMatch(html, /Собрать свой процесс/);
+  assert.doesNotMatch(html, /Технический разбор/);
   assert.doesNotMatch(html, /concept-hero-proof/);
   assert.doesNotMatch(html, />2014</);
 
   const proofStart = html.indexOf('id="proof"');
   assert.notEqual(proofStart, -1);
+  const beforeProof = html.slice(0, proofStart);
   const proofHtml = html.slice(proofStart);
+  assert.doesNotMatch(beforeProof, /60 → 9 минут|−85%/);
   assert.match(proofHtml, /60 → 9 минут/);
   assert.match(proofHtml, /−85%/);
+
+  assert.match(html, /Начальник отдела веб-разработки/);
+  assert.match(html, /10 человек в отделе/);
+  assert.match(html, /Создаю веб-продукты с 2014 года/);
+  assert.match(html, /Анализ обращений/);
+  assert.match(html, /Подсчёт печатных знаков/);
+});
+
+test("exports the full process builder as a separate preview product", async () => {
+  const response = await render("/concepts/process-builder");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Конструктор процессов/);
+  assert.match(html, /Собрать свой процесс/);
+  assert.match(html, /Технический разбор/);
+  assert.match(html, /Обработка документов/);
+  assert.match(html, /Работа с обращениями/);
+  assert.match(html, /Согласование заявки/);
+  assert.match(html, /Вернуться к портфолио/);
+  assert.match(html, /noindex/);
 });
 
 test("serves every local asset referenced by the exported pages", async () => {
@@ -219,6 +249,7 @@ test("serves every local asset referenced by the exported pages", async () => {
     "/concepts/workflow-motif",
     "/concepts/product-studio",
     "/concepts/editorial-workflow",
+    "/concepts/process-builder",
   ];
   const assetPaths = new Set();
 
