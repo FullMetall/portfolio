@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useConceptTheme } from "../../_components/ConceptThemeProvider";
+import { ThemeToggle } from "./ThemeToggle";
 import {
   analyzeProcess,
   createProposedProcess,
@@ -35,23 +37,7 @@ type Bottleneck = {
 };
 
 type ConceptVariant = "editorial" | "workflow" | "studio" | "editorial-workflow";
-type ConceptTheme = "dark" | "light";
 type PresetKey = keyof typeof processPresets;
-
-function ThemeToggle({ theme, onToggle }: { theme: ConceptTheme; onToggle: () => void }) {
-  return (
-    <button
-      className="concept-theme-toggle"
-      type="button"
-      aria-label="Светлая тема"
-      aria-pressed={theme === "light"}
-      onClick={onToggle}
-    >
-      <span aria-hidden="true">{theme === "light" ? "☀" : "☾"}</span>
-      <span className="concept-theme-label">{theme === "light" ? "Светлая" : "Тёмная"}</span>
-    </button>
-  );
-}
 
 const variantCopy: Record<
   ConceptVariant,
@@ -818,7 +804,7 @@ function ConceptFooter() {
 }
 
 export function ProcessBuilderProduct() {
-  const [theme, setTheme] = useState<ConceptTheme>("dark");
+  const { theme, toggleTheme } = useConceptTheme();
 
   return (
     <main className="concept concept-editorial-workflow concept-builder-product" data-theme={theme} id="top">
@@ -832,7 +818,7 @@ export function ProcessBuilderProduct() {
           <a href="#contact">Контакт</a>
         </nav>
         <div className="concept-nav-meta">
-          <ThemeToggle theme={theme} onToggle={() => setTheme((current) => current === "dark" ? "light" : "dark")} />
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <span>Демонстрационный продукт</span>
         </div>
       </header>
@@ -860,7 +846,7 @@ export function ProcessBuilderProduct() {
 export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
   const copy = variantCopy[variant];
   const hasProcessRail = variant === "editorial-workflow";
-  const [theme, setTheme] = useState<ConceptTheme>("dark");
+  const { theme, toggleTheme } = useConceptTheme();
 
   const hero = (
     <section className="concept-hero" id="positioning">
@@ -981,7 +967,7 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
         </nav>
         {hasProcessRail ? (
           <div className="concept-nav-meta">
-            <ThemeToggle theme={theme} onToggle={() => setTheme((current) => current === "dark" ? "light" : "dark")} />
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
             <span>{copy.index}</span>
           </div>
         ) : (

@@ -139,11 +139,18 @@ test("renders English, case, and privacy routes", async () => {
   assert.match(caseStudyHtml, /\/case\/lift-diagnostics-desktop\.png/);
   assert.match(caseStudyHtml, /\/case\/lift-document-journal\.png/);
   assert.doesNotMatch(caseStudyHtml, /с часа до 7 минут|60 → 7 мин|88%/);
+  assert.match(caseStudyHtml, /class="concept concept-editorial-workflow concept-lift-case"/);
+  assert.match(caseStudyHtml, /aria-label="Светлая тема"/);
+  assert.match(caseStudyHtml, /class="lift-case-process-grid"/);
+  assert.match(caseStudyHtml, /class="[^"]*lift-case-gallery[^"]*"/);
+  assert.match(caseStudyHtml, /<footer class="concept-footer"/);
+  assert.doesNotMatch(caseStudyHtml, /class="site-header"/);
   assert.match(englishCaseStudyHtml, /4 processes/);
   assert.match(englishCaseStudyHtml, /moved out of manual work/);
   assert.match(englishCaseStudyHtml, /Previous screen/);
   assert.match(englishCaseStudyHtml, /Open full-size image/);
   assert.doesNotMatch(englishCaseStudyHtml, /2 roles/);
+  assert.doesNotMatch(englishCaseStudyHtml, /concept-lift-case/);
   assert.match(privacyHtml, /собирать минимум данных/);
 
   for (const html of [caseStudyHtml, privacyHtml]) {

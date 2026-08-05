@@ -4,10 +4,15 @@ import { test } from "node:test";
 
 const css = await readFile(new URL("../app/concepts/concepts.css", import.meta.url), "utf8");
 const prototype = await readFile(new URL("../app/concepts/_components/ConceptPrototype.tsx", import.meta.url), "utf8");
+const rootLayout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
+const themeToggle = await readFile(new URL("../app/concepts/_components/ThemeToggle.tsx", import.meta.url), "utf8");
+const themeProvider = await readFile(new URL("../app/_components/ConceptThemeProvider.tsx", import.meta.url), "utf8");
+const liftCaseLayout = await readFile(new URL("../app/projects/lift-automation/layout.tsx", import.meta.url), "utf8");
 const mobile800Start = css.indexOf("@media (max-width: 800px)");
 const mobile430Start = css.indexOf("@media (max-width: 430px)");
 assert(mobile800Start >= 0 && mobile430Start > mobile800Start, "Missing mobile CSS ranges");
 const mobile800 = css.slice(mobile800Start, mobile430Start);
+const mobile430 = css.slice(mobile430Start);
 
 function rule(selector) {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -121,11 +126,57 @@ test("standalone process builder uses the compact hero scale and starts controls
 });
 
 test("editorial workflow pages expose an accessible dark and light theme switch", () => {
-  assert.match(prototype, /type ConceptTheme = "dark" \| "light"/);
+  assert.match(themeProvider, /type ConceptTheme = "dark" \| "light"/);
   assert.match(prototype, /data-theme=\{theme\}/);
-  assert.match(prototype, /aria-label="Светлая тема"/);
-  assert.match(prototype, /aria-pressed=\{theme === "light"\}/);
+  assert.match(themeToggle, /aria-label="Светлая тема"/);
+  assert.match(themeToggle, /aria-pressed=\{theme === "light"\}/);
   assert.match(prototype, /<ThemeToggle theme=\{theme\} onToggle=/);
+});
+
+test("editorial workflow shares one persistent theme across routes", () => {
+  assert.match(rootLayout, /ConceptThemeProvider/);
+  assert.match(rootLayout, /<ConceptThemeProvider>\s*\{children\}\s*<\/ConceptThemeProvider>/s);
+  assert.match(prototype, /useConceptTheme\(\)/);
+  assert.doesNotMatch(prototype, /useState<ConceptTheme>/);
+  assert.match(themeProvider, /persistTheme\(next\)/);
+  assert.match(themeProvider, /localStorage\.setItem\(STORAGE_KEY, theme\)/);
+  assert.match(themeProvider, /try\s*\{[\s\S]*localStorage\.getItem/);
+  assert.match(themeProvider, /try\s*\{[\s\S]*localStorage\.setItem/);
+  assert.equal([...themeProvider.matchAll(/catch\s*\{/g)].length, 2);
+});
+
+test("lift case loads the same display and body fonts on a direct request", () => {
+  assert.match(liftCaseLayout, /@fontsource-variable\/oswald/);
+  assert.match(liftCaseLayout, /@fontsource-variable\/golos-text/);
+});
+
+test("theme switch and light preset states inherit the site type and remain readable", () => {
+  assert.match(css, /\.concept-theme-toggle\s*\{[^}]*font-family:\s*inherit/s);
+  assert.match(
+    css,
+    /\.concept-editorial-workflow\[data-theme="light"\] \.concept-presets button:hover span,[^{]*\{[^}]*color:\s*#f9f7ef/s,
+  );
+});
+
+test("process cards and primary calls to action ease hover movement smoothly", () => {
+  const easing = /transition:[^;}]*transform 280ms cubic-bezier\(0\.22,\s*1,\s*0\.36,\s*1\)/;
+
+  assert.match(css, new RegExp(`\\.concept-step\\s*\\{[^}]*${easing.source}`, "s"));
+  assert.match(css, new RegExp(`\\.concept-button\\s*\\{[^}]*${easing.source}`, "s"));
+});
+
+test("lift case mobile hero stays inside the viewport", () => {
+  assert.match(css, /\.lift-case-hero-grid > \*\s*\{[^}]*min-width:\s*0/s);
+  assert.match(css, /\.lift-case-module-grid article\s*\{[^}]*min-width:\s*0/s);
+  assert.match(css, /\.lift-case-module-grid h3\s*\{[^}]*overflow-wrap:\s*anywhere/s);
+  assert.match(
+    mobile800,
+    /\.lift-case-hero-grid,[^{]*\.lift-case-result > div\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s,
+  );
+  assert.match(
+    mobile430,
+    /\.lift-case-hero h1\s*\{[^}]*font-size:\s*clamp\(38px,\s*10\.2vw,\s*46px\)[^}]*overflow-wrap:\s*anywhere/s,
+  );
 });
 
 test("editorial workflow light theme changes palette properties only", () => {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Locale } from "../content";
 import { profile } from "../content";
 import { CaseGallery } from "./CaseGallery";
+import { EditorialLiftCase } from "./EditorialLiftCase";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
@@ -259,9 +260,13 @@ const caseCopy = {
   },
 } as const;
 
+export type RussianCaseCopy = typeof caseCopy.ru;
+
 export function CasePage({ locale }: { locale: Locale }) {
   const t = caseCopy[locale];
   const home = locale === "ru" ? "/" : "/en";
+
+  if (locale === "ru") return <EditorialLiftCase copy={caseCopy.ru} />;
 
   return (
     <>
