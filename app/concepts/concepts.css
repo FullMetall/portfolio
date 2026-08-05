@@ -76,12 +76,43 @@
   font-weight: 650;
 }
 
-.concept-nav > span {
+.concept-nav > span,
+.concept-nav-meta > span {
   justify-self: end;
   color: var(--concept-muted);
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.concept-nav-meta {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.concept-theme-toggle {
+  min-width: 124px;
+  width: 124px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid var(--concept-line);
+  color: var(--concept-muted);
+  background: var(--concept-surface);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.concept-theme-toggle:hover {
+  border-color: var(--concept-accent);
+  color: var(--concept-ink);
 }
 
 .concept-nav nav {
@@ -1833,6 +1864,139 @@
   gap: 6px;
 }
 
+/* Light mode is palette-only: no dimensions, spacing, typography, or layout overrides. */
+.concept-editorial-workflow[data-theme="light"] {
+  --concept-bg: #f4f1e8;
+  --concept-surface: #fffdf7;
+  --concept-ink: #16262c;
+  --concept-muted: #586b6f;
+  --concept-line: rgba(22, 38, 44, 0.2);
+  --concept-accent: #b63c20;
+  --concept-accent-2: #3f7429;
+  --concept-positive: #3f7429;
+  background:
+    radial-gradient(circle at 84% 3%, rgba(63, 116, 41, 0.13), transparent 27%),
+    var(--concept-bg);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-nav {
+  background: rgba(244, 241, 232, 0.92);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-mark,
+.concept-editorial-workflow[data-theme="light"] .concept-button-primary,
+.concept-editorial-workflow[data-theme="light"] .concept-rail-marker span,
+.concept-editorial-workflow[data-theme="light"] .concept-presets button:hover,
+.concept-editorial-workflow[data-theme="light"] .concept-presets button.is-active,
+.concept-editorial-workflow[data-theme="light"] .concept-segmented button.is-active {
+  color: #f9f7ef;
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-segmented button.is-active span {
+  color: #f9f7ef;
+  background: var(--concept-ink);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-workspace {
+  box-shadow: 0 34px 100px rgba(22, 38, 44, 0.16);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-canvas {
+  background:
+    linear-gradient(rgba(22, 38, 44, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 38, 44, 0.08) 1px, transparent 1px),
+    #edf1e8;
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-canvas[data-view="after"] {
+  background:
+    radial-gradient(circle at 80% 15%, rgba(95, 150, 63, 0.18), transparent 36%),
+    #edf1e8;
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-step,
+.concept-editorial-workflow[data-theme="light"] .concept-compact-flow > li,
+.concept-editorial-workflow[data-theme="light"] .concept-selected-work-grid article {
+  background: var(--concept-surface);
+  box-shadow: 6px 6px 0 rgba(63, 116, 41, 0.14);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-findings,
+.concept-editorial-workflow[data-theme="light"] .concept-compact-summary,
+.concept-editorial-workflow[data-theme="light"] .concept-compact-workspace {
+  color: var(--concept-ink);
+  background: #e6ece3;
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-compact-flow {
+  background:
+    linear-gradient(rgba(22, 38, 44, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 38, 44, 0.07) 1px, transparent 1px),
+    #edf1e8;
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-findings > header,
+.concept-editorial-workflow[data-theme="light"] .concept-findings li,
+.concept-editorial-workflow[data-theme="light"] .concept-consultation {
+  border-color: var(--concept-line);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-findings > header span {
+  color: var(--concept-muted);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-findings li p,
+.concept-editorial-workflow[data-theme="light"] .concept-clean-state p,
+.concept-editorial-workflow[data-theme="light"] .concept-consultation p,
+.concept-editorial-workflow[data-theme="light"] .concept-technical > p,
+.concept-editorial-workflow[data-theme="light"] .concept-api-flow span,
+.concept-editorial-workflow[data-theme="light"] .concept-api-flow em {
+  color: var(--concept-muted);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-clean-state > span {
+  color: #f9f7ef;
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-consultation a {
+  color: var(--concept-ink);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-proof-screen {
+  background: linear-gradient(145deg, #dce7df, #eee7da);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-selected-work-grid article > span {
+  color: rgba(22, 38, 44, 0.08);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-technical {
+  color: var(--concept-ink);
+  background: #e3eae2;
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-technical > header span {
+  color: var(--concept-accent-2);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-api-flow li {
+  border-color: var(--concept-line);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-api-flow {
+  border-color: var(--concept-line);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-technical pre {
+  border-color: var(--concept-line);
+  color: var(--concept-ink);
+  background: var(--concept-surface);
+}
+
+.concept-editorial-workflow[data-theme="light"] .concept-footer {
+  background: var(--concept-bg);
+}
+
 .concept-footer {
   width: 100%;
   min-height: 92px;
@@ -2303,7 +2467,8 @@
 
   .concept-studio .concept-nav nav,
   .concept-nav nav,
-  .concept-nav > span {
+  .concept-nav > span,
+  .concept-nav-meta > span {
     display: none;
   }
 
@@ -2771,6 +2936,16 @@
 }
 
 @media (max-width: 430px) {
+  .concept-theme-toggle {
+    min-width: 38px;
+    width: 38px;
+    padding: 0;
+  }
+
+  .concept-theme-label {
+    display: none;
+  }
+
   .concept-hero-copy > p {
     margin: 24px 0;
     font-size: 16px;

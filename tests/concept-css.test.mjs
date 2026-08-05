@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
 const css = await readFile(new URL("../app/concepts/concepts.css", import.meta.url), "utf8");
+const prototype = await readFile(new URL("../app/concepts/_components/ConceptPrototype.tsx", import.meta.url), "utf8");
 const mobile800Start = css.indexOf("@media (max-width: 800px)");
 const mobile430Start = css.indexOf("@media (max-width: 430px)");
 assert(mobile800Start >= 0 && mobile430Start > mobile800Start, "Missing mobile CSS ranges");
@@ -117,4 +118,40 @@ test("standalone process builder uses the compact hero scale and starts controls
     mobile800,
     /\.concept-builder-product-hero h1\s*\{[^}]*font-size:\s*clamp\(48px,\s*10vw,\s*58px\)/s,
   );
+});
+
+test("editorial workflow pages expose an accessible dark and light theme switch", () => {
+  assert.match(prototype, /type ConceptTheme = "dark" \| "light"/);
+  assert.match(prototype, /data-theme=\{theme\}/);
+  assert.match(prototype, /aria-label="Светлая тема"/);
+  assert.match(prototype, /aria-pressed=\{theme === "light"\}/);
+  assert.match(prototype, /<ThemeToggle theme=\{theme\} onToggle=/);
+});
+
+test("editorial workflow light theme changes palette properties only", () => {
+  const rules = [...css.matchAll(/\.concept-editorial-workflow\[data-theme="light"\][^{]*\{([^}]+)\}/g)];
+  assert(rules.length >= 2, "Missing light palette rules");
+
+  const paletteProperties = /^(--concept-[\w-]+|color|background|border-color|box-shadow|outline-color|fill|stroke)$/;
+  for (const [, body] of rules) {
+    const properties = body
+      .split(";")
+      .map((declaration) => declaration.trim().split(":", 1)[0])
+      .filter(Boolean);
+    assert(properties.every((property) => paletteProperties.test(property)), `Non-palette light theme property: ${properties.join(", ")}`);
+  }
+});
+
+test("editorial workflow light palette keeps small text at WCAG AA contrast", () => {
+  const lightRoot = rule('.concept-editorial-workflow[data-theme="light"]');
+  assert.match(lightRoot, /--concept-muted:\s*#586b6f/);
+  assert.match(lightRoot, /--concept-accent:\s*#b63c20/);
+  assert.match(lightRoot, /--concept-accent-2:\s*#3f7429/);
+
+  const technicalPre = rule('.concept-editorial-workflow[data-theme="light"] .concept-technical pre');
+  assert.match(technicalPre, /color:\s*var\(--concept-ink\)/);
+  assert.match(technicalPre, /background:\s*var\(--concept-surface\)/);
+
+  const mutedOverrides = rule('.concept-editorial-workflow[data-theme="light"] .concept-findings > header span');
+  assert.match(mutedOverrides, /color:\s*var\(--concept-muted\)/);
 });

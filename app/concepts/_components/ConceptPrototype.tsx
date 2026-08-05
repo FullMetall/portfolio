@@ -35,7 +35,23 @@ type Bottleneck = {
 };
 
 type ConceptVariant = "editorial" | "workflow" | "studio" | "editorial-workflow";
+type ConceptTheme = "dark" | "light";
 type PresetKey = keyof typeof processPresets;
+
+function ThemeToggle({ theme, onToggle }: { theme: ConceptTheme; onToggle: () => void }) {
+  return (
+    <button
+      className="concept-theme-toggle"
+      type="button"
+      aria-label="Светлая тема"
+      aria-pressed={theme === "light"}
+      onClick={onToggle}
+    >
+      <span aria-hidden="true">{theme === "light" ? "☀" : "☾"}</span>
+      <span className="concept-theme-label">{theme === "light" ? "Светлая" : "Тёмная"}</span>
+    </button>
+  );
+}
 
 const variantCopy: Record<
   ConceptVariant,
@@ -802,8 +818,10 @@ function ConceptFooter() {
 }
 
 export function ProcessBuilderProduct() {
+  const [theme, setTheme] = useState<ConceptTheme>("dark");
+
   return (
-    <main className="concept concept-editorial-workflow concept-builder-product" id="top">
+    <main className="concept concept-editorial-workflow concept-builder-product" data-theme={theme} id="top">
       <header className="concept-nav">
         <Link href="/concepts/editorial-workflow" aria-label="Вернуться к портфолио">
           <span className="concept-mark">DU</span>
@@ -813,7 +831,10 @@ export function ProcessBuilderProduct() {
           <a href="#constructor">Конструктор</a>
           <a href="#contact">Контакт</a>
         </nav>
-        <span>Демонстрационный продукт</span>
+        <div className="concept-nav-meta">
+          <ThemeToggle theme={theme} onToggle={() => setTheme((current) => current === "dark" ? "light" : "dark")} />
+          <span>Демонстрационный продукт</span>
+        </div>
       </header>
       <section className="concept-builder-product-hero">
         <span className="concept-kicker">Демонстрационный продукт</span>
@@ -839,6 +860,7 @@ export function ProcessBuilderProduct() {
 export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
   const copy = variantCopy[variant];
   const hasProcessRail = variant === "editorial-workflow";
+  const [theme, setTheme] = useState<ConceptTheme>("dark");
 
   const hero = (
     <section className="concept-hero" id="positioning">
@@ -934,7 +956,7 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
   );
 
   return (
-    <main className={`concept concept-${variant}`} id={hasProcessRail ? "top" : undefined}>
+    <main className={`concept concept-${variant}`} data-theme={hasProcessRail ? theme : undefined} id={hasProcessRail ? "top" : undefined}>
       <header className="concept-nav">
         <Link href="/concepts" aria-label="Вернуться к сравнению концепций">
           <span className="concept-mark">DU</span>
@@ -957,7 +979,14 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
             </>
           )}
         </nav>
-        <span>{copy.index}</span>
+        {hasProcessRail ? (
+          <div className="concept-nav-meta">
+            <ThemeToggle theme={theme} onToggle={() => setTheme((current) => current === "dark" ? "light" : "dark")} />
+            <span>{copy.index}</span>
+          </div>
+        ) : (
+          <span>{copy.index}</span>
+        )}
       </header>
 
       {hasProcessRail ? (
