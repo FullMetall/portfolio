@@ -700,8 +700,12 @@ function ProcessBuilder({
             <div className="concept-consultation">
               <p>{t.builder.consultation}</p>
               <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">
-                {t.builder.discussAutomation}
-                <ExternalArrowIcon />
+                {variant === "editorial-workflow" ? (
+                  <>
+                    {t.builder.discussAutomation}
+                    <ExternalArrowIcon />
+                  </>
+                ) : `${t.builder.discussAutomation} ↗`}
               </a>
             </div>
           </aside>

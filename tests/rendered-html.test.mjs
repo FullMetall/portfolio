@@ -225,6 +225,9 @@ test("exports the comparison index and keeps the three original concepts functio
       `Original contact order or Telegram label changed: ${route}`,
     );
     assert.doesNotMatch(html, /Написать в Telegram ↗/);
+    const consultation = html.match(/<div class="concept-consultation">([\s\S]*?)<\/div>/)?.[1] ?? "";
+    assert.match(consultation, />Обсудить автоматизацию ↗<\/a>/, `Original consultation CTA changed: ${route}`);
+    assert.doesNotMatch(consultation, /concept-external-arrow/, `Vector arrow leaked into original concept: ${route}`);
     assert.doesNotMatch(html, /concept-step-description|concept-footer|id="top"/);
     assert.match(html, /noindex/);
   }
