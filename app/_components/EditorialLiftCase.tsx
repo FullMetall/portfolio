@@ -5,6 +5,7 @@ import type { Locale } from "../content";
 import { profile } from "../content";
 import { useConceptTheme } from "./ConceptThemeProvider";
 import { CaseGallery } from "./CaseGallery";
+import { ExternalArrowIcon } from "./ExternalArrowIcon";
 import { ThemeToggle } from "../concepts/_components/ThemeToggle";
 import type { EditorialCaseCopy } from "./CasePage";
 
@@ -22,7 +23,7 @@ const caseUi = {
     contact: "Контакт",
     footerIdentity: "Даниил Угловский · веб-системы",
     footerLabel: "Ссылки в футере",
-    telegram: "Написать в Telegram ↗",
+    telegram: "Написать в Telegram",
     top: "Наверх ↑",
   },
   en: {
@@ -38,7 +39,7 @@ const caseUi = {
     contact: "Contact",
     footerIdentity: "Daniil Uglovskiy · web systems",
     footerLabel: "Footer links",
-    telegram: "Message on Telegram ↗",
+    telegram: "Message on Telegram",
     top: "Back to top ↑",
   },
 } as const;
@@ -188,8 +189,8 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
           <p>{t.contactBody}</p>
         </div>
         <div className="concept-contact-links">
-          <a href={profile.telegram} target="_blank" rel="noreferrer">{t.telegram} ↗</a>
-          <a href={`mailto:${profile.email}`}>{t.email} ↗</a>
+          <a href={profile.telegram} target="_blank" rel="noreferrer">{t.telegram}<ExternalArrowIcon /></a>
+          <a href={`mailto:${profile.email}`}>{t.email}<ExternalArrowIcon /></a>
         </div>
       </section>
 
@@ -197,8 +198,8 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
         <div className="concept-footer-inner">
           <span>{ui.footerIdentity}</span>
           <nav aria-label={ui.footerLabel}>
-            <a href={profile.telegram} target="_blank" rel="noreferrer">{ui.telegram}</a>
-            <a href={`mailto:${profile.email}`}>Email ↗</a>
+            <a href={profile.telegram} target="_blank" rel="noreferrer">{ui.telegram}<ExternalArrowIcon /></a>
+            <a href={`mailto:${profile.email}`}>Email<ExternalArrowIcon /></a>
             <a href="#top">{ui.top}</a>
           </nav>
         </div>

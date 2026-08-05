@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ExternalArrowIcon } from "./ExternalArrowIcon";
 
 type GalleryItem = {
   readonly src: string;
@@ -103,7 +104,7 @@ export function CaseGallery({
           <span>{String(activeIndex + 1).padStart(2, "0")}</span>
           <strong>{activeItem.caption}</strong>
           <a href={activeItem.src} target="_blank" rel="noreferrer">
-            {openLabel} ↗
+            {openLabel}<ExternalArrowIcon />
           </a>
         </figcaption>
       </figure>

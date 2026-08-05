@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Locale } from "../../content";
+import { ExternalArrowIcon } from "../../_components/ExternalArrowIcon";
 import { useConceptTheme } from "../../_components/ConceptThemeProvider";
 import { conceptCopy } from "./concept-i18n";
 import { ThemeToggle } from "./ThemeToggle";
@@ -477,6 +478,7 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
       <div className="concept-compact-actions">
         <Link className="concept-button concept-button-primary" href={locale === "en" ? "/en/concepts/process-builder" : "/concepts/process-builder"}>
           {t.compact.openBuilder}
+          <ExternalArrowIcon />
         </Link>
         <a href="#contact">{t.compact.discuss}</a>
       </div>
@@ -699,6 +701,7 @@ function ProcessBuilder({
               <p>{t.builder.consultation}</p>
               <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">
                 {t.builder.discussAutomation}
+                <ExternalArrowIcon />
               </a>
             </div>
           </aside>
@@ -784,8 +787,8 @@ function ConceptFooter({ locale }: { locale: Locale }) {
       <div className="concept-footer-inner">
         <span>{t.footer.identity}</span>
         <nav aria-label={t.footerNavigationLabel}>
-          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.footer.telegram}</a>
-          <a href="mailto:abc-xyz9@yandex.ru">Email ↗</a>
+          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.footer.telegram}<ExternalArrowIcon /></a>
+          <a href="mailto:abc-xyz9@yandex.ru">Email<ExternalArrowIcon /></a>
           <a href="#top">{t.footer.top}</a>
         </nav>
       </div>
@@ -826,8 +829,8 @@ export function ProcessBuilderProduct({ locale = "ru" }: { locale?: Locale }) {
         <span className="concept-kicker">{t.builderProduct.contactKicker}</span>
         <div className="concept-contact-copy"><h2>{t.builderProduct.contactTitle}</h2></div>
         <div className="concept-contact-links">
-          <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
-          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram ↗</a>
+          <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru<ExternalArrowIcon /></a>
+          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram<ExternalArrowIcon /></a>
         </div>
       </section>
       <ConceptFooter locale={locale} />
@@ -875,6 +878,7 @@ export function ConceptPrototype({
           <div className="concept-hero-actions">
             <a className="concept-button concept-button-primary" href="#contact">
               {t.hero.contact}
+              <ExternalArrowIcon />
             </a>
             <a href="#demonstration">{t.hero.demo}</a>
           </div>
@@ -949,7 +953,9 @@ export function ConceptPrototype({
               <div><dt>Объём</dt><dd>2 400 комплектов в год</dd></div>
             </dl>
           )}
-          <Link href={locale === "en" ? "/en/projects/lift-automation" : "/projects/lift-automation"}>{hasProcessRail ? t.proof.action : "Разобрать кейс ↗"}</Link>
+          <Link href={locale === "en" ? "/en/projects/lift-automation" : "/projects/lift-automation"}>
+            {hasProcessRail ? <>{t.proof.action}<ExternalArrowIcon /></> : "Разобрать кейс ↗"}
+          </Link>
         </div>
       </div>
     </section>
@@ -1018,8 +1024,8 @@ export function ConceptPrototype({
         <div className="concept-contact-links">
           {hasProcessRail ? (
             <>
-              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.contact.telegram}</a>
-              <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
+              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.contact.telegram}<ExternalArrowIcon /></a>
+              <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru<ExternalArrowIcon /></a>
             </>
           ) : (
             <>

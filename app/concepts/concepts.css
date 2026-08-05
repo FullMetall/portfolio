@@ -38,6 +38,15 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.concept-external-arrow {
+  display: inline-block;
+  width: 0.82em;
+  height: 0.82em;
+  margin-inline-start: 0.28em;
+  overflow: visible;
+  vertical-align: -0.08em;
+}
+
 .concept :where(a, button, input, select):focus-visible,
 .concept-index :where(a, button):focus-visible {
   outline: 3px solid var(--concept-accent);
@@ -3287,6 +3296,24 @@
   .concept-compact-flow > li {
     min-height: 118px;
     padding-left: 58px;
+  }
+
+  .concept-editorial-workflow .concept-compact-demo .concept-compact-flow > li {
+    height: auto;
+    min-height: 0;
+    grid-template-rows: auto auto auto;
+    row-gap: 10px;
+    padding: 14px 14px 14px 58px;
+  }
+
+  .concept-editorial-workflow .concept-compact-demo .concept-compact-copy {
+    align-self: start;
+    grid-template-rows: auto;
+    gap: 5px;
+  }
+
+  .concept-editorial-workflow .concept-compact-demo .concept-step-role {
+    align-self: start;
   }
 
   .concept-compact-summary {

@@ -71,6 +71,17 @@ test("editorial workflow process cards use stable equal-height content rows", ()
   );
 });
 
+test("editorial workflow compacts short-demo cards to content height on mobile", () => {
+  assert.match(
+    mobile800,
+    /\.concept-editorial-workflow \.concept-compact-demo \.concept-compact-flow > li\s*\{[^}]*height:\s*auto[^}]*min-height:\s*0[^}]*grid-template-rows:\s*auto\s+auto\s+auto[^}]*row-gap:\s*10px/s,
+  );
+  assert.match(
+    mobile800,
+    /\.concept-editorial-workflow \.concept-compact-demo \.concept-compact-copy\s*\{[^}]*align-self:\s*start[^}]*grid-template-rows:\s*auto/s,
+  );
+});
+
 test("editorial workflow restores the vertical card hierarchy on mobile", () => {
   const mobileCard = rule(".concept-editorial-workflow .concept-builder .concept-step");
   const mobileMain = rule(".concept-editorial-workflow .concept-builder .concept-step-main");

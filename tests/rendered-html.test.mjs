@@ -169,6 +169,27 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   }
 });
 
+test("uses vector arrows instead of emoji-prone Unicode in editorial workflow", async () => {
+  const routes = [
+    "/",
+    "/en",
+    "/concepts/editorial-workflow",
+    "/en/concepts/editorial-workflow",
+    "/concepts/process-builder",
+    "/en/concepts/process-builder",
+    "/projects/lift-automation",
+    "/en/projects/lift-automation",
+  ];
+
+  for (const route of routes) {
+    const response = await render(route);
+    assert.equal(response.status, 200, `Missing Editorial Workflow route: ${route}`);
+    const html = await response.text();
+    assert.doesNotMatch(html, /↗/, `Unicode arrow can render as emoji on iOS Safari: ${route}`);
+    assert.match(html, /class="concept-external-arrow"[^>]*aria-hidden="true"/, `Missing vector arrow: ${route}`);
+  }
+});
+
 test("exports the comparison index and keeps the three original concepts functional", async () => {
   const originalConceptRoutes = [
     "/concepts/editorial-product",
@@ -222,11 +243,11 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /03[^<]*Работающий кейс/);
   assert.match(html, /Написать мне/);
   assert.match(html, /href="#contact"/);
-  const telegramContactIndex = html.indexOf(">Написать в Telegram ↗</a>");
-  const emailContactIndex = html.indexOf("abc-xyz9@yandex.ru ↗</a>");
+  const telegramContactIndex = html.indexOf(">Написать в Telegram<svg");
+  const emailContactIndex = html.indexOf("abc-xyz9@yandex.ru<svg");
   assert.notEqual(telegramContactIndex, -1);
   assert.ok(emailContactIndex > telegramContactIndex);
-  assert.doesNotMatch(html, />Telegram ↗<\/a>/);
+  assert.doesNotMatch(html, />Telegram(?:<svg| ↗)<\/a>/);
   assert.match(html, /Короткая демонстрация/);
   assert.match(html, /Открыть полный конструктор/);
   assert.match(html, /href="\/concepts\/process-builder"/);
