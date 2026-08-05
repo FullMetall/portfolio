@@ -3,6 +3,7 @@ import { test } from "node:test";
 import {
   analyzeProcess,
   createProposedProcess,
+  getProcessPresets,
   processPresets,
   remediationByFlag,
 } from "../app/concepts/_lib/process-engine.mjs";
@@ -85,4 +86,17 @@ test("ships three realistic presets and an empty custom process", () => {
   assert(processPresets.appeals.steps.length >= 4);
   assert(processPresets.approval.steps.length >= 4);
   assert.equal(processPresets.custom.steps.length, 0);
+});
+
+test("localizes presets, findings, and proposed steps for English UI", () => {
+  const presets = getProcessPresets("en");
+  const source = presets.documents.steps;
+  const findings = analyzeProcess(source, "en");
+  const proposed = createProposedProcess(source, "en");
+  const visibleCopy = JSON.stringify({ presets, findings, proposed });
+
+  assert.equal(presets.documents.label, "Document processing");
+  assert.match(findings[0].title, /Manual transfer/);
+  assert(proposed.some((step) => step.title.includes("Proposal:")));
+  assert.doesNotMatch(visibleCopy, /[А-Яа-яЁё]/);
 });

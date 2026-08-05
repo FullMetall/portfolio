@@ -8,6 +8,7 @@ const rootLayout = await readFile(new URL("../app/layout.tsx", import.meta.url),
 const themeToggle = await readFile(new URL("../app/concepts/_components/ThemeToggle.tsx", import.meta.url), "utf8");
 const themeProvider = await readFile(new URL("../app/_components/ConceptThemeProvider.tsx", import.meta.url), "utf8");
 const liftCaseLayout = await readFile(new URL("../app/projects/lift-automation/layout.tsx", import.meta.url), "utf8");
+const englishLiftCaseLayout = await readFile(new URL("../app/en/projects/lift-automation/layout.tsx", import.meta.url), "utf8");
 const mobile800Start = css.indexOf("@media (max-width: 800px)");
 const mobile430Start = css.indexOf("@media (max-width: 430px)");
 assert(mobile800Start >= 0 && mobile430Start > mobile800Start, "Missing mobile CSS ranges");
@@ -128,7 +129,7 @@ test("standalone process builder uses the compact hero scale and starts controls
 test("editorial workflow pages expose an accessible dark and light theme switch", () => {
   assert.match(themeProvider, /type ConceptTheme = "dark" \| "light"/);
   assert.match(prototype, /data-theme=\{theme\}/);
-  assert.match(themeToggle, /aria-label="Светлая тема"/);
+  assert.match(themeToggle, /aria-label=\{locale === "en" \? "Light theme" : "Светлая тема"\}/);
   assert.match(themeToggle, /aria-pressed=\{theme === "light"\}/);
   assert.doesNotMatch(themeToggle, /concept-theme-label/);
   assert.match(prototype, /<ThemeToggle theme=\{theme\} onToggle=/);
@@ -154,10 +155,13 @@ test("editorial workflow defaults to the system theme without a saved preference
 test("lift case loads the same display and body fonts on a direct request", () => {
   assert.match(liftCaseLayout, /@fontsource-variable\/oswald/);
   assert.match(liftCaseLayout, /@fontsource-variable\/golos-text/);
+  assert.match(englishLiftCaseLayout, /@fontsource-variable\/oswald/);
+  assert.match(englishLiftCaseLayout, /@fontsource-variable\/golos-text/);
+  assert.match(englishLiftCaseLayout, /concepts\/concepts\.css/);
 });
 
 test("theme switch and light preset states inherit the site type and remain readable", () => {
-  assert.match(css, /\.concept-theme-toggle\s*\{[^}]*width:\s*34px[^}]*height:\s*34px/s);
+  assert.match(css, /\.concept-theme-toggle,[^{]*\.concept-language-switch\s*\{[^}]*width:\s*34px[^}]*height:\s*34px/s);
   assert.match(css, /\.concept-theme-toggle svg\s*\{[^}]*width:\s*16px[^}]*height:\s*16px/s);
   assert.match(themeToggle, /<svg/);
   assert.doesNotMatch(themeToggle, /☀|☾/);
@@ -172,6 +176,17 @@ test("process cards and primary calls to action ease hover movement smoothly", (
 
   assert.match(css, new RegExp(`\\.concept-step\\s*\\{[^}]*${easing.source}`, "s"));
   assert.match(css, new RegExp(`\\.concept-button\\s*\\{[^}]*${easing.source}`, "s"));
+});
+
+test("lift case section headings use the same display scale as the portfolio sections", () => {
+  assert.match(
+    css,
+    /\.lift-case-section h2,[^{]*\.lift-case-role h2,[^{]*\.lift-case-result h2\s*\{[^}]*font-size:\s*clamp\(48px,\s*6vw,\s*88px\)[^}]*line-height:\s*0\.95/s,
+  );
+  assert.match(
+    mobile800,
+    /\.lift-case-section h2,[^{]*\.lift-case-role h2,[^{]*\.lift-case-result h2\s*\{[^}]*font-size:\s*clamp\(40px,\s*12vw,\s*62px\)/s,
+  );
 });
 
 test("lift case mobile hero stays inside the viewport", () => {

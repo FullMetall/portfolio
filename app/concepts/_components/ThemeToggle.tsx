@@ -1,13 +1,22 @@
 "use client";
 
+import type { Locale } from "../../content";
 import type { ConceptTheme } from "../../_components/ConceptThemeProvider";
 
-export function ThemeToggle({ theme, onToggle }: { theme: ConceptTheme; onToggle: () => void }) {
+export function ThemeToggle({
+  theme,
+  onToggle,
+  locale = "ru",
+}: {
+  theme: ConceptTheme;
+  onToggle: () => void;
+  locale?: Locale;
+}) {
   return (
     <button
       className="concept-theme-toggle"
       type="button"
-      aria-label="Светлая тема"
+      aria-label={locale === "en" ? "Light theme" : "Светлая тема"}
       aria-pressed={theme === "light"}
       onClick={onToggle}
     >

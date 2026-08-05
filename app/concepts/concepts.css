@@ -92,7 +92,8 @@
   gap: 14px;
 }
 
-.concept-theme-toggle {
+.concept-theme-toggle,
+.concept-language-switch {
   min-width: 34px;
   width: 34px;
   height: 34px;
@@ -105,6 +106,12 @@
   transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
+.concept-language-switch {
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+}
+
 .concept-theme-toggle svg {
   width: 16px;
   height: 16px;
@@ -114,7 +121,10 @@
   stroke-linejoin: round;
 }
 
-.concept-theme-toggle:hover {
+.concept-theme-toggle:hover,
+.concept-theme-toggle:focus-visible,
+.concept-language-switch:hover,
+.concept-language-switch:focus-visible {
   border-color: var(--concept-line);
   color: var(--concept-ink);
   background: var(--concept-surface);
@@ -2032,8 +2042,8 @@
 .lift-case-role h2,
 .lift-case-result h2 {
   margin-top: 18px;
-  font-size: clamp(48px, 5.6vw, 82px);
-  line-height: 0.96;
+  font-size: clamp(48px, 6vw, 88px);
+  line-height: 0.95;
 }
 
 .lift-case-section-head > p,
@@ -3379,7 +3389,7 @@
   .lift-case-section h2,
   .lift-case-role h2,
   .lift-case-result h2 {
-    font-size: clamp(42px, 11vw, 64px);
+    font-size: clamp(40px, 12vw, 62px);
   }
 
   .lift-case-section-head {

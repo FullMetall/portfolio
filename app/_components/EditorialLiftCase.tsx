@@ -1,37 +1,75 @@
 "use client";
 
 import Link from "next/link";
+import type { Locale } from "../content";
 import { profile } from "../content";
 import { useConceptTheme } from "./ConceptThemeProvider";
 import { CaseGallery } from "./CaseGallery";
 import { ThemeToggle } from "../concepts/_components/ThemeToggle";
-import type { RussianCaseCopy } from "./CasePage";
+import type { EditorialCaseCopy } from "./CasePage";
 
-export function EditorialLiftCase({ copy: t }: { copy: RussianCaseCopy }) {
+const caseUi = {
+  ru: {
+    name: "Даниил Угловский",
+    home: "/concepts/editorial-workflow",
+    languageHref: "/en/projects/lift-automation",
+    language: "EN",
+    languageLabel: "Открыть английскую версию",
+    homeLabel: "Вернуться к портфолио",
+    navigationLabel: "Навигация кейса",
+    nav: ["Контекст", "Решение", "Интерфейс", "Результат", "Контакт"],
+    meta: "Кейс · автоматизация",
+    contact: "Контакт",
+    footerIdentity: "Даниил Угловский · веб-системы",
+    footerLabel: "Ссылки в футере",
+    telegram: "Написать в Telegram ↗",
+    top: "Наверх ↑",
+  },
+  en: {
+    name: "Daniil Uglovskiy",
+    home: "/en/concepts/editorial-workflow",
+    languageHref: "/projects/lift-automation",
+    language: "RU",
+    languageLabel: "Open the Russian version",
+    homeLabel: "Back to portfolio",
+    navigationLabel: "Case study navigation",
+    nav: ["Context", "Solution", "Interface", "Result", "Contact"],
+    meta: "Case · automation",
+    contact: "Contact",
+    footerIdentity: "Daniil Uglovskiy · web systems",
+    footerLabel: "Footer links",
+    telegram: "Message on Telegram ↗",
+    top: "Back to top ↑",
+  },
+} as const;
+
+export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy; locale: Locale }) {
+  const ui = caseUi[locale];
   const { theme, toggleTheme } = useConceptTheme();
 
   return (
     <main className="concept concept-editorial-workflow concept-lift-case" data-theme={theme} id="top">
       <header className="concept-nav">
-        <Link href="/concepts/editorial-workflow" aria-label="Вернуться к портфолио">
+        <Link href={ui.home} aria-label={ui.homeLabel}>
           <span className="concept-mark">DU</span>
-          <span>Даниил Угловский</span>
+          <span>{ui.name}</span>
         </Link>
-        <nav aria-label="Навигация кейса">
-          <a href="#context">Контекст</a>
-          <a href="#solution">Решение</a>
-          <a href="#interface">Интерфейс</a>
-          <a href="#result">Результат</a>
-          <a href="#contact">Контакт</a>
+        <nav aria-label={ui.navigationLabel}>
+          <a href="#context">{ui.nav[0]}</a>
+          <a href="#solution">{ui.nav[1]}</a>
+          <a href="#interface">{ui.nav[2]}</a>
+          <a href="#result">{ui.nav[3]}</a>
+          <a href="#contact">{ui.nav[4]}</a>
         </nav>
         <div className="concept-nav-meta">
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <span>Кейс · автоматизация</span>
+          <Link className="concept-language-switch" href={ui.languageHref} aria-label={ui.languageLabel}>{ui.language}</Link>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} locale={locale} />
+          <span>{ui.meta}</span>
         </div>
       </header>
 
       <section className="lift-case-hero">
-        <Link className="lift-case-back" href="/concepts/editorial-workflow">← Вернуться к портфолио</Link>
+        <Link className="lift-case-back" href={ui.home}>← {ui.homeLabel}</Link>
         <span className="concept-kicker">{t.eyebrow}</span>
         <div className="lift-case-hero-grid">
           <div>
@@ -144,7 +182,7 @@ export function EditorialLiftCase({ copy: t }: { copy: RussianCaseCopy }) {
       </section>
 
       <section className="concept-contact lift-case-contact" id="contact">
-        <span className="concept-kicker">Контакт</span>
+        <span className="concept-kicker">{ui.contact}</span>
         <div className="concept-contact-copy">
           <h2>{t.contactTitle}</h2>
           <p>{t.contactBody}</p>
@@ -157,12 +195,11 @@ export function EditorialLiftCase({ copy: t }: { copy: RussianCaseCopy }) {
 
       <footer className="concept-footer">
         <div className="concept-footer-inner">
-          <span>Даниил Угловский · веб-системы</span>
-          <nav aria-label="Ссылки в футере">
-            <a href={profile.telegram} target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
+          <span>{ui.footerIdentity}</span>
+          <nav aria-label={ui.footerLabel}>
+            <a href={profile.telegram} target="_blank" rel="noreferrer">{ui.telegram}</a>
             <a href={`mailto:${profile.email}`}>Email ↗</a>
-            <Link href="/privacy">Конфиденциальность</Link>
-            <a href="#top">Наверх ↑</a>
+            <a href="#top">{ui.top}</a>
           </nav>
         </div>
       </footer>

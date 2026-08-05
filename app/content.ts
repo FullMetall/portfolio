@@ -123,7 +123,6 @@ export const copy = {
     emailAction: "Написать на почту",
     telegramAction: "Открыть Telegram",
     footer: "Разработка веб-систем · автоматизация процессов",
-    privacy: "Конфиденциальность",
   },
   en: {
     nav: {
@@ -236,6 +235,5 @@ export const copy = {
     emailAction: "Send an email",
     telegramAction: "Open Telegram",
     footer: "Web systems development · process automation",
-    privacy: "Privacy",
   },
 } as const;

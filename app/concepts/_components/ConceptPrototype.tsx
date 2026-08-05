@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { Locale } from "../../content";
 import { useConceptTheme } from "../../_components/ConceptThemeProvider";
+import { conceptCopy } from "./concept-i18n";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   analyzeProcess,
   createProposedProcess,
-  processPresets,
+  getProcessPresets,
 } from "../_lib/process-engine.mjs";
 
 type ProcessFlag =
@@ -37,7 +39,12 @@ type Bottleneck = {
 };
 
 type ConceptVariant = "editorial" | "workflow" | "studio" | "editorial-workflow";
-type PresetKey = keyof typeof processPresets;
+type PresetKey = "documents" | "appeals" | "approval" | "custom";
+type ProcessPreset = {
+  label: string;
+  description: string;
+  steps: ProcessStep[];
+};
 
 const variantCopy: Record<
   ConceptVariant,
@@ -78,7 +85,7 @@ const variantCopy: Record<
     proofTitle: "Интерфейс показывает, как я думаю.",
   },
   "editorial-workflow": {
-    index: "04 / Editorial workflow",
+    index: "",
     label: "Архитектура рабочих процессов",
     title: "Из ручного процесса — в рабочую систему.",
     lead:
@@ -97,57 +104,49 @@ function RailMarker({ number, label }: { number: string; label: string }) {
   );
 }
 
-function ProcessRail() {
+function LanguageSwitch({ locale, href }: { locale: Locale; href: string }) {
+  const t = conceptCopy[locale];
   return (
-    <aside className="concept-process-rail" aria-label="Сквозной маршрут процесса">
+    <Link className="concept-language-switch" href={href} aria-label={t.languageLabel}>
+      {t.language}
+    </Link>
+  );
+}
+
+function ProcessRail({ locale }: { locale: Locale }) {
+  const t = conceptCopy[locale];
+  return (
+    <aside className="concept-process-rail" aria-label={t.rail.route}>
       <ol>
-        <li aria-label="01 Позиционирование"><span>01</span><strong>Позиционирование</strong></li>
-        <li aria-label="02 Демонстрация"><span>02</span><strong>Демонстрация</strong></li>
-        <li aria-label="03 Работающий кейс"><span>03</span><strong>Работающий кейс</strong></li>
+        <li aria-label={`01 ${t.rail.positioning}`}><span>01</span><strong>{t.rail.positioning}</strong></li>
+        <li aria-label={`02 ${t.rail.demonstration}`}><span>02</span><strong>{t.rail.demonstration}</strong></li>
+        <li aria-label={`03 ${t.rail.case}`}><span>03</span><strong>{t.rail.case}</strong></li>
       </ol>
     </aside>
   );
 }
 
-const flagLabels: Record<ProcessFlag, string> = {
-  "duplicate-input": "Повторный ввод данных",
-  "manual-transfer": "Ручная передача между ролями",
-  "approval-wait": "Ожидание подтверждения",
-  "multi-source-document": "Сборка из нескольких источников",
-  "external-status": "Статус хранится отдельно",
-  "journal-copy": "Повторный перенос в журнал",
-  "missing-owner": "Не определён ответственный",
-};
-
-const kindLabels: Record<StepKind, string> = {
-  input: "Вход",
-  work: "Работа",
-  approval: "Согласование",
-  document: "Документ",
-  registry: "Реестр",
-  result: "Результат",
-};
-
 function cloneSteps(steps: ProcessStep[]) {
   return steps.map((step) => ({ ...step, flags: [...step.flags] }));
 }
 
-function makeStep(position: number): ProcessStep {
+function makeStep(position: number, locale: Locale): ProcessStep {
+  const t = conceptCopy[locale].builder;
   return {
     id: `custom-${Date.now()}-${position}`,
-    title: `Новый этап ${position}`,
-    role: "Исполнитель",
+    title: t.newStage(position),
+    role: t.executor,
     kind: "work",
     flags: [],
   };
 }
 
-function getStepDescription(step: ProcessStep, bottlenecks: Bottleneck[]) {
+function getStepDescription(step: ProcessStep, bottlenecks: Bottleneck[], locale: Locale) {
   const remediation = step.remediations?.[0]?.action;
   if (remediation) return remediation;
 
   const issue = bottlenecks.find((item) => item.stepId === step.id);
-  return issue?.detail ?? "Отдельный этап процесса без отмеченных проблем.";
+  return issue?.detail ?? conceptCopy[locale].builder.fallbackDescription;
 }
 
 function StepCard({
@@ -157,6 +156,7 @@ function StepCard({
   editable,
   detailed,
   bottlenecks,
+  locale,
   onEdit,
   onMove,
   onDragStart,
@@ -168,27 +168,29 @@ function StepCard({
   editable: boolean;
   detailed: boolean;
   bottlenecks: Bottleneck[];
+  locale: Locale;
   onEdit: () => void;
   onMove: (direction: -1 | 1) => void;
   onDragStart: () => void;
   onDrop: () => void;
 }) {
+  const t = conceptCopy[locale];
   const issues = bottlenecks.filter((item) => item.stepId === step.id);
-  const description = getStepDescription(step, bottlenecks);
+  const description = getStepDescription(step, bottlenecks, locale);
   const stepContent = detailed ? (
     <>
       <span className="concept-step-copy">
-        <span className="concept-step-kind">{kindLabels[step.kind]}</span>
+        <span className="concept-step-kind">{t.kindLabels[step.kind]}</span>
         <strong>{step.title}</strong>
         <span className="concept-step-description">{description}</span>
       </span>
-      <span className="concept-step-role">{step.role || "Ответственный не назначен"}</span>
+      <span className="concept-step-role">{step.role || t.builder.unassigned}</span>
     </>
   ) : (
     <>
-      <span className="concept-step-kind">{kindLabels[step.kind]}</span>
+      <span className="concept-step-kind">{t.kindLabels[step.kind]}</span>
       <strong>{step.title}</strong>
-      <span>{step.role || "Ответственный не назначен"}</span>
+      <span>{step.role || t.builder.unassigned}</span>
     </>
   );
 
@@ -207,7 +209,7 @@ function StepCard({
         <span
           className="concept-drag-handle"
           aria-hidden="true"
-          title="Перетащите карточку или используйте кнопки ниже"
+          title={t.builder.dragHint}
         >
           ⠿
         </span>
@@ -225,7 +227,7 @@ function StepCard({
             type="button"
             onClick={() => onMove(-1)}
             disabled={index === 0}
-            aria-label={`Переместить «${step.title}» выше`}
+            aria-label={t.builder.moveUp(step.title)}
           >
             ↑
           </button>
@@ -233,14 +235,14 @@ function StepCard({
             type="button"
             onClick={() => onMove(1)}
             disabled={index === total - 1}
-            aria-label={`Переместить «${step.title}» ниже`}
+            aria-label={t.builder.moveDown(step.title)}
           >
             ↓
           </button>
         </div>
       )}
       {issues.length > 0 && (
-        <span className="concept-step-alert" aria-label={`${issues.length} проблем`}>
+        <span className="concept-step-alert" aria-label={t.builder.issues(issues.length)}>
           {issues.length}
         </span>
       )}
@@ -250,15 +252,18 @@ function StepCard({
 
 function StepEditor({
   step,
+  locale,
   onChange,
   onClose,
   onDelete,
 }: {
   step: ProcessStep;
+  locale: Locale;
   onChange: (next: ProcessStep) => void;
   onClose: () => void;
   onDelete: () => void;
 }) {
+  const t = conceptCopy[locale];
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -292,15 +297,15 @@ function StepEditor({
       >
         <header>
           <div>
-            <span>Редактирование этапа</span>
-            <h2 id="step-editor-title">Что происходит здесь?</h2>
+            <span>{t.builder.editor.eyebrow}</span>
+            <h2 id="step-editor-title">{t.builder.editor.title}</h2>
           </div>
-          <button type="button" onClick={onClose} aria-label="Закрыть редактор">
+          <button type="button" onClick={onClose} aria-label={t.builder.editor.close}>
             ×
           </button>
         </header>
         <label>
-          Название
+          {t.builder.editor.name}
           <input
             ref={titleInputRef}
             value={step.title}
@@ -308,22 +313,22 @@ function StepEditor({
           />
         </label>
         <label>
-          Ответственный
+          {t.builder.editor.owner}
           <input
             value={step.role}
             onChange={(event) => onChange({ ...step, role: event.target.value })}
-            placeholder="Например, менеджер"
+            placeholder={t.builder.editor.ownerPlaceholder}
           />
         </label>
         <label>
-          Тип этапа
+          {t.builder.editor.type}
           <select
             value={step.kind}
             onChange={(event) =>
               onChange({ ...step, kind: event.target.value as StepKind })
             }
           >
-            {Object.entries(kindLabels).map(([value, label]) => (
+            {Object.entries(t.kindLabels).map(([value, label]) => (
               <option value={value} key={value}>
                 {label}
               </option>
@@ -331,26 +336,26 @@ function StepEditor({
           </select>
         </label>
         <fieldset>
-          <legend>Что создаёт проблему?</legend>
+          <legend>{t.builder.editor.issue}</legend>
           <div className="concept-flag-grid">
-            {(Object.keys(flagLabels) as ProcessFlag[]).map((flag) => (
+            {(Object.keys(t.flagLabels) as ProcessFlag[]).map((flag) => (
               <label key={flag}>
                 <input
                   type="checkbox"
                   checked={step.flags.includes(flag)}
                   onChange={() => toggleFlag(flag)}
                 />
-                <span>{flagLabels[flag]}</span>
+                <span>{t.flagLabels[flag]}</span>
               </label>
             ))}
           </div>
         </fieldset>
         <footer>
           <button className="concept-button concept-button-danger" type="button" onClick={onDelete}>
-            Удалить этап
+            {t.builder.editor.delete}
           </button>
           <button className="concept-button concept-button-primary" type="button" onClick={onClose}>
-            Готово
+            {t.builder.editor.done}
           </button>
         </footer>
       </section>
@@ -363,26 +368,29 @@ function TechnicalPanel({
   bottleneckCount,
   remediationCount,
   remainingCount,
+  locale,
 }: {
   stepCount: number;
   bottleneckCount: number;
   remediationCount: number;
   remainingCount: number;
+  locale: Locale;
 }) {
+  const t = conceptCopy[locale].builder.technical;
   return (
-    <section className="concept-technical" aria-label="Технический разбор прототипа">
+    <section className="concept-technical" aria-label={t.label}>
       <header>
-        <span>Технический разбор</span>
+        <span>{t.title}</span>
         <strong>Local state → rules → transformation → UI</strong>
       </header>
       <div className="concept-api-grid">
         <ol className="concept-api-flow">
-          <li><span>01</span><strong>React state</strong><em>{stepCount} этапов в браузере</em></li>
-          <li><span>02</span><strong>analyzeProcess()</strong><em>{bottleneckCount} явных флагов</em></li>
-          <li><span>03</span><strong>createProposedProcess()</strong><em>{remediationCount} гипотез предложено</em></li>
-          <li><span>04</span><strong>Проверка реализации</strong><em>{remainingCount} флагов не подтверждено</em></li>
+          <li><span>01</span><strong>React state</strong><em>{t.browserSteps(stepCount)}</em></li>
+          <li><span>02</span><strong>analyzeProcess()</strong><em>{t.flags(bottleneckCount)}</em></li>
+          <li><span>03</span><strong>createProposedProcess()</strong><em>{t.proposals(remediationCount)}</em></li>
+          <li><span>04</span><strong>{t.verification}</strong><em>{t.unverified(remainingCount)}</em></li>
         </ol>
-        <pre aria-label="Фактическое состояние локального прототипа"><code>{`{
+        <pre aria-label={t.stateLabel}><code>{`{
   "mode": "local-prototype",
   "inputSteps": ${stepCount},
   "detected": ${bottleneckCount},
@@ -393,45 +401,42 @@ function TechnicalPanel({
 }`}</code></pre>
       </div>
       <p>
-        Сейчас сетевых запросов нет: обе функции выполняются в браузере. Проектируемый, но не подключённый контракт production-версии: <code>POST /api/process/analyze</code> без аккаунтов и постоянного хранения данных.
+        {t.note} <code>POST /api/process/analyze</code>
       </p>
     </section>
   );
 }
 
-function CompactProcessDemo() {
+function CompactProcessDemo({ locale }: { locale: Locale }) {
+  const t = conceptCopy[locale];
   const [view, setView] = useState<"before" | "after">("before");
-  const steps = processPresets.documents.steps as ProcessStep[];
-  const bottlenecks = useMemo(() => analyzeProcess(steps), [steps]);
-  const proposedSteps = useMemo(() => createProposedProcess(steps), [steps]);
+  const steps = getProcessPresets(locale).documents.steps as ProcessStep[];
+  const bottlenecks = useMemo(() => analyzeProcess(steps, locale), [steps, locale]);
+  const proposedSteps = useMemo(() => createProposedProcess(steps, locale), [steps, locale]);
   const visibleSteps = view === "before" ? steps : proposedSteps;
-  const summary = view === "before"
-    ? ["Ручная передача между ролями", "Повторный ввод данных", "Сборка документов из нескольких источников"]
-    : ["Единый вход данных", "Автоматическая сборка комплекта", "Статусы и журнал в одном контуре"];
+  const summary = view === "before" ? t.compact.beforeSummary : t.compact.afterSummary;
 
   return (
     <section className="concept-builder concept-compact-demo" id="demonstration">
-      <RailMarker number="02" label="Демонстрация" />
+      <RailMarker number="02" label={t.rail.demonstration} />
       <header className="concept-builder-head">
         <div>
-          <span className="concept-kicker">Короткая демонстрация</span>
-          <h2>Один процесс. Два состояния.</h2>
+          <span className="concept-kicker">{t.compact.kicker}</span>
+          <h2>{t.compact.title}</h2>
         </div>
-        <p>
-          Переключи режим: сначала виден ручной сценарий, затем — предлагаемая схема. Расчёт выполняется локальными правилами в браузере.
-        </p>
+        <p>{t.compact.lead}</p>
       </header>
 
       <div className="concept-compact-workspace">
         <div className="concept-compact-toolbar">
-          <div className="concept-segmented" aria-label="Сравнение короткого сценария">
+          <div className="concept-segmented" aria-label={t.compact.comparisonLabel}>
             <button
               type="button"
               className={view === "before" ? "is-active" : ""}
               aria-pressed={view === "before"}
               onClick={() => setView("before")}
             >
-              Сейчас <span>{bottlenecks.length}</span>
+              {t.compact.current} <span>{bottlenecks.length}</span>
             </button>
             <button
               type="button"
@@ -439,62 +444,72 @@ function CompactProcessDemo() {
               aria-pressed={view === "after"}
               onClick={() => setView("after")}
             >
-              После <span>{proposedSteps.flatMap((step) => step.remediations ?? []).length}</span>
+              {t.compact.after} <span>{proposedSteps.flatMap((step) => step.remediations ?? []).length}</span>
             </button>
           </div>
-          <span>{view === "before" ? "Ручной сценарий" : "Предлагаемая схема"}</span>
+          <span>{view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}</span>
         </div>
 
         <div className="concept-compact-grid">
-          <ol className="concept-compact-flow" aria-label={view === "before" ? "Текущий процесс" : "Предлагаемая схема"}>
+          <ol className="concept-compact-flow" aria-label={view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}>
             {visibleSteps.map((step, index) => (
               <li key={step.id}>
                 <span className="concept-compact-number">{String(index + 1).padStart(2, "0")}</span>
                 <div className="concept-compact-copy">
-                  <small>{kindLabels[step.kind]}</small>
+                  <small>{t.kindLabels[step.kind]}</small>
                   <strong>{step.title}</strong>
-                  <p className="concept-step-description">{getStepDescription(step, bottlenecks)}</p>
+                  <p className="concept-step-description">{getStepDescription(step, bottlenecks, locale)}</p>
                 </div>
-                <em className="concept-step-role">{step.role || "Ответственный не назначен"}</em>
+                <em className="concept-step-role">{step.role || t.builder.unassigned}</em>
               </li>
             ))}
           </ol>
           <aside className="concept-compact-summary" aria-live="polite">
-            <span>{view === "before" ? "Что мешает" : "Что меняется"}</span>
+            <span>{view === "before" ? t.compact.beforeSummaryLabel : t.compact.afterSummaryLabel}</span>
             <ul>
               {summary.map((item) => <li key={item}>{item}</li>)}
             </ul>
-            <p>Это демонстрация подхода, а не обещание эффекта без обследования процесса.</p>
+            <p>{t.compact.disclaimer}</p>
           </aside>
         </div>
       </div>
 
       <div className="concept-compact-actions">
-        <Link className="concept-button concept-button-primary" href="/concepts/process-builder">
-          Открыть полный конструктор ↗
+        <Link className="concept-button concept-button-primary" href={locale === "en" ? "/en/concepts/process-builder" : "/concepts/process-builder"}>
+          {t.compact.openBuilder}
         </Link>
-        <a href="#contact">Обсудить свой процесс →</a>
+        <a href="#contact">{t.compact.discuss}</a>
       </div>
     </section>
   );
 }
 
-function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVariant; standalone?: boolean }) {
+function ProcessBuilder({
+  variant,
+  standalone = false,
+  locale = "ru",
+}: {
+  variant: ConceptVariant;
+  standalone?: boolean;
+  locale?: Locale;
+}) {
+  const t = conceptCopy[locale];
+  const presets = getProcessPresets(locale) as Record<PresetKey, ProcessPreset>;
   const hasProcessRail = variant === "editorial-workflow" && !standalone;
   const [activePreset, setActivePreset] = useState<PresetKey>("documents");
   const [steps, setSteps] = useState<ProcessStep[]>(() =>
-    cloneSteps(processPresets.documents.steps),
+    cloneSteps(presets.documents.steps),
   );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [view, setView] = useState<"before" | "after">("before");
   const [technical, setTechnical] = useState(false);
 
-  const bottlenecks = useMemo(() => analyzeProcess(steps), [steps]);
-  const proposedSteps = useMemo(() => createProposedProcess(steps), [steps]);
+  const bottlenecks = useMemo(() => analyzeProcess(steps, locale), [steps, locale]);
+  const proposedSteps = useMemo(() => createProposedProcess(steps, locale), [steps, locale]);
   const afterBottlenecks = useMemo(
-    () => analyzeProcess(proposedSteps),
-    [proposedSteps],
+    () => analyzeProcess(proposedSteps, locale),
+    [proposedSteps, locale],
   );
   const remediations = proposedSteps.flatMap((step) =>
     (step.remediations ?? []).map((item) => ({ ...item, stepTitle: step.title })),
@@ -504,8 +519,8 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
 
   const choosePreset = (key: PresetKey) => {
     setActivePreset(key);
-    const presetSteps = cloneSteps(processPresets[key].steps);
-    setSteps(presetSteps.length > 0 ? presetSteps : [makeStep(1)]);
+    const presetSteps = cloneSteps(presets[key].steps);
+    setSteps(presetSteps.length > 0 ? presetSteps : [makeStep(1, locale)]);
     setView("before");
   };
 
@@ -546,21 +561,19 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
       id="constructor"
       aria-labelledby={standalone ? "process-builder-title" : undefined}
     >
-      {hasProcessRail && <RailMarker number="02" label="Конструктор" />}
+      {hasProcessRail && <RailMarker number="02" label={t.rail.constructor} />}
       {!standalone && (
         <header className="concept-builder-head">
           <div>
-            <span className="concept-kicker">Интерактивный экспонат</span>
-            <h2>Покажи процесс. Найдём потери.</h2>
+            <span className="concept-kicker">{t.builder.kicker}</span>
+            <h2>{t.builder.title}</h2>
           </div>
-          <p>
-            Выбери пример, измени этапы и сравни ручной сценарий с предлагаемой схемой автоматизации. Без ИИ и случайных ответов.
-          </p>
+          <p>{t.builder.lead}</p>
         </header>
       )}
 
-      <nav className="concept-presets" aria-label="Примеры процессов">
-        {(Object.keys(processPresets) as PresetKey[]).map((key) => (
+      <nav className="concept-presets" aria-label={t.builder.presetsLabel}>
+        {(Object.keys(presets) as PresetKey[]).map((key) => (
           <button
             type="button"
             className={key === activePreset ? "is-active" : ""}
@@ -568,22 +581,22 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
             onClick={() => choosePreset(key)}
             key={key}
           >
-            <strong>{processPresets[key].label}</strong>
-            <span>{processPresets[key].description}</span>
+            <strong>{presets[key].label}</strong>
+            <span>{presets[key].description}</span>
           </button>
         ))}
       </nav>
 
       <div className="concept-workspace">
         <div className="concept-workspace-toolbar">
-          <div className="concept-segmented" aria-label="Сравнение процесса">
+          <div className="concept-segmented" aria-label={t.builder.comparisonLabel}>
             <button
               type="button"
               className={view === "before" ? "is-active" : ""}
               aria-pressed={view === "before"}
               onClick={() => setView("before")}
             >
-              Сейчас <span>{bottlenecks.length}</span>
+              {t.builder.current} <span>{bottlenecks.length}</span>
             </button>
             <button
               type="button"
@@ -591,7 +604,7 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
               aria-pressed={view === "after"}
               onClick={() => setView("after")}
             >
-              После <span>{remediations.length}</span>
+              {t.builder.after} <span>{remediations.length}</span>
             </button>
           </div>
           <button
@@ -600,15 +613,15 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
             aria-expanded={technical}
             onClick={() => setTechnical((current) => !current)}
           >
-            {technical ? "Скрыть техразбор" : "Технический разбор"}
+            {technical ? t.builder.hideTechnical : t.builder.showTechnical}
           </button>
         </div>
 
         <div className="concept-workspace-grid">
           <div className="concept-canvas" data-view={view}>
             <div className="concept-canvas-label">
-              <span>{view === "before" ? "Текущий процесс" : "Предлагаемая схема"}</span>
-              <em>{visibleSteps.length} этапов</em>
+              <span>{view === "before" ? t.builder.currentProcess : t.builder.proposedProcess}</span>
+              <em>{t.builder.stages(visibleSteps.length)}</em>
             </div>
             <div className="concept-step-list">
               {visibleSteps.map((step, index) => (
@@ -620,6 +633,7 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
                   editable={view === "before"}
                   detailed={variant === "editorial-workflow"}
                   bottlenecks={view === "before" ? bottlenecks : afterBottlenecks}
+                  locale={locale}
                   onEdit={() => view === "before" && setSelectedId(step.id)}
                   onMove={(direction) => view === "before" && moveStep(index, direction)}
                   onDragStart={() => view === "before" && setDraggedIndex(index)}
@@ -632,19 +646,19 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
                 className="concept-add-step"
                 type="button"
                 onClick={() => {
-                  const next = makeStep(steps.length + 1);
+                  const next = makeStep(steps.length + 1, locale);
                   setSteps((current) => [...current, next]);
                   setSelectedId(next.id);
                 }}
               >
-                <span>＋</span> Добавить этап
+                <span>＋</span> {t.builder.addStage}
               </button>
             )}
           </div>
 
           <aside className="concept-findings" aria-live="polite">
             <header>
-              <span>{view === "before" ? "Найдено" : "Гипотезы"}</span>
+              <span>{view === "before" ? t.builder.found : t.builder.hypotheses}</span>
               <strong>{view === "before" ? bottlenecks.length : remediations.length}</strong>
             </header>
             {view === "before" && bottlenecks.length > 0 ? (
@@ -660,14 +674,14 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
             ) : view === "after" && remediations.length > 0 ? (
               <div className="concept-clean-state">
                 <span aria-hidden="true">?</span>
-                <strong>Это гипотезы, а не выполненная автоматизация</strong>
-                <p>{afterBottlenecks.length} исходных признаков останутся неподтверждёнными, пока схема не проверена на ролях, исключениях и данных.</p>
+                <strong>{t.builder.hypothesisTitle}</strong>
+                <p>{t.builder.hypothesisBody(afterBottlenecks.length)}</p>
               </div>
             ) : (
               <div className="concept-clean-state">
                 <span aria-hidden="true">✓</span>
-                <strong>Явных разрывов не найдено</strong>
-                <p>Добавь проблемные признаки в этапы, чтобы проверить сценарий.</p>
+                <strong>{t.builder.cleanTitle}</strong>
+                <p>{t.builder.cleanBody}</p>
               </div>
             )}
             {view === "after" && remediations.length > 0 && (
@@ -675,18 +689,16 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
                 {remediations.slice(0, 5).map((item, index) => (
                   <li key={`${item.stepTitle}-${item.type}-${index}`}>
                     <span>{item.stepTitle}</span>
-                    <strong>Предлагаемое правило</strong>
+                    <strong>{t.builder.proposedRule}</strong>
                     <p>{item.action}</p>
                   </li>
                 ))}
               </ul>
             )}
             <div className="concept-consultation">
-              <p>
-                Для такого процесса может подойти единый реестр и контроль статусов. Точный состав решения зависит от ролей и исключений.
-              </p>
+              <p>{t.builder.consultation}</p>
               <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">
-                Обсудить автоматизацию ↗
+                {t.builder.discussAutomation}
               </a>
             </div>
           </aside>
@@ -698,6 +710,7 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
             bottleneckCount={bottlenecks.length}
             remediationCount={remediations.length}
             remainingCount={afterBottlenecks.length}
+            locale={locale}
           />
         )}
       </div>
@@ -705,6 +718,7 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
       {selectedStep && (
         <StepEditor
           step={selectedStep}
+          locale={locale}
           onChange={updateSelected}
           onClose={() => setSelectedId(null)}
           onDelete={deleteSelected}
@@ -714,71 +728,46 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
   );
 }
 
-function ExperienceSection() {
+function ExperienceSection({ locale }: { locale: Locale }) {
+  const t = conceptCopy[locale].experience;
   return (
     <section className="concept-experience" id="experience">
       <header>
-        <span className="concept-kicker">Опыт и ответственность</span>
-        <h2>Создаю веб-продукты с 2014 года.</h2>
-        <p>
-          Начинал с frontend-разработки и вырос до проектирования прикладных систем и руководства разработкой.
-        </p>
+        <span className="concept-kicker">{t.kicker}</span>
+        <h2>{t.title}</h2>
+        <p>{t.lead}</p>
       </header>
       <div className="concept-experience-grid">
-        <article>
-          <span>2021 — сейчас</span>
-          <h3>Начальник отдела веб-разработки</h3>
-          <strong>10 человек в отделе</strong>
-          <p>Планирование, распределение задач, технические решения, контроль качества и ответственность за результат команды.</p>
-        </article>
-        <article>
-          <span>Инженерная роль</span>
-          <h3>Разработчик систем полного цикла</h3>
-          <p>Связываю исследование процесса, UX/UI, frontend, backend, данные, документы, тестирование и запуск.</p>
-        </article>
-        <article>
-          <span>Подход</span>
-          <h3>Сначала работа, затем интерфейс</h3>
-          <p>Разбираю роли, исключения и движение данных до выбора технологий и визуального решения.</p>
-        </article>
+        {t.cards.map(([period, title, highlight, body]) => (
+          <article key={title}>
+            <span>{period}</span>
+            <h3>{title}</h3>
+            {highlight && <strong>{highlight}</strong>}
+            <p>{body}</p>
+          </article>
+        ))}
       </div>
     </section>
   );
 }
 
-function SelectedWorkSection() {
-  const works = [
-    {
-      number: "01",
-      kicker: "XLSX → сводка",
-      title: "Анализ обращений",
-      body: "Обрабатывает входящий XLSX, рассчитывает рабочее время и SLA, группирует обращения и формирует отчёт из четырёх связанных листов.",
-      tags: ["Python", "XLSX", "Аналитика"],
-    },
-    {
-      number: "02",
-      kicker: "PDF → XLSX",
-      title: "Подсчёт печатных знаков",
-      body: "Пакетно обрабатывает PDF, считает печатные знаки и авторские листы, хранит историю и выгружает проверяемую таблицу.",
-      tags: ["Python", "PDF", "Desktop"],
-    },
-  ];
-
+function SelectedWorkSection({ locale }: { locale: Locale }) {
+  const t = conceptCopy[locale].work;
   return (
     <section className="concept-selected-work" id="selected-work">
       <header>
-        <span className="concept-kicker">Небольшие прикладные инструменты</span>
-        <h2>Точечная автоматизация без лишней сложности.</h2>
-        <p>Два компактных решения для обработки файлов и подготовки проверяемого результата.</p>
+        <span className="concept-kicker">{t.kicker}</span>
+        <h2>{t.title}</h2>
+        <p>{t.lead}</p>
       </header>
       <div className="concept-selected-work-grid">
-        {works.map((work) => (
+        {t.items.map((work) => (
           <article key={work.number}>
             <span>{work.number}</span>
             <small>{work.kicker}</small>
             <h3>{work.title}</h3>
             <p>{work.body}</p>
-            <ul aria-label={`Технологии проекта «${work.title}»`}>
+            <ul aria-label={t.technologiesLabel(work.title)}>
               {work.tags.map((tag) => <li key={tag}>{tag}</li>)}
             </ul>
           </article>
@@ -788,79 +777,100 @@ function SelectedWorkSection() {
   );
 }
 
-function ConceptFooter() {
+function ConceptFooter({ locale }: { locale: Locale }) {
+  const t = conceptCopy[locale];
   return (
     <footer className="concept-footer">
       <div className="concept-footer-inner">
-        <span>Даниил Угловский · веб-системы</span>
-        <nav aria-label="Ссылки в футере">
-          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
+        <span>{t.footer.identity}</span>
+        <nav aria-label={t.footerNavigationLabel}>
+          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.footer.telegram}</a>
           <a href="mailto:abc-xyz9@yandex.ru">Email ↗</a>
-          <a href="#top">Наверх ↑</a>
+          <a href="#top">{t.footer.top}</a>
         </nav>
       </div>
     </footer>
   );
 }
 
-export function ProcessBuilderProduct() {
+export function ProcessBuilderProduct({ locale = "ru" }: { locale?: Locale }) {
+  const t = conceptCopy[locale];
   const { theme, toggleTheme } = useConceptTheme();
+  const portfolioHref = locale === "en" ? "/en/concepts/editorial-workflow" : "/concepts/editorial-workflow";
+  const languageHref = locale === "en" ? "/concepts/process-builder" : "/en/concepts/process-builder";
 
   return (
     <main className="concept concept-editorial-workflow concept-builder-product" data-theme={theme} id="top">
       <header className="concept-nav">
-        <Link href="/concepts/editorial-workflow" aria-label="Вернуться к портфолио">
+        <Link href={portfolioHref} aria-label={t.returnToPortfolio}>
           <span className="concept-mark">DU</span>
-          <span>Вернуться к портфолио</span>
+          <span>{t.returnToPortfolio}</span>
         </Link>
-        <nav aria-label="Навигация конструктора">
-          <a href="#constructor">Конструктор</a>
-          <a href="#contact">Контакт</a>
+        <nav aria-label={t.builderNavigationLabel}>
+          <a href="#constructor">{t.nav.builder}</a>
+          <a href="#contact">{t.nav.contact}</a>
         </nav>
         <div className="concept-nav-meta">
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <span>Демонстрационный продукт</span>
+          <LanguageSwitch locale={locale} href={languageHref} />
+          <ThemeToggle theme={theme} onToggle={toggleTheme} locale={locale} />
+          <span>{t.builderProduct.meta}</span>
         </div>
       </header>
       <section className="concept-builder-product-hero">
-        <span className="concept-kicker">Демонстрационный продукт</span>
-        <h1 id="process-builder-title">Конструктор процессов</h1>
-        <p>
-          Опиши ручной сценарий, отметь проблемные места и сравни его с предлагаемой схемой. Всё работает локально, без аккаунта, внешнего ИИ и сохранения данных.
-        </p>
+        <span className="concept-kicker">{t.builderProduct.kicker}</span>
+        <h1 id="process-builder-title">{t.builderProduct.title}</h1>
+        <p>{t.builderProduct.lead}</p>
       </section>
-      <ProcessBuilder variant="editorial-workflow" standalone />
+      <ProcessBuilder variant="editorial-workflow" standalone locale={locale} />
       <section className="concept-contact" id="contact">
-        <span className="concept-kicker">Нужен разбор реального процесса?</span>
-        <div className="concept-contact-copy"><h2>Напиши мне.</h2></div>
+        <span className="concept-kicker">{t.builderProduct.contactKicker}</span>
+        <div className="concept-contact-copy"><h2>{t.builderProduct.contactTitle}</h2></div>
         <div className="concept-contact-links">
           <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
           <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram ↗</a>
         </div>
       </section>
-      <ConceptFooter />
+      <ConceptFooter locale={locale} />
     </main>
   );
 }
 
-export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
-  const copy = variantCopy[variant];
+export function ConceptPrototype({
+  variant,
+  locale = "ru",
+}: {
+  variant: ConceptVariant;
+  locale?: Locale;
+}) {
   const hasProcessRail = variant === "editorial-workflow";
+  const t = conceptCopy[locale];
+  const copy = hasProcessRail
+    ? {
+        index: "",
+        label: t.hero.label,
+        title: t.hero.title,
+        lead: t.hero.lead,
+        action: "",
+        proofTitle: t.proof.title,
+      }
+    : variantCopy[variant];
   const { theme, toggleTheme } = useConceptTheme();
+  const workflowHref = locale === "en" ? "/en/concepts/editorial-workflow" : "/concepts/editorial-workflow";
+  const languageHref = locale === "en" ? "/concepts/editorial-workflow" : "/en/concepts/editorial-workflow";
 
   const hero = (
     <section className="concept-hero" id="positioning">
       <div className="concept-hero-copy">
-        {hasProcessRail && <RailMarker number="01" label="Позиционирование" />}
+        {hasProcessRail && <RailMarker number="01" label={t.rail.positioning} />}
         <span className="concept-kicker">{copy.label}</span>
         <h1>{copy.title}</h1>
         <p>{copy.lead}</p>
         {hasProcessRail ? (
           <div className="concept-hero-actions">
             <a className="concept-button concept-button-primary" href="#contact">
-              Написать мне ↗
+              {t.hero.contact}
             </a>
-            <a href="#demonstration">Смотреть демонстрацию ↓</a>
+            <a href="#demonstration">{t.hero.demo}</a>
           </div>
         ) : (
           <a className="concept-button concept-button-primary" href="#constructor">
@@ -869,12 +879,12 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
         )}
       </div>
       {hasProcessRail ? (
-        <aside className="concept-hero-brief" aria-label="Подход к проектированию">
-          <span>Что связывает решение</span>
+        <aside className="concept-hero-brief" aria-label={t.hero.briefLabel}>
+          <span>{t.hero.briefTitle}</span>
           <ol>
-            <li><strong>Процесс</strong><p>Роли, действия, ожидания и исключения.</p></li>
-            <li><strong>Система</strong><p>Интерфейс, данные, логика и документы.</p></li>
-            <li><strong>Результат</strong><p>Рабочий сценарий, проверенный в эксплуатации.</p></li>
+            {t.hero.brief.map(([title, body]) => (
+              <li key={title}><strong>{title}</strong><p>{body}</p></li>
+            ))}
           </ol>
         </aside>
       ) : (
@@ -886,9 +896,9 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
       )}
       {hasProcessRail ? (
         <div className="concept-hero-transition" aria-hidden="true">
-          <span>Ручной сценарий</span>
+          <span>{t.hero.transitionBefore}</span>
           <i />
-          <span>Управляемая система</span>
+          <span>{t.hero.transitionAfter}</span>
         </div>
       ) : (
         <div className="concept-hero-visual" aria-hidden="true">
@@ -904,29 +914,27 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
 
   const proof = (
     <section className="concept-proof" id="proof">
-      {hasProcessRail && <RailMarker number="03" label="Работающий кейс" />}
+      {hasProcessRail && <RailMarker number="03" label={t.rail.case} />}
       <header>
-        <span className="concept-kicker">Проект в эксплуатации</span>
+        <span className="concept-kicker">{hasProcessRail ? t.proof.kicker : "Проект в эксплуатации"}</span>
         <h2>{copy.proofTitle}</h2>
       </header>
       <div className="concept-proof-grid">
         <div className="concept-proof-screen">
           <img
             src="/case/lift-diagnostics-desktop.png"
-            alt="Интерфейс реестра диагностик лифтов"
+            alt={hasProcessRail ? t.proof.imageAlt : "Интерфейс реестра диагностик лифтов"}
           />
         </div>
         <div className="concept-proof-copy">
-          <strong>Автоматизация испытательной лаборатории</strong>
-          <p>
-            Требования, UX/UI, архитектура, frontend, backend, база данных, документы, тестирование и запуск — один завершённый цикл.
-          </p>
+          <strong>{hasProcessRail ? t.proof.projectTitle : "Автоматизация испытательной лаборатории"}</strong>
+          <p>{hasProcessRail ? t.proof.body : "Требования, UX/UI, архитектура, frontend, backend, база данных, документы, тестирование и запуск — один завершённый цикл."}</p>
           {hasProcessRail ? (
-            <dl aria-label="Метрики проекта автоматизации">
-              <div><dt>Подготовка</dt><dd>60 → 9 минут</dd></div>
-              <div><dt>Ручная работа</dt><dd>−85%</dd></div>
-              <div><dt>Объём</dt><dd>2 400 комплектов в год</dd></div>
-              <div><dt>Статус</dt><dd>В эксплуатации</dd></div>
+            <dl aria-label={t.proof.metricsLabel}>
+              <div><dt>{t.proof.preparation}</dt><dd>{t.proof.preparationValue}</dd></div>
+              <div><dt>{t.proof.manualWork}</dt><dd>−85%</dd></div>
+              <div><dt>{t.proof.volume}</dt><dd>{t.proof.volumeValue}</dd></div>
+              <div><dt>{t.proof.status}</dt><dd>{t.proof.statusValue}</dd></div>
             </dl>
           ) : (
             <dl>
@@ -935,7 +943,7 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
               <div><dt>Объём</dt><dd>2 400 комплектов в год</dd></div>
             </dl>
           )}
-          <Link href="/projects/lift-automation">Разобрать кейс ↗</Link>
+          <Link href={locale === "en" ? "/en/projects/lift-automation" : "/projects/lift-automation"}>{hasProcessRail ? t.proof.action : "Разобрать кейс ↗"}</Link>
         </div>
       </div>
     </section>
@@ -944,18 +952,18 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
   return (
     <main className={`concept concept-${variant}`} data-theme={hasProcessRail ? theme : undefined} id={hasProcessRail ? "top" : undefined}>
       <header className="concept-nav">
-        <Link href="/concepts" aria-label="Вернуться к сравнению концепций">
+        <Link href={hasProcessRail ? workflowHref : "/concepts"} aria-label={hasProcessRail ? t.returnToPortfolio : "Вернуться к сравнению концепций"}>
           <span className="concept-mark">DU</span>
-          <span>Даниил Угловский</span>
+          <span>{hasProcessRail ? t.name : "Даниил Угловский"}</span>
         </Link>
-        <nav aria-label="Навигация концепта">
+        <nav aria-label={hasProcessRail ? t.navigationLabel : "Навигация концепта"}>
           {hasProcessRail ? (
             <>
-              <a href="#demonstration">Демонстрация</a>
-              <a href="#proof">Кейс</a>
-              <a href="#experience">Опыт</a>
-              <a href="#selected-work">Работы</a>
-              <a href="#contact">Контакт</a>
+              <a href="#demonstration">{t.nav.demonstration}</a>
+              <a href="#proof">{t.nav.case}</a>
+              <a href="#experience">{t.nav.experience}</a>
+              <a href="#selected-work">{t.nav.work}</a>
+              <a href="#contact">{t.nav.contact}</a>
             </>
           ) : (
             <>
@@ -967,8 +975,8 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
         </nav>
         {hasProcessRail ? (
           <div className="concept-nav-meta">
-            <ThemeToggle theme={theme} onToggle={toggleTheme} />
-            <span>{copy.index}</span>
+            <LanguageSwitch locale={locale} href={languageHref} />
+            <ThemeToggle theme={theme} onToggle={toggleTheme} locale={locale} />
           </div>
         ) : (
           <span>{copy.index}</span>
@@ -977,34 +985,34 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
 
       {hasProcessRail ? (
         <div className="concept-process-story">
-          <ProcessRail />
+          <ProcessRail locale={locale} />
           {hero}
-          <CompactProcessDemo />
+          <CompactProcessDemo locale={locale} />
           {proof}
         </div>
       ) : (
         <>
           {hero}
-          <ProcessBuilder variant={variant} />
+          <ProcessBuilder variant={variant} locale="ru" />
           {proof}
         </>
       )}
 
-      {hasProcessRail && <ExperienceSection />}
-      {hasProcessRail && <SelectedWorkSection />}
+      {hasProcessRail && <ExperienceSection locale={locale} />}
+      {hasProcessRail && <SelectedWorkSection locale={locale} />}
 
       <section className="concept-contact" id="contact">
-        <span className="concept-kicker">Контакт</span>
+        <span className="concept-kicker">{hasProcessRail ? t.contact.kicker : "Контакт"}</span>
         <div className="concept-contact-copy">
-          <h2>{hasProcessRail ? "Есть задача? Напиши мне." : <>Есть ручной процесс?<br />Разберём его.</>}</h2>
+          <h2>{hasProcessRail ? t.contact.title : <>Есть ручной процесс?<br />Разберём его.</>}</h2>
           {hasProcessRail && (
-            <p>Расскажи о процессе, продукте или роли. Отвечаю в Telegram и по электронной почте.</p>
+            <p>{t.contact.lead}</p>
           )}
         </div>
         <div className="concept-contact-links">
           {hasProcessRail ? (
             <>
-              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
+              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.contact.telegram}</a>
               <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
             </>
           ) : (
@@ -1015,7 +1023,7 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
           )}
         </div>
       </section>
-      {hasProcessRail && <ConceptFooter />}
+      {hasProcessRail && <ConceptFooter locale={locale} />}
     </main>
   );
 }

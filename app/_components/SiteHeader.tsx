@@ -7,7 +7,7 @@ export function SiteHeader({
   section = "home",
 }: {
   locale: Locale;
-  section?: "home" | "case" | "privacy";
+  section?: "home" | "case";
 }) {
   const t = copy[locale];
   const home = locale === "ru" ? "/" : "/en";
@@ -16,13 +16,9 @@ export function SiteHeader({
       ? locale === "ru"
         ? "/en/projects/lift-automation"
         : "/projects/lift-automation"
-      : section === "privacy"
-        ? locale === "ru"
-          ? "/en/privacy"
-          : "/privacy"
-        : locale === "ru"
-          ? "/en"
-          : "/";
+      : locale === "ru"
+        ? "/en"
+        : "/";
 
   return (
     <header className="site-header">

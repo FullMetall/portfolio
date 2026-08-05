@@ -102,7 +102,7 @@ test("renders the Russian portfolio without starter or private content", async (
   assert.doesNotMatch(html, /\+7[\s()-]*\d{3}/);
 });
 
-test("renders English, case, and privacy routes", async () => {
+test("renders English and case routes without publishing privacy pages or links", async () => {
   const english = await render("/en");
   const caseStudy = await render("/projects/lift-automation");
   const englishCaseStudy = await render("/en/projects/lift-automation");
@@ -112,14 +112,12 @@ test("renders English, case, and privacy routes", async () => {
   assert.equal(english.status, 200);
   assert.equal(caseStudy.status, 200);
   assert.equal(englishCaseStudy.status, 200);
-  assert.equal(privacy.status, 200);
-  assert.equal(englishPrivacy.status, 200);
+  assert.equal(privacy.status, 404);
+  assert.equal(englishPrivacy.status, 404);
 
   const englishHtml = await english.text();
   const caseStudyHtml = await caseStudy.text();
   const englishCaseStudyHtml = await englishCaseStudy.text();
-  const privacyHtml = await privacy.text();
-  const englishPrivacyHtml = await englishPrivacy.text();
 
   assert.match(englishHtml, /I turn complex processes/);
   assert.match(englishHtml, /9 minutes/);
@@ -151,6 +149,7 @@ test("renders English, case, and privacy routes", async () => {
   assert.match(caseStudyHtml, /class="lift-case-process-grid"/);
   assert.match(caseStudyHtml, /class="[^"]*lift-case-gallery[^"]*"/);
   assert.match(caseStudyHtml, /<footer class="concept-footer"/);
+  assert.match(caseStudyHtml, /href="\/en\/projects\/lift-automation"[^>]*>EN<\/a>/);
   assert.doesNotMatch(caseStudyHtml, /class="site-header"/);
   assert.match(englishCaseStudyHtml, /4 processes/);
   assert.match(englishCaseStudyHtml, /Reducing document-set preparation from one hour to 9 minutes\./);
@@ -158,17 +157,12 @@ test("renders English, case, and privacy routes", async () => {
   assert.match(englishCaseStudyHtml, /Previous screen/);
   assert.match(englishCaseStudyHtml, /Open full-size image/);
   assert.doesNotMatch(englishCaseStudyHtml, /2 roles/);
-  assert.doesNotMatch(englishCaseStudyHtml, /concept-lift-case/);
-  assert.match(privacyHtml, /собирать минимум данных/);
+  assert.match(englishCaseStudyHtml, /class="concept concept-editorial-workflow concept-lift-case"/);
+  assert.match(englishCaseStudyHtml, /href="\/projects\/lift-automation"[^>]*>RU<\/a>/);
 
-  for (const html of [caseStudyHtml, privacyHtml]) {
+  for (const html of [englishHtml, caseStudyHtml, englishCaseStudyHtml]) {
     assert.match(html, /<footer/);
-    assert.match(html, /href="\/privacy"/);
-  }
-
-  for (const html of [englishHtml, englishCaseStudyHtml, englishPrivacyHtml]) {
-    assert.match(html, /<footer/);
-    assert.match(html, /href="\/en\/privacy"/);
+    assert.doesNotMatch(html, /href="\/(?:en\/)?privacy"|Конфиденциальность|>Privacy</);
   }
 });
 
@@ -255,6 +249,36 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /class="concept-step-role"/);
   assert.match(html, /<footer class="concept-footer"/);
   assert.match(html, /class="concept-footer-inner"/);
+  assert.doesNotMatch(html, /04 \/ Editorial workflow/);
+  assert.match(html, /href="\/en\/concepts\/editorial-workflow"[^>]*>EN<\/a>/);
+});
+
+test("exports the current editorial workflow and process builder in English", async () => {
+  const workflow = await render("/en/concepts/editorial-workflow");
+  const builder = await render("/en/concepts/process-builder");
+
+  assert.equal(workflow.status, 200);
+  assert.equal(builder.status, 200);
+
+  const workflowHtml = await workflow.text();
+  const builderHtml = await builder.text();
+  const workflowMain = workflowHtml.match(/<main[\s\S]*?<\/main>/)?.[0] ?? "";
+  const builderMain = builderHtml.match(/<main[\s\S]*?<\/main>/)?.[0] ?? "";
+
+  assert.match(workflowHtml, /From a manual process to a working system\./);
+  assert.match(workflowHtml, /One process\. Two states\./);
+  assert.match(workflowHtml, /Head of web development/);
+  assert.match(workflowHtml, /Appeals analysis/);
+  assert.match(workflowHtml, /href="\/concepts\/editorial-workflow"[^>]*>RU<\/a>/);
+  assert.match(workflowHtml, /href="\/en\/concepts\/process-builder"/);
+  assert.doesNotMatch(workflowHtml, /04 \/ Editorial workflow/);
+  assert.doesNotMatch(workflowMain, /[А-Яа-яЁё]/);
+
+  assert.match(builderHtml, /<h1 id="process-builder-title">Process builder<\/h1>/);
+  assert.match(builderHtml, /Document processing/);
+  assert.match(builderHtml, /Technical breakdown/);
+  assert.match(builderHtml, /href="\/concepts\/process-builder"[^>]*>RU<\/a>/);
+  assert.doesNotMatch(builderMain, /[А-Яа-яЁё]/);
 });
 
 test("exports the full process builder as a separate preview product", async () => {
