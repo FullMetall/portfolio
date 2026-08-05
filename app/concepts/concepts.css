@@ -1401,7 +1401,15 @@
 }
 
 .concept-editorial-workflow .concept-proof-screen {
+  display: grid;
+  place-items: center;
   background: linear-gradient(145deg, #071014, #1b3b42);
+}
+
+.concept-editorial-workflow .concept-proof-screen img {
+  width: 100%;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .concept-editorial-workflow .concept-proof-copy {
@@ -1757,13 +1765,13 @@
 .concept-editorial-workflow .concept-step {
   height: 280px;
   min-height: 280px;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 30px 1fr;
 }
 
 .concept-editorial-workflow .concept-step-main {
   min-height: 0;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr 45px;
   align-content: stretch;
   padding: 12px 0 0;
 }
@@ -2633,7 +2641,7 @@
     min-height: 260px;
     display: grid;
     grid-template-columns: 1fr auto;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 30px 1fr;
     align-items: stretch;
     gap: 0;
     padding: 14px;
@@ -2653,7 +2661,7 @@
   .concept-editorial-workflow .concept-builder .concept-step-main {
     grid-column: 1 / -1;
     grid-row: 2;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: 1fr 45px;
     padding: 10px 0 0;
   }
 

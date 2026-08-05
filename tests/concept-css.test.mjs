@@ -46,12 +46,14 @@ test("editorial workflow segmented control has readable active text", () => {
 
 test("editorial workflow process cards use stable equal-height content rows", () => {
   const fullCard = rule(".concept-editorial-workflow .concept-step");
+  const fullMain = rule(".concept-editorial-workflow .concept-step-main");
   const compactCard = rule(".concept-editorial-workflow .concept-compact-flow > li");
   const fullCopy = rule(".concept-editorial-workflow .concept-step-copy");
   const compactCopy = rule(".concept-editorial-workflow .concept-compact-copy");
 
   assert.match(fullCard, /height:\s*280px/);
-  assert.match(fullCard, /grid-template-rows:\s*auto\s+1fr/);
+  assert.match(fullCard, /grid-template-rows:\s*30px\s+1fr/);
+  assert.match(fullMain, /grid-template-rows:\s*1fr\s+45px/);
   assert.match(compactCard, /height:\s*260px/);
   assert.match(compactCard, /grid-template-rows:\s*auto\s+1fr\s+auto/);
   assert.match(fullCopy, /grid-template-rows:/);
@@ -67,10 +69,21 @@ test("editorial workflow restores the vertical card hierarchy on mobile", () => 
   const mobileMain = rule(".concept-editorial-workflow .concept-builder .concept-step-main");
 
   assert.match(mobileCard, /grid-template-columns:\s*1fr\s+auto/);
-  assert.match(mobileCard, /grid-template-rows:\s*auto\s+1fr/);
+  assert.match(mobileCard, /grid-template-rows:\s*30px\s+1fr/);
   assert.match(mobileMain, /grid-column:\s*1\s*\/\s*-1/);
   assert.match(mobileMain, /grid-row:\s*2/);
-  assert.match(mobileMain, /grid-template-rows:\s*1fr\s+auto/);
+  assert.match(mobileMain, /grid-template-rows:\s*1fr\s+45px/);
+});
+
+test("editorial workflow shows the complete case screenshot without cropping", () => {
+  const screen = rule(".concept-editorial-workflow .concept-proof-screen");
+  const image = rule(".concept-editorial-workflow .concept-proof-screen img");
+
+  assert.match(screen, /display:\s*grid/);
+  assert.match(screen, /place-items:\s*center/);
+  assert.match(image, /width:\s*100%/);
+  assert.match(image, /max-width:\s*100%/);
+  assert.match(image, /object-fit:\s*contain/);
 });
 
 test("editorial workflow footer uses a full-width shell with a constrained responsive inner container", () => {
