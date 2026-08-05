@@ -204,6 +204,7 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   const html = await response.text();
   assert.match(html, /Сквозной маршрут процесса/);
   assert.match(html, /concept-process-rail/);
+  assert.match(html, /class="concept-hero-copy"><div class="concept-rail-marker"/);
   assert.match(html, /01[^<]*Позиционирование/);
   assert.match(html, /02[^<]*Демонстрация/);
   assert.match(html, /03[^<]*Работающий кейс/);
@@ -238,6 +239,7 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /class="concept-step-description"/);
   assert.match(html, /class="concept-step-role"/);
   assert.match(html, /<footer class="concept-footer"/);
+  assert.match(html, /class="concept-footer-inner"/);
 });
 
 test("exports the full process builder as a separate preview product", async () => {
@@ -245,7 +247,10 @@ test("exports the full process builder as a separate preview product", async () 
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, /Конструктор процессов/);
+  assert.match(html, /<h1 id="process-builder-title">Конструктор процессов<\/h1>/);
+  assert.match(html, /<section class="concept-builder" id="constructor" aria-labelledby="process-builder-title">/);
+  assert.doesNotMatch(html, /Покажи процесс\. Найдём потери\./);
+  assert.doesNotMatch(html, /Интерактивный экспонат/);
   assert.match(html, /Собрать свой процесс/);
   assert.match(html, /Технический разбор/);
   assert.match(html, /Обработка документов/);
@@ -257,6 +262,7 @@ test("exports the full process builder as a separate preview product", async () 
   assert.match(html, /class="concept-step-role"/);
   assert.doesNotMatch(html, /<div class="concept-step-copy"|<p class="concept-step-description"/);
   assert.match(html, /<footer class="concept-footer"/);
+  assert.match(html, /class="concept-footer-inner"/);
   assert.match(html, /noindex/);
 });
 

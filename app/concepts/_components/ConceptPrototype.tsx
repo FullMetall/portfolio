@@ -539,17 +539,23 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
   };
 
   return (
-    <section className="concept-builder" id="constructor">
+    <section
+      className="concept-builder"
+      id="constructor"
+      aria-labelledby={standalone ? "process-builder-title" : undefined}
+    >
       {hasProcessRail && <RailMarker number="02" label="Конструктор" />}
-      <header className="concept-builder-head">
-        <div>
-          <span className="concept-kicker">Интерактивный экспонат</span>
-          <h2>Покажи процесс. Найдём потери.</h2>
-        </div>
-        <p>
-          Выбери пример, измени этапы и сравни ручной сценарий с предлагаемой схемой автоматизации. Без ИИ и случайных ответов.
-        </p>
-      </header>
+      {!standalone && (
+        <header className="concept-builder-head">
+          <div>
+            <span className="concept-kicker">Интерактивный экспонат</span>
+            <h2>Покажи процесс. Найдём потери.</h2>
+          </div>
+          <p>
+            Выбери пример, измени этапы и сравни ручной сценарий с предлагаемой схемой автоматизации. Без ИИ и случайных ответов.
+          </p>
+        </header>
+      )}
 
       <nav className="concept-presets" aria-label="Примеры процессов">
         {(Object.keys(processPresets) as PresetKey[]).map((key) => (
@@ -783,12 +789,14 @@ function SelectedWorkSection() {
 function ConceptFooter() {
   return (
     <footer className="concept-footer">
-      <span>Даниил Угловский · веб-системы</span>
-      <nav aria-label="Ссылки в футере">
-        <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
-        <a href="mailto:abc-xyz9@yandex.ru">Email ↗</a>
-        <a href="#top">Наверх ↑</a>
-      </nav>
+      <div className="concept-footer-inner">
+        <span>Даниил Угловский · веб-системы</span>
+        <nav aria-label="Ссылки в футере">
+          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
+          <a href="mailto:abc-xyz9@yandex.ru">Email ↗</a>
+          <a href="#top">Наверх ↑</a>
+        </nav>
+      </div>
     </footer>
   );
 }
@@ -809,7 +817,7 @@ export function ProcessBuilderProduct() {
       </header>
       <section className="concept-builder-product-hero">
         <span className="concept-kicker">Демонстрационный продукт</span>
-        <h1>Конструктор процессов</h1>
+        <h1 id="process-builder-title">Конструктор процессов</h1>
         <p>
           Опиши ручной сценарий, отметь проблемные места и сравни его с предлагаемой схемой. Всё работает локально, без аккаунта, внешнего ИИ и сохранения данных.
         </p>
@@ -834,8 +842,8 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
 
   const hero = (
     <section className="concept-hero" id="positioning">
-      {hasProcessRail && <RailMarker number="01" label="Позиционирование" />}
       <div className="concept-hero-copy">
+        {hasProcessRail && <RailMarker number="01" label="Позиционирование" />}
         <span className="concept-kicker">{copy.label}</span>
         <h1>{copy.title}</h1>
         <p>{copy.lead}</p>

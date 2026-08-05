@@ -22,7 +22,7 @@ test("editorial workflow keeps the opening screen compact and aligns rail marker
   );
   assert.match(
     css,
-    /\.concept-editorial-workflow \.concept-hero > \.concept-rail-marker\s*\{[^}]*top:\s*clamp\(84px,\s*9vw,\s*136px\)/s,
+    /\.concept-editorial-workflow \.concept-hero-copy > \.concept-rail-marker\s*\{[^}]*top:\s*-12px/s,
   );
   assert.match(
     mobile800,
@@ -30,7 +30,11 @@ test("editorial workflow keeps the opening screen compact and aligns rail marker
   );
   assert.match(
     mobile800,
-    /\.concept-editorial-workflow \.concept-hero > \.concept-rail-marker\s*\{[^}]*top:\s*20px/s,
+    /\.concept-editorial-workflow \.concept-hero-copy > \.concept-rail-marker\s*\{[^}]*top:\s*-10px/s,
+  );
+  assert.match(
+    mobile800,
+    /\.concept-editorial-workflow \.concept-hero-copy > \.concept-rail-marker strong\s*\{[^}]*display:\s*none/s,
   );
 });
 
@@ -69,9 +73,35 @@ test("editorial workflow restores the vertical card hierarchy on mobile", () => 
   assert.match(mobileMain, /grid-template-rows:\s*1fr\s+auto/);
 });
 
-test("editorial workflow footer has a separated responsive layout", () => {
+test("editorial workflow footer uses a full-width shell with a constrained responsive inner container", () => {
+  const footer = rule(".concept-footer");
+
+  assert.match(footer, /width:\s*100%/);
+  assert.match(footer, /border-top:\s*1px solid var\(--concept-line\)/);
   assert.match(
     css,
-    /\.concept-footer\s*\{[^}]*display:\s*flex[^}]*border-top:\s*1px solid var\(--concept-line\)/s,
+    /\.concept-footer-inner\s*\{[^}]*width:\s*min\(1280px,\s*calc\(100%\s*-\s*96px\)\)[^}]*display:\s*flex/s,
+  );
+  assert.match(
+    mobile800,
+    /\.concept-footer-inner\s*\{[^}]*width:\s*calc\(100%\s*-\s*28px\)/s,
+  );
+  assert.match(
+    mobile800,
+    /\.concept-footer-inner\s*\{[^}]*flex-direction:\s*column/s,
+  );
+});
+
+test("standalone process builder uses the compact hero scale and starts controls without a duplicate heading", () => {
+  const builder = rule(".concept-builder-product .concept-builder");
+
+  assert.match(
+    css,
+    /\.concept-builder-product-hero h1\s*\{[^}]*font-size:\s*clamp\(58px,\s*6\.2vw,\s*96px\)/s,
+  );
+  assert.match(builder, /padding-top:\s*0/);
+  assert.match(
+    mobile800,
+    /\.concept-builder-product-hero h1\s*\{[^}]*font-size:\s*clamp\(48px,\s*10vw,\s*58px\)/s,
   );
 });

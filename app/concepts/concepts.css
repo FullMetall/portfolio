@@ -1740,8 +1740,8 @@
   line-height: 0.9;
 }
 
-.concept-editorial-workflow .concept-hero > .concept-rail-marker {
-  top: clamp(84px, 9vw, 136px);
+.concept-editorial-workflow .concept-hero-copy > .concept-rail-marker {
+  top: -12px;
 }
 
 .concept-editorial-workflow .concept-segmented button.is-active {
@@ -1826,6 +1826,16 @@
 }
 
 .concept-footer {
+  width: 100%;
+  min-height: 92px;
+  border-top: 1px solid var(--concept-line);
+  color: var(--concept-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-footer-inner {
   width: min(1280px, calc(100% - 96px));
   min-height: 92px;
   display: flex;
@@ -1833,11 +1843,6 @@
   justify-content: space-between;
   gap: 32px;
   margin: 0 auto;
-  border-top: 1px solid var(--concept-line);
-  color: var(--concept-muted);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .concept-footer nav {
@@ -1860,7 +1865,7 @@
   max-width: 1050px;
   margin: 18px 0 28px;
   font-family: var(--concept-display);
-  font-size: clamp(76px, 11vw, 170px);
+  font-size: clamp(58px, 6.2vw, 96px);
   font-weight: 650;
   line-height: 0.84;
   letter-spacing: -0.04em;
@@ -1876,7 +1881,7 @@
 }
 
 .concept-builder-product .concept-builder {
-  padding-top: 54px;
+  padding-top: 0;
 }
 
 /* Variant 3 — tool-first studio with a permanent rail and vertical process stack. */
@@ -2564,8 +2569,12 @@
     font-size: clamp(48px, 10vw, 58px);
   }
 
-  .concept-editorial-workflow .concept-hero > .concept-rail-marker {
-    top: 20px;
+  .concept-editorial-workflow .concept-hero-copy > .concept-rail-marker {
+    top: -10px;
+  }
+
+  .concept-editorial-workflow .concept-hero-copy > .concept-rail-marker strong {
+    display: none;
   }
 
   .concept-rail-marker {
@@ -2713,11 +2722,11 @@
   .concept-selected-work,
   .concept-editorial-workflow .concept-contact,
   .concept-builder-product-hero,
-  .concept-footer {
+  .concept-footer-inner {
     width: calc(100% - 28px);
   }
 
-  .concept-footer {
+  .concept-footer-inner {
     align-items: flex-start;
     flex-direction: column;
     justify-content: center;
@@ -2749,7 +2758,7 @@
   }
 
   .concept-builder-product-hero h1 {
-    font-size: clamp(58px, 17vw, 90px);
+    font-size: clamp(48px, 10vw, 58px);
   }
 }
 
