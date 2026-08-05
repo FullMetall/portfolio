@@ -130,6 +130,7 @@ test("editorial workflow pages expose an accessible dark and light theme switch"
   assert.match(prototype, /data-theme=\{theme\}/);
   assert.match(themeToggle, /aria-label="Светлая тема"/);
   assert.match(themeToggle, /aria-pressed=\{theme === "light"\}/);
+  assert.doesNotMatch(themeToggle, /concept-theme-label/);
   assert.match(prototype, /<ThemeToggle theme=\{theme\} onToggle=/);
 });
 
@@ -145,13 +146,21 @@ test("editorial workflow shares one persistent theme across routes", () => {
   assert.equal([...themeProvider.matchAll(/catch\s*\{/g)].length, 2);
 });
 
+test("editorial workflow defaults to the system theme without a saved preference", () => {
+  assert.match(themeProvider, /matchMedia\("\(prefers-color-scheme: light\)"\)\.matches/);
+  assert.match(themeProvider, /readStoredTheme\(\) \?\? readSystemTheme\(\)/);
+});
+
 test("lift case loads the same display and body fonts on a direct request", () => {
   assert.match(liftCaseLayout, /@fontsource-variable\/oswald/);
   assert.match(liftCaseLayout, /@fontsource-variable\/golos-text/);
 });
 
 test("theme switch and light preset states inherit the site type and remain readable", () => {
-  assert.match(css, /\.concept-theme-toggle\s*\{[^}]*font-family:\s*inherit/s);
+  assert.match(css, /\.concept-theme-toggle\s*\{[^}]*width:\s*34px[^}]*height:\s*34px/s);
+  assert.match(css, /\.concept-theme-toggle svg\s*\{[^}]*width:\s*16px[^}]*height:\s*16px/s);
+  assert.match(themeToggle, /<svg/);
+  assert.doesNotMatch(themeToggle, /☀|☾/);
   assert.match(
     css,
     /\.concept-editorial-workflow\[data-theme="light"\] \.concept-presets button:hover span,[^{]*\{[^}]*color:\s*#f9f7ef/s,

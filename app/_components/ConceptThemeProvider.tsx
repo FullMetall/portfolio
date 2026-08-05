@@ -22,6 +22,10 @@ function readStoredTheme(): ConceptTheme | null {
   }
 }
 
+function readSystemTheme(): ConceptTheme {
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+
 function persistTheme(theme: ConceptTheme) {
   try {
     window.localStorage.setItem(STORAGE_KEY, theme);
@@ -34,8 +38,7 @@ export function ConceptThemeProvider({ children }: { children: React.ReactNode }
   const [theme, setTheme] = useState<ConceptTheme>("dark");
 
   useEffect(() => {
-    const savedTheme = readStoredTheme();
-    if (savedTheme) setTheme(savedTheme);
+    setTheme(readStoredTheme() ?? readSystemTheme());
   }, []);
 
   const toggleTheme = useCallback(() => {

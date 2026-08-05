@@ -129,7 +129,14 @@ test("renders English, case, and privacy routes", async () => {
   assert.match(englishHtml, /XLSX → REPORT/);
   assert.doesNotMatch(englishHtml, /UTILITY/);
   assert.doesNotMatch(englishHtml, /60 → 7 min|−88%/);
-  assert.match(caseStudyHtml, /с часа до 9 минут/);
+  assert.doesNotMatch(caseStudyHtml, /с часа до 9 минут/);
+  assert.match(caseStudyHtml, /Комплект документов — за 9 минут\./);
+  assert.match(caseStudyHtml, /Ручной процесс вместо единой системы\./);
+  assert.match(caseStudyHtml, /Один контур для всей работы\./);
+  assert.match(caseStudyHtml, /Один разработчик\. Полный цикл\./);
+  assert.match(caseStudyHtml, /−85% времени на подготовку комплекта\./);
+  assert.doesNotMatch(caseStudyHtml, /Проблема была не в одном документе/);
+  assert.doesNotMatch(caseStudyHtml, /Самостоятельно провёл проект через полный цикл разработки/);
   assert.match(caseStudyHtml, /60 → 9 мин/);
   assert.match(caseStudyHtml, /сократилось на 85%/);
   assert.match(caseStudyHtml, /3 месяца/);
@@ -146,6 +153,7 @@ test("renders English, case, and privacy routes", async () => {
   assert.match(caseStudyHtml, /<footer class="concept-footer"/);
   assert.doesNotMatch(caseStudyHtml, /class="site-header"/);
   assert.match(englishCaseStudyHtml, /4 processes/);
+  assert.match(englishCaseStudyHtml, /Reducing document-set preparation from one hour to 9 minutes\./);
   assert.match(englishCaseStudyHtml, /moved out of manual work/);
   assert.match(englishCaseStudyHtml, /Previous screen/);
   assert.match(englishCaseStudyHtml, /Open full-size image/);
