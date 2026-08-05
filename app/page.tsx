@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { PortfolioPage } from "./_components/PortfolioPage";
+import "@fontsource-variable/golos-text";
+import "@fontsource-variable/oswald";
+import { ConceptPrototype } from "./concepts/_components/ConceptPrototype";
+import "./concepts/concepts.css";
 
 export const metadata: Metadata = {
-  title: "Разработчик веб-систем",
+  title: "Архитектура рабочих процессов",
   description:
-    "Портфолио Даниила Угловского: разработка веб-систем, автоматизация процессов и прикладной продукт для испытательной лаборатории.",
+    "Даниил Угловский проектирует веб-системы полного цикла: от разбора ручного процесса до рабочего продукта в эксплуатации.",
   alternates: {
     canonical: "/",
     languages: {
@@ -15,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <PortfolioPage locale="ru" />;
+  return <ConceptPrototype variant="editorial-workflow" homepage />;
 }

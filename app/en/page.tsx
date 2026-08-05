@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { PortfolioPage } from "../_components/PortfolioPage";
+import "@fontsource-variable/golos-text";
+import "@fontsource-variable/oswald";
+import { ConceptPrototype } from "../concepts/_components/ConceptPrototype";
+import "../concepts/concepts.css";
 
 export const metadata: Metadata = {
-  title: "Web systems developer",
+  title: { absolute: "Workflow architecture — Daniil Uglovskiy" },
   description:
-    "Daniil Uglovskiy's portfolio: web systems development, process automation, and an applied product for a testing laboratory.",
+    "Daniil Uglovskiy designs full-cycle web systems, from mapping a manual process to a working product in operation.",
   alternates: {
     canonical: "/en",
     languages: {
@@ -15,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function EnglishHome() {
-  return <PortfolioPage locale="en" />;
+  return <ConceptPrototype variant="editorial-workflow" locale="en" homepage />;
 }

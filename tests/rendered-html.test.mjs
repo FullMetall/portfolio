@@ -78,22 +78,23 @@ async function render(pathname = "/") {
   });
 }
 
-test("renders the Russian portfolio without starter or private content", async () => {
+test("publishes editorial workflow as the Russian production homepage", async () => {
   const response = await render("/");
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /Даниил Угловский/);
-  assert.match(html, /Превращаю сложные процессы/);
-  assert.match(html, /9 минут/);
+  assert.match(html, /class="concept concept-editorial-workflow"/);
+  assert.match(html, /Из ручного процесса — в рабочую систему\./);
+  assert.match(html, /Один процесс\. Два состояния\./);
+  assert.match(html, /href="\/en"[^>]*>EN<\/a>/);
+  assert.match(html, /60 → 9 минут/);
   assert.match(html, /−85%/);
   assert.doesNotMatch(html, /60 → 7 мин|−88%/);
-  assert.match(html, /Полный цикл/);
+  assert.match(html, /Создаю веб-продукты с 2014 года/);
   assert.match(html, /Анализ обращений/);
   assert.match(html, /Подсчёт печатных знаков/);
-  assert.match(html, /XLSX → СВОДКА/);
-  assert.doesNotMatch(html, /UTILITY/);
   assert.match(html, /abc-xyz9@yandex\.ru/);
   assert.doesNotMatch(html, /daniil@fullmetall\.ru/);
   assert.match(html, /\/projects\/lift-automation/);
@@ -102,7 +103,7 @@ test("renders the Russian portfolio without starter or private content", async (
   assert.doesNotMatch(html, /\+7[\s()-]*\d{3}/);
 });
 
-test("renders English and case routes without publishing privacy pages or links", async () => {
+test("publishes editorial workflow in English and keeps case routes paired", async () => {
   const english = await render("/en");
   const caseStudy = await render("/projects/lift-automation");
   const englishCaseStudy = await render("/en/projects/lift-automation");
@@ -119,13 +120,15 @@ test("renders English and case routes without publishing privacy pages or links"
   const caseStudyHtml = await caseStudy.text();
   const englishCaseStudyHtml = await englishCaseStudy.text();
 
-  assert.match(englishHtml, /I turn complex processes/);
-  assert.match(englishHtml, /9 minutes/);
+  assert.match(englishHtml, /<title>Workflow architecture — Daniil Uglovskiy<\/title>/);
+  assert.match(englishHtml, /class="concept concept-editorial-workflow"/);
+  assert.match(englishHtml, /From a manual process to a working system\./);
+  assert.match(englishHtml, /One process\. Two states\./);
+  assert.match(englishHtml, /href="\/"[^>]*>RU<\/a>/);
+  assert.match(englishHtml, /60 → 9 minutes/);
   assert.match(englishHtml, /−85%/);
-  assert.match(englishHtml, /Full cycle/);
+  assert.match(englishHtml, /Building web products since 2014/);
   assert.match(englishHtml, /Appeals analysis/);
-  assert.match(englishHtml, /XLSX → REPORT/);
-  assert.doesNotMatch(englishHtml, /UTILITY/);
   assert.doesNotMatch(englishHtml, /60 → 7 min|−88%/);
   assert.doesNotMatch(caseStudyHtml, /с часа до 9 минут/);
   assert.match(caseStudyHtml, /Комплект документов — за 9 минут\./);

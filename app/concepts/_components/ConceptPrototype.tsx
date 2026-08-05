@@ -838,9 +838,11 @@ export function ProcessBuilderProduct({ locale = "ru" }: { locale?: Locale }) {
 export function ConceptPrototype({
   variant,
   locale = "ru",
+  homepage = false,
 }: {
   variant: ConceptVariant;
   locale?: Locale;
+  homepage?: boolean;
 }) {
   const hasProcessRail = variant === "editorial-workflow";
   const t = conceptCopy[locale];
@@ -855,8 +857,12 @@ export function ConceptPrototype({
       }
     : variantCopy[variant];
   const { theme, toggleTheme } = useConceptTheme();
-  const workflowHref = locale === "en" ? "/en/concepts/editorial-workflow" : "/concepts/editorial-workflow";
-  const languageHref = locale === "en" ? "/concepts/editorial-workflow" : "/en/concepts/editorial-workflow";
+  const workflowHref = homepage
+    ? locale === "en" ? "/en" : "/"
+    : locale === "en" ? "/en/concepts/editorial-workflow" : "/concepts/editorial-workflow";
+  const languageHref = homepage
+    ? locale === "en" ? "/" : "/en"
+    : locale === "en" ? "/concepts/editorial-workflow" : "/en/concepts/editorial-workflow";
 
   const hero = (
     <section className="concept-hero" id="positioning">
