@@ -140,11 +140,20 @@ function makeStep(position: number): ProcessStep {
   };
 }
 
+function getStepDescription(step: ProcessStep, bottlenecks: Bottleneck[]) {
+  const remediation = step.remediations?.[0]?.action;
+  if (remediation) return remediation;
+
+  const issue = bottlenecks.find((item) => item.stepId === step.id);
+  return issue?.detail ?? "Отдельный этап процесса без отмеченных проблем.";
+}
+
 function StepCard({
   step,
   index,
   total,
   editable,
+  detailed,
   bottlenecks,
   onEdit,
   onMove,
@@ -155,6 +164,7 @@ function StepCard({
   index: number;
   total: number;
   editable: boolean;
+  detailed: boolean;
   bottlenecks: Bottleneck[];
   onEdit: () => void;
   onMove: (direction: -1 | 1) => void;
@@ -162,7 +172,17 @@ function StepCard({
   onDrop: () => void;
 }) {
   const issues = bottlenecks.filter((item) => item.stepId === step.id);
-  const stepContent = (
+  const description = getStepDescription(step, bottlenecks);
+  const stepContent = detailed ? (
+    <>
+      <span className="concept-step-copy">
+        <span className="concept-step-kind">{kindLabels[step.kind]}</span>
+        <strong>{step.title}</strong>
+        <span className="concept-step-description">{description}</span>
+      </span>
+      <span className="concept-step-role">{step.role || "Ответственный не назначен"}</span>
+    </>
+  ) : (
     <>
       <span className="concept-step-kind">{kindLabels[step.kind]}</span>
       <strong>{step.title}</strong>
@@ -427,12 +447,13 @@ function CompactProcessDemo() {
           <ol className="concept-compact-flow" aria-label={view === "before" ? "Текущий процесс" : "Предлагаемая схема"}>
             {visibleSteps.map((step, index) => (
               <li key={step.id}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <div>
+                <span className="concept-compact-number">{String(index + 1).padStart(2, "0")}</span>
+                <div className="concept-compact-copy">
                   <small>{kindLabels[step.kind]}</small>
                   <strong>{step.title}</strong>
-                  <em>{step.role}</em>
+                  <p className="concept-step-description">{getStepDescription(step, bottlenecks)}</p>
                 </div>
+                <em className="concept-step-role">{step.role || "Ответственный не назначен"}</em>
               </li>
             ))}
           </ol>
@@ -589,6 +610,7 @@ function ProcessBuilder({ variant, standalone = false }: { variant: ConceptVaria
                   index={index}
                   total={visibleSteps.length}
                   editable={view === "before"}
+                  detailed={variant === "editorial-workflow"}
                   bottlenecks={view === "before" ? bottlenecks : afterBottlenecks}
                   onEdit={() => view === "before" && setSelectedId(step.id)}
                   onMove={(direction) => view === "before" && moveStep(index, direction)}
@@ -758,9 +780,22 @@ function SelectedWorkSection() {
   );
 }
 
+function ConceptFooter() {
+  return (
+    <footer className="concept-footer">
+      <span>Даниил Угловский · веб-системы</span>
+      <nav aria-label="Ссылки в футере">
+        <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
+        <a href="mailto:abc-xyz9@yandex.ru">Email ↗</a>
+        <a href="#top">Наверх ↑</a>
+      </nav>
+    </footer>
+  );
+}
+
 export function ProcessBuilderProduct() {
   return (
-    <main className="concept concept-editorial-workflow concept-builder-product">
+    <main className="concept concept-editorial-workflow concept-builder-product" id="top">
       <header className="concept-nav">
         <Link href="/concepts/editorial-workflow" aria-label="Вернуться к портфолио">
           <span className="concept-mark">DU</span>
@@ -788,6 +823,7 @@ export function ProcessBuilderProduct() {
           <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram ↗</a>
         </div>
       </section>
+      <ConceptFooter />
     </main>
   );
 }
@@ -890,7 +926,7 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
   );
 
   return (
-    <main className={`concept concept-${variant}`}>
+    <main className={`concept concept-${variant}`} id={hasProcessRail ? "top" : undefined}>
       <header className="concept-nav">
         <Link href="/concepts" aria-label="Вернуться к сравнению концепций">
           <span className="concept-mark">DU</span>
@@ -956,6 +992,7 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
           )}
         </div>
       </section>
+      {hasProcessRail && <ConceptFooter />}
     </main>
   );
 }

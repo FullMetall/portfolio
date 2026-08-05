@@ -192,6 +192,7 @@ test("exports the comparison index and keeps the three original concepts functio
       `Original contact order or Telegram label changed: ${route}`,
     );
     assert.doesNotMatch(html, /Написать в Telegram ↗/);
+    assert.doesNotMatch(html, /concept-step-description|concept-footer|id="top"/);
     assert.match(html, /noindex/);
   }
 });
@@ -234,6 +235,9 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /Создаю веб-продукты с 2014 года/);
   assert.match(html, /Анализ обращений/);
   assert.match(html, /Подсчёт печатных знаков/);
+  assert.match(html, /class="concept-step-description"/);
+  assert.match(html, /class="concept-step-role"/);
+  assert.match(html, /<footer class="concept-footer"/);
 });
 
 test("exports the full process builder as a separate preview product", async () => {
@@ -248,6 +252,11 @@ test("exports the full process builder as a separate preview product", async () 
   assert.match(html, /Работа с обращениями/);
   assert.match(html, /Согласование заявки/);
   assert.match(html, /Вернуться к портфолио/);
+  assert.match(html, /class="concept-step-copy"/);
+  assert.match(html, /class="concept-step-description"/);
+  assert.match(html, /class="concept-step-role"/);
+  assert.doesNotMatch(html, /<div class="concept-step-copy"|<p class="concept-step-description"/);
+  assert.match(html, /<footer class="concept-footer"/);
   assert.match(html, /noindex/);
 });
 
