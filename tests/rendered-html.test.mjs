@@ -184,6 +184,14 @@ test("exports the comparison index and keeps the three original concepts functio
     assert.match(html, /Технический разбор/);
     assert.match(html, /abc-xyz9@yandex\.ru/);
     assert.doesNotMatch(html, /daniil@fullmetall\.ru/);
+    const emailContactIndex = html.indexOf("abc-xyz9@yandex.ru ↗</a>");
+    const telegramContactIndex = html.indexOf(">Telegram ↗</a>");
+    assert.notEqual(emailContactIndex, -1, `Missing original email contact: ${route}`);
+    assert.ok(
+      telegramContactIndex > emailContactIndex,
+      `Original contact order or Telegram label changed: ${route}`,
+    );
+    assert.doesNotMatch(html, /Написать в Telegram ↗/);
     assert.match(html, /noindex/);
   }
 });
@@ -200,6 +208,11 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /03[^<]*Работающий кейс/);
   assert.match(html, /Написать мне/);
   assert.match(html, /href="#contact"/);
+  const telegramContactIndex = html.indexOf(">Написать в Telegram ↗</a>");
+  const emailContactIndex = html.indexOf("abc-xyz9@yandex.ru ↗</a>");
+  assert.notEqual(telegramContactIndex, -1);
+  assert.ok(emailContactIndex > telegramContactIndex);
+  assert.doesNotMatch(html, />Telegram ↗<\/a>/);
   assert.match(html, /Короткая демонстрация/);
   assert.match(html, /Открыть полный конструктор/);
   assert.match(html, /href="\/concepts\/process-builder"/);

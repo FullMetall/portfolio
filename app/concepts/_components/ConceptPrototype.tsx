@@ -943,8 +943,17 @@ export function ConceptPrototype({ variant }: { variant: ConceptVariant }) {
           )}
         </div>
         <div className="concept-contact-links">
-          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
-          <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
+          {hasProcessRail ? (
+            <>
+              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Написать в Telegram ↗</a>
+              <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
+            </>
+          ) : (
+            <>
+              <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
+              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram ↗</a>
+            </>
+          )}
         </div>
       </section>
     </main>
