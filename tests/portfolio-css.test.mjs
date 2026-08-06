@@ -4,6 +4,7 @@ import { test } from "node:test";
 
 const css = await readFile(new URL("../app/portfolio.css", import.meta.url), "utf8");
 const portfolio = await readFile(new URL("../app/_components/PortfolioExperience.tsx", import.meta.url), "utf8");
+const liftCase = await readFile(new URL("../app/_components/LiftAutomationCase.tsx", import.meta.url), "utf8");
 const rootLayout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
 const themeToggle = await readFile(new URL("../app/_components/ThemeToggle.tsx", import.meta.url), "utf8");
 const themeProvider = await readFile(new URL("../app/_components/PortfolioThemeProvider.tsx", import.meta.url), "utf8");
@@ -150,6 +151,18 @@ test("editorial workflow footer uses a full-width shell with a constrained respo
   assert.match(
     mobile800,
     /\.portfolio-footer-inner\s*\{[^}]*flex-direction:\s*column/s,
+  );
+});
+
+test("shared contact links highlight on pointer hover and keyboard focus", () => {
+  assert.equal([...portfolio.matchAll(/<section className="portfolio-contact/g)].length, 2);
+  assert.equal([...liftCase.matchAll(/<section className="portfolio-contact/g)].length, 1);
+
+  const links = rule(".portfolio-contact a");
+  assert.match(links, /transition:\s*color 180ms ease/);
+  assert.match(
+    css,
+    /\.portfolio-contact a:hover,[^{]*\.portfolio-contact a:focus-visible\s*\{[^}]*color:\s*var\(--portfolio-accent-2\)/s,
   );
 });
 

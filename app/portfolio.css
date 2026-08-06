@@ -928,6 +928,12 @@
   padding: 15px 0;
   border-bottom: 1px solid var(--portfolio-line);
   font-size: 12px;
+  transition: color 180ms ease;
+}
+
+.portfolio-contact a:hover,
+.portfolio-contact a:focus-visible {
+  color: var(--portfolio-accent-2);
 }
 
 /* Production portfolio — dark workflow palette and one continuous process rail. */
