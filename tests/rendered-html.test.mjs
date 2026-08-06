@@ -78,6 +78,46 @@ async function render(pathname = "/") {
   });
 }
 
+test("publishes the process builder without exposing the concepts namespace", async () => {
+  const russianHome = await render("/");
+  const englishHome = await render("/en");
+  const russianBuilder = await render("/process-builder");
+  const englishBuilder = await render("/en/process-builder");
+
+  assert.equal(russianBuilder.status, 200);
+  assert.equal(englishBuilder.status, 200);
+
+  const russianHomeHtml = await russianHome.text();
+  const englishHomeHtml = await englishHome.text();
+  const russianBuilderHtml = await russianBuilder.text();
+  const englishBuilderHtml = await englishBuilder.text();
+
+  assert.match(russianHomeHtml, /href="\/process-builder"/);
+  assert.match(englishHomeHtml, /href="\/en\/process-builder"/);
+  assert.match(russianBuilderHtml, /<a[^>]*aria-label="Вернуться к портфолио"[^>]*href="\/"/);
+  assert.match(russianBuilderHtml, /href="\/en\/process-builder"[^>]*>EN<\/a>/);
+  assert.match(englishBuilderHtml, /<a[^>]*aria-label="Back to portfolio"[^>]*href="\/en"/);
+  assert.match(englishBuilderHtml, /href="\/process-builder"[^>]*>RU<\/a>/);
+
+  for (const html of [russianHomeHtml, englishHomeHtml, russianBuilderHtml, englishBuilderHtml]) {
+    assert.doesNotMatch(html, /href="\/(?:en\/)?concepts(?:\/|"|#)/);
+  }
+
+  for (const route of [
+    "/concepts",
+    "/concepts/editorial-product",
+    "/concepts/workflow-motif",
+    "/concepts/product-studio",
+    "/concepts/editorial-workflow",
+    "/concepts/process-builder",
+    "/en/concepts/editorial-workflow",
+    "/en/concepts/process-builder",
+  ]) {
+    const response = await render(route);
+    assert.equal(response.status, 404, `Concept route is still publicly exported: ${route}`);
+  }
+});
+
 test("publishes editorial workflow as the Russian production homepage", async () => {
   const response = await render("/");
   assert.equal(response.status, 200);
@@ -153,6 +193,7 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   assert.match(caseStudyHtml, /class="[^"]*lift-case-gallery[^"]*"/);
   assert.match(caseStudyHtml, /<footer class="concept-footer"/);
   assert.match(caseStudyHtml, /href="\/en\/projects\/lift-automation"[^>]*>EN<\/a>/);
+  assert.match(caseStudyHtml, /<a[^>]*aria-label="Вернуться к портфолио"[^>]*href="\/"/);
   assert.doesNotMatch(caseStudyHtml, /class="site-header"/);
   assert.match(englishCaseStudyHtml, /4 processes/);
   assert.match(englishCaseStudyHtml, /Reducing document-set preparation from one hour to 9 minutes\./);
@@ -162,6 +203,7 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   assert.doesNotMatch(englishCaseStudyHtml, /2 roles/);
   assert.match(englishCaseStudyHtml, /class="concept concept-editorial-workflow concept-lift-case"/);
   assert.match(englishCaseStudyHtml, /href="\/projects\/lift-automation"[^>]*>RU<\/a>/);
+  assert.match(englishCaseStudyHtml, /<a[^>]*aria-label="Back to portfolio"[^>]*href="\/en"/);
 
   for (const html of [englishHtml, caseStudyHtml, englishCaseStudyHtml]) {
     assert.match(html, /<footer/);
@@ -173,10 +215,8 @@ test("uses vector arrows instead of emoji-prone Unicode in editorial workflow", 
   const routes = [
     "/",
     "/en",
-    "/concepts/editorial-workflow",
-    "/en/concepts/editorial-workflow",
-    "/concepts/process-builder",
-    "/en/concepts/process-builder",
+    "/process-builder",
+    "/en/process-builder",
     "/projects/lift-automation",
     "/en/projects/lift-automation",
   ];
@@ -190,51 +230,8 @@ test("uses vector arrows instead of emoji-prone Unicode in editorial workflow", 
   }
 });
 
-test("exports the comparison index and keeps the three original concepts functional", async () => {
-  const originalConceptRoutes = [
-    "/concepts/editorial-product",
-    "/concepts/workflow-motif",
-    "/concepts/product-studio",
-  ];
-  const index = await render("/concepts");
-
-  assert.equal(index.status, 200);
-  const indexHtml = await index.text();
-  assert.match(indexHtml, /Четыре способа показать работу/);
-  assert.match(indexHtml, /Editorial Product/);
-  assert.match(indexHtml, /Workflow Motif/);
-  assert.match(indexHtml, /Product Studio/);
-  assert.match(indexHtml, /Editorial Workflow/);
-  assert.match(indexHtml, /noindex/);
-
-  for (const route of originalConceptRoutes) {
-    const response = await render(route);
-    assert.equal(response.status, 200, `Missing concept route: ${route}`);
-    const html = await response.text();
-    assert.match(html, /Покажи процесс\. Найдём потери/);
-    assert.match(html, /Обработка документов/);
-    assert.match(html, /Собрать свой процесс/);
-    assert.match(html, /Технический разбор/);
-    assert.match(html, /abc-xyz9@yandex\.ru/);
-    assert.doesNotMatch(html, /daniil@fullmetall\.ru/);
-    const emailContactIndex = html.indexOf("abc-xyz9@yandex.ru ↗</a>");
-    const telegramContactIndex = html.indexOf(">Telegram ↗</a>");
-    assert.notEqual(emailContactIndex, -1, `Missing original email contact: ${route}`);
-    assert.ok(
-      telegramContactIndex > emailContactIndex,
-      `Original contact order or Telegram label changed: ${route}`,
-    );
-    assert.doesNotMatch(html, /Написать в Telegram ↗/);
-    const consultation = html.match(/<div class="concept-consultation">([\s\S]*?)<\/div>/)?.[1] ?? "";
-    assert.match(consultation, />Обсудить автоматизацию ↗<\/a>/, `Original consultation CTA changed: ${route}`);
-    assert.doesNotMatch(consultation, /concept-external-arrow/, `Vector arrow leaked into original concept: ${route}`);
-    assert.doesNotMatch(html, /concept-step-description|concept-footer|id="top"/);
-    assert.match(html, /noindex/);
-  }
-});
-
 test("editorial workflow is contact-first, concise, and keeps product metrics in the case", async () => {
-  const response = await render("/concepts/editorial-workflow");
+  const response = await render("/");
   assert.equal(response.status, 200);
 
   const html = await response.text();
@@ -253,7 +250,7 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.doesNotMatch(html, />Telegram(?:<svg| ↗)<\/a>/);
   assert.match(html, /Короткая демонстрация/);
   assert.match(html, /Открыть полный конструктор/);
-  assert.match(html, /href="\/concepts\/process-builder"/);
+  assert.match(html, /href="\/process-builder"/);
   assert.doesNotMatch(html, /Собрать свой процесс/);
   assert.doesNotMatch(html, /Технический разбор/);
   assert.doesNotMatch(html, /concept-hero-proof/);
@@ -277,12 +274,12 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /<footer class="concept-footer"/);
   assert.match(html, /class="concept-footer-inner"/);
   assert.doesNotMatch(html, /04 \/ Editorial workflow/);
-  assert.match(html, /href="\/en\/concepts\/editorial-workflow"[^>]*>EN<\/a>/);
+  assert.match(html, /href="\/en"[^>]*>EN<\/a>/);
 });
 
 test("exports the current editorial workflow and process builder in English", async () => {
-  const workflow = await render("/en/concepts/editorial-workflow");
-  const builder = await render("/en/concepts/process-builder");
+  const workflow = await render("/en");
+  const builder = await render("/en/process-builder");
 
   assert.equal(workflow.status, 200);
   assert.equal(builder.status, 200);
@@ -296,20 +293,20 @@ test("exports the current editorial workflow and process builder in English", as
   assert.match(workflowHtml, /One process\. Two states\./);
   assert.match(workflowHtml, /Head of web development/);
   assert.match(workflowHtml, /Appeals analysis/);
-  assert.match(workflowHtml, /href="\/concepts\/editorial-workflow"[^>]*>RU<\/a>/);
-  assert.match(workflowHtml, /href="\/en\/concepts\/process-builder"/);
+  assert.match(workflowHtml, /href="\/"[^>]*>RU<\/a>/);
+  assert.match(workflowHtml, /href="\/en\/process-builder"/);
   assert.doesNotMatch(workflowHtml, /04 \/ Editorial workflow/);
   assert.doesNotMatch(workflowMain, /[А-Яа-яЁё]/);
 
   assert.match(builderHtml, /<h1 id="process-builder-title">Process builder<\/h1>/);
   assert.match(builderHtml, /Document processing/);
   assert.match(builderHtml, /Technical breakdown/);
-  assert.match(builderHtml, /href="\/concepts\/process-builder"[^>]*>RU<\/a>/);
+  assert.match(builderHtml, /href="\/process-builder"[^>]*>RU<\/a>/);
   assert.doesNotMatch(builderMain, /[А-Яа-яЁё]/);
 });
 
-test("exports the full process builder as a separate preview product", async () => {
-  const response = await render("/concepts/process-builder");
+test("exports the full process builder as a production product", async () => {
+  const response = await render("/process-builder");
   assert.equal(response.status, 200);
 
   const html = await response.text();
@@ -329,7 +326,7 @@ test("exports the full process builder as a separate preview product", async () 
   assert.doesNotMatch(html, /<div class="concept-step-copy"|<p class="concept-step-description"/);
   assert.match(html, /<footer class="concept-footer"/);
   assert.match(html, /class="concept-footer-inner"/);
-  assert.match(html, /noindex/);
+  assert.doesNotMatch(html, /noindex/);
 });
 
 test("serves every local asset referenced by the exported pages", async () => {
@@ -338,12 +335,8 @@ test("serves every local asset referenced by the exported pages", async () => {
     "/en",
     "/projects/lift-automation",
     "/en/projects/lift-automation",
-    "/concepts",
-    "/concepts/editorial-product",
-    "/concepts/workflow-motif",
-    "/concepts/product-studio",
-    "/concepts/editorial-workflow",
-    "/concepts/process-builder",
+    "/process-builder",
+    "/en/process-builder",
   ];
   const assetPaths = new Set();
 

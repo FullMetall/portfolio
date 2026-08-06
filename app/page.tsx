@@ -18,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <ConceptPrototype variant="editorial-workflow" homepage />;
+  return <ConceptPrototype variant="editorial-workflow" />;
 }

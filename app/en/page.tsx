@@ -18,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function EnglishHome() {
-  return <ConceptPrototype variant="editorial-workflow" locale="en" homepage />;
+  return <ConceptPrototype variant="editorial-workflow" locale="en" />;
 }

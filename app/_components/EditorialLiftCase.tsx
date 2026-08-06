@@ -12,7 +12,7 @@ import type { EditorialCaseCopy } from "./CasePage";
 const caseUi = {
   ru: {
     name: "Даниил Угловский",
-    home: "/concepts/editorial-workflow",
+    home: "/",
     languageHref: "/en/projects/lift-automation",
     language: "EN",
     languageLabel: "Открыть английскую версию",
@@ -28,7 +28,7 @@ const caseUi = {
   },
   en: {
     name: "Daniil Uglovskiy",
-    home: "/en/concepts/editorial-workflow",
+    home: "/en",
     languageHref: "/projects/lift-automation",
     language: "RU",
     languageLabel: "Open the Russian version",

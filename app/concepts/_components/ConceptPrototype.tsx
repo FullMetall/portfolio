@@ -476,7 +476,7 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
       </div>
 
       <div className="concept-compact-actions">
-        <Link className="concept-button concept-button-primary" href={locale === "en" ? "/en/concepts/process-builder" : "/concepts/process-builder"}>
+        <Link className="concept-button concept-button-primary" href={locale === "en" ? "/en/process-builder" : "/process-builder"}>
           {t.compact.openBuilder}
           <ExternalArrowIcon />
         </Link>
@@ -803,8 +803,8 @@ function ConceptFooter({ locale }: { locale: Locale }) {
 export function ProcessBuilderProduct({ locale = "ru" }: { locale?: Locale }) {
   const t = conceptCopy[locale];
   const { theme, toggleTheme } = useConceptTheme();
-  const portfolioHref = locale === "en" ? "/en/concepts/editorial-workflow" : "/concepts/editorial-workflow";
-  const languageHref = locale === "en" ? "/concepts/process-builder" : "/en/concepts/process-builder";
+  const portfolioHref = locale === "en" ? "/en" : "/";
+  const languageHref = locale === "en" ? "/process-builder" : "/en/process-builder";
 
   return (
     <main className="concept concept-editorial-workflow concept-builder-product" data-theme={theme} id="top">
@@ -845,11 +845,9 @@ export function ProcessBuilderProduct({ locale = "ru" }: { locale?: Locale }) {
 export function ConceptPrototype({
   variant,
   locale = "ru",
-  homepage = false,
 }: {
   variant: ConceptVariant;
   locale?: Locale;
-  homepage?: boolean;
 }) {
   const hasProcessRail = variant === "editorial-workflow";
   const t = conceptCopy[locale];
@@ -864,12 +862,8 @@ export function ConceptPrototype({
       }
     : variantCopy[variant];
   const { theme, toggleTheme } = useConceptTheme();
-  const workflowHref = homepage
-    ? locale === "en" ? "/en" : "/"
-    : locale === "en" ? "/en/concepts/editorial-workflow" : "/concepts/editorial-workflow";
-  const languageHref = homepage
-    ? locale === "en" ? "/" : "/en"
-    : locale === "en" ? "/concepts/editorial-workflow" : "/en/concepts/editorial-workflow";
+  const workflowHref = locale === "en" ? "/en" : "/";
+  const languageHref = locale === "en" ? "/" : "/en";
 
   const hero = (
     <section className="concept-hero" id="positioning">
@@ -968,7 +962,7 @@ export function ConceptPrototype({
   return (
     <main className={`concept concept-${variant}`} data-theme={hasProcessRail ? theme : undefined} id={hasProcessRail ? "top" : undefined}>
       <header className="concept-nav">
-        <Link href={hasProcessRail ? workflowHref : "/concepts"} aria-label={hasProcessRail ? t.returnToPortfolio : "Вернуться к сравнению концепций"}>
+        <Link href={workflowHref} aria-label={hasProcessRail ? t.returnToPortfolio : "Вернуться к портфолио"}>
           <span className="concept-mark">DU</span>
           <span>{hasProcessRail ? t.name : "Даниил Угловский"}</span>
         </Link>
