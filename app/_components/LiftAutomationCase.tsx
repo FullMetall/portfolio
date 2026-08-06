@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Locale } from "../content";
 import { profile } from "../content";
+import { AnalyticsSettingsButton } from "./AnalyticsSettingsButton";
 import { usePortfolioTheme } from "./PortfolioThemeProvider";
 import { CaseGallery } from "./CaseGallery";
 import { ExternalArrowIcon } from "./ExternalArrowIcon";
@@ -200,6 +201,10 @@ export function LiftAutomationCase({ copy: t, locale }: { copy: LiftCaseCopy; lo
           <nav aria-label={ui.footerLabel}>
             <a href={profile.telegram} target="_blank" rel="noreferrer">{ui.telegram}<ExternalArrowIcon /></a>
             <a href={`mailto:${profile.email}`}>Email<ExternalArrowIcon /></a>
+            <Link href={locale === "en" ? "/en/privacy" : "/privacy"}>
+              {locale === "en" ? "Privacy" : "Конфиденциальность"}
+            </Link>
+            <AnalyticsSettingsButton label={locale === "en" ? "Analytics settings" : "Настройки аналитики"} />
             <a href="#top">{ui.top}</a>
           </nav>
         </div>

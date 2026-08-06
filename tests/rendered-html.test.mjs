@@ -153,12 +153,14 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   assert.equal(english.status, 200);
   assert.equal(caseStudy.status, 200);
   assert.equal(englishCaseStudy.status, 200);
-  assert.equal(privacy.status, 404);
-  assert.equal(englishPrivacy.status, 404);
+  assert.equal(privacy.status, 200);
+  assert.equal(englishPrivacy.status, 200);
 
   const englishHtml = await english.text();
   const caseStudyHtml = await caseStudy.text();
   const englishCaseStudyHtml = await englishCaseStudy.text();
+  const privacyHtml = await privacy.text();
+  const englishPrivacyHtml = await englishPrivacy.text();
 
   assert.match(englishHtml, /<title>Workflow architecture — Daniil Uglovskiy<\/title>/);
   assert.match(englishHtml, /class="portfolio portfolio-workflow"/);
@@ -205,9 +207,17 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   assert.match(englishCaseStudyHtml, /href="\/projects\/lift-automation"[^>]*>RU<\/a>/);
   assert.match(englishCaseStudyHtml, /<a[^>]*aria-label="Back to portfolio"[^>]*href="\/en"/);
 
+  assert.match(privacyHtml, /Политика конфиденциальности/);
+  assert.match(privacyHtml, /Яндекс Метрик/);
+  assert.match(privacyHtml, /Настройки аналитики/);
+  assert.match(englishPrivacyHtml, /Privacy policy/);
+  assert.match(englishPrivacyHtml, /Yandex Metrica/);
+  assert.match(englishPrivacyHtml, /Analytics settings/);
+
   for (const html of [englishHtml, caseStudyHtml, englishCaseStudyHtml]) {
     assert.match(html, /<footer/);
-    assert.doesNotMatch(html, /href="\/(?:en\/)?privacy"|Конфиденциальность|>Privacy</);
+    assert.match(html, /href="\/(?:en\/)?privacy"/);
+    assert.match(html, /data-analytics-settings="true"/);
   }
 });
 
@@ -333,6 +343,8 @@ test("serves every local asset referenced by the exported pages", async () => {
   const pages = [
     "/",
     "/en",
+    "/privacy",
+    "/en/privacy",
     "/projects/lift-automation",
     "/en/projects/lift-automation",
     "/process-builder",

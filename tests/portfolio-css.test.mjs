@@ -260,6 +260,13 @@ test("lift case mobile hero stays inside the viewport", () => {
   );
 });
 
+test("privacy heading keeps long localized words inside the mobile viewport", () => {
+  assert.match(
+    mobile800,
+    /\.portfolio-privacy-content h1\s*\{[^}]*font-size:\s*clamp\(28px,\s*8\.8vw,\s*44px\)[^}]*overflow-wrap:\s*anywhere/s,
+  );
+});
+
 test("editorial workflow light theme changes palette properties only", () => {
   const result = lightThemeViolations(css);
   assert(result.ruleCount >= 2, "Missing light palette rules");
@@ -285,4 +292,9 @@ test("editorial workflow light palette keeps small text at WCAG AA contrast", ()
 
   const mutedOverrides = rule('.portfolio-workflow[data-theme="light"] .portfolio-findings > header span');
   assert.match(mutedOverrides, /color:\s*var\(--portfolio-muted\)/);
+
+  assert.match(
+    css,
+    /\.portfolio-workflow\[data-theme="light"\] \.portfolio-privacy-actions \.portfolio-footer-action\s*\{[^}]*color:\s*#f9f7ef/s,
+  );
 });

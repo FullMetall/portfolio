@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Locale } from "../content";
+import { AnalyticsSettingsButton } from "./AnalyticsSettingsButton";
 import { ExternalArrowIcon } from "./ExternalArrowIcon";
 import { usePortfolioTheme } from "./PortfolioThemeProvider";
 import { portfolioCopy } from "./portfolio-copy";
@@ -709,6 +710,10 @@ function PortfolioFooter({ locale }: { locale: Locale }) {
         <nav aria-label={t.footerNavigationLabel}>
           <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.footer.telegram}<ExternalArrowIcon /></a>
           <a href="mailto:abc-xyz9@yandex.ru">Email<ExternalArrowIcon /></a>
+          <Link href={locale === "en" ? "/en/privacy" : "/privacy"}>
+            {locale === "en" ? "Privacy" : "Конфиденциальность"}
+          </Link>
+          <AnalyticsSettingsButton label={locale === "en" ? "Analytics settings" : "Настройки аналитики"} />
           <a href="#top">{t.footer.top}</a>
         </nav>
       </div>
