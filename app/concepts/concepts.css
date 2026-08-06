@@ -1291,6 +1291,13 @@
   text-transform: uppercase;
 }
 
+@media (min-width: 801px) {
+  .concept-editorial-workflow .concept-rail-marker strong {
+    background: var(--concept-bg);
+    box-shadow: 0 0 0 4px var(--concept-bg);
+  }
+}
+
 .concept-editorial-workflow .concept-proof .concept-rail-marker span {
   border-color: var(--concept-accent);
   color: #101b22;
