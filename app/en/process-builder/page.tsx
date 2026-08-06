@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/golos-text";
 import "@fontsource-variable/oswald";
-import { ProcessBuilderProduct } from "../../concepts/_components/ConceptPrototype";
-import "../../concepts/concepts.css";
+import { ProcessBuilderProduct } from "../../_components/PortfolioExperience";
+import "../../portfolio.css";
 
 export const metadata: Metadata = {
   title: { absolute: "Process builder — Daniil Uglovskiy" },

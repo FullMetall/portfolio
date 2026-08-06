@@ -1,5 +1,5 @@
 import type { Locale } from "../content";
-import { EditorialLiftCase } from "./EditorialLiftCase";
+import { LiftAutomationCase } from "./LiftAutomationCase";
 
 const caseCopy = {
   ru: {
@@ -252,9 +252,9 @@ const caseCopy = {
   },
 } as const;
 
-export type EditorialCaseCopy = (typeof caseCopy)[Locale];
+export type LiftCaseCopy = (typeof caseCopy)[Locale];
 
 export function CasePage({ locale }: { locale: Locale }) {
   const t = caseCopy[locale];
-  return <EditorialLiftCase copy={t} locale={locale} />;
+  return <LiftAutomationCase copy={t} locale={locale} />;
 }

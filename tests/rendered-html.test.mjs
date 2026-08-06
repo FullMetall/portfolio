@@ -125,7 +125,7 @@ test("publishes editorial workflow as the Russian production homepage", async ()
 
   const html = await response.text();
   assert.match(html, /Даниил Угловский/);
-  assert.match(html, /class="concept concept-editorial-workflow"/);
+  assert.match(html, /class="portfolio portfolio-workflow"/);
   assert.match(html, /Из ручного процесса — в рабочую систему\./);
   assert.match(html, /Один процесс\. Два состояния\./);
   assert.match(html, /href="\/en"[^>]*>EN<\/a>/);
@@ -161,7 +161,7 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   const englishCaseStudyHtml = await englishCaseStudy.text();
 
   assert.match(englishHtml, /<title>Workflow architecture — Daniil Uglovskiy<\/title>/);
-  assert.match(englishHtml, /class="concept concept-editorial-workflow"/);
+  assert.match(englishHtml, /class="portfolio portfolio-workflow"/);
   assert.match(englishHtml, /From a manual process to a working system\./);
   assert.match(englishHtml, /One process\. Two states\./);
   assert.match(englishHtml, /href="\/"[^>]*>RU<\/a>/);
@@ -187,11 +187,11 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   assert.match(caseStudyHtml, /\/case\/lift-diagnostics-desktop\.png/);
   assert.match(caseStudyHtml, /\/case\/lift-document-journal\.png/);
   assert.doesNotMatch(caseStudyHtml, /с часа до 7 минут|60 → 7 мин|88%/);
-  assert.match(caseStudyHtml, /class="concept concept-editorial-workflow concept-lift-case"/);
+  assert.match(caseStudyHtml, /class="portfolio portfolio-workflow portfolio-lift-case"/);
   assert.match(caseStudyHtml, /aria-label="Светлая тема"/);
   assert.match(caseStudyHtml, /class="lift-case-process-grid"/);
   assert.match(caseStudyHtml, /class="[^"]*lift-case-gallery[^"]*"/);
-  assert.match(caseStudyHtml, /<footer class="concept-footer"/);
+  assert.match(caseStudyHtml, /<footer class="portfolio-footer"/);
   assert.match(caseStudyHtml, /href="\/en\/projects\/lift-automation"[^>]*>EN<\/a>/);
   assert.match(caseStudyHtml, /<a[^>]*aria-label="Вернуться к портфолио"[^>]*href="\/"/);
   assert.doesNotMatch(caseStudyHtml, /class="site-header"/);
@@ -201,7 +201,7 @@ test("publishes editorial workflow in English and keeps case routes paired", asy
   assert.match(englishCaseStudyHtml, /Previous screen/);
   assert.match(englishCaseStudyHtml, /Open full-size image/);
   assert.doesNotMatch(englishCaseStudyHtml, /2 roles/);
-  assert.match(englishCaseStudyHtml, /class="concept concept-editorial-workflow concept-lift-case"/);
+  assert.match(englishCaseStudyHtml, /class="portfolio portfolio-workflow portfolio-lift-case"/);
   assert.match(englishCaseStudyHtml, /href="\/projects\/lift-automation"[^>]*>RU<\/a>/);
   assert.match(englishCaseStudyHtml, /<a[^>]*aria-label="Back to portfolio"[^>]*href="\/en"/);
 
@@ -226,7 +226,7 @@ test("uses vector arrows instead of emoji-prone Unicode in editorial workflow", 
     assert.equal(response.status, 200, `Missing Editorial Workflow route: ${route}`);
     const html = await response.text();
     assert.doesNotMatch(html, /↗/, `Unicode arrow can render as emoji on iOS Safari: ${route}`);
-    assert.match(html, /class="concept-external-arrow"[^>]*aria-hidden="true"/, `Missing vector arrow: ${route}`);
+    assert.match(html, /class="portfolio-external-arrow"[^>]*aria-hidden="true"/, `Missing vector arrow: ${route}`);
   }
 });
 
@@ -236,8 +236,8 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
 
   const html = await response.text();
   assert.match(html, /Сквозной маршрут процесса/);
-  assert.match(html, /concept-process-rail/);
-  assert.match(html, /class="concept-hero-copy"><div class="concept-rail-marker"/);
+  assert.match(html, /portfolio-process-rail/);
+  assert.match(html, /class="portfolio-hero-copy"><div class="portfolio-rail-marker"/);
   assert.match(html, /01[^<]*Позиционирование/);
   assert.match(html, /02[^<]*Демонстрация/);
   assert.match(html, /03[^<]*Работающий кейс/);
@@ -253,7 +253,7 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /href="\/process-builder"/);
   assert.doesNotMatch(html, /Собрать свой процесс/);
   assert.doesNotMatch(html, /Технический разбор/);
-  assert.doesNotMatch(html, /concept-hero-proof/);
+  assert.doesNotMatch(html, /portfolio-hero-proof/);
   assert.doesNotMatch(html, />2014</);
 
   const proofStart = html.indexOf('id="proof"');
@@ -269,10 +269,10 @@ test("editorial workflow is contact-first, concise, and keeps product metrics in
   assert.match(html, /Создаю веб-продукты с 2014 года/);
   assert.match(html, /Анализ обращений/);
   assert.match(html, /Подсчёт печатных знаков/);
-  assert.match(html, /class="concept-step-description"/);
-  assert.match(html, /class="concept-step-role"/);
-  assert.match(html, /<footer class="concept-footer"/);
-  assert.match(html, /class="concept-footer-inner"/);
+  assert.match(html, /class="portfolio-step-description"/);
+  assert.match(html, /class="portfolio-step-role"/);
+  assert.match(html, /<footer class="portfolio-footer"/);
+  assert.match(html, /class="portfolio-footer-inner"/);
   assert.doesNotMatch(html, /04 \/ Editorial workflow/);
   assert.match(html, /href="\/en"[^>]*>EN<\/a>/);
 });
@@ -311,7 +311,7 @@ test("exports the full process builder as a production product", async () => {
 
   const html = await response.text();
   assert.match(html, /<h1 id="process-builder-title">Конструктор процессов<\/h1>/);
-  assert.match(html, /<section class="concept-builder" id="constructor" aria-labelledby="process-builder-title">/);
+  assert.match(html, /<section class="portfolio-builder" id="constructor" aria-labelledby="process-builder-title">/);
   assert.doesNotMatch(html, /Покажи процесс\. Найдём потери\./);
   assert.doesNotMatch(html, /Интерактивный экспонат/);
   assert.match(html, /Собрать свой процесс/);
@@ -320,12 +320,12 @@ test("exports the full process builder as a production product", async () => {
   assert.match(html, /Работа с обращениями/);
   assert.match(html, /Согласование заявки/);
   assert.match(html, /Вернуться к портфолио/);
-  assert.match(html, /class="concept-step-copy"/);
-  assert.match(html, /class="concept-step-description"/);
-  assert.match(html, /class="concept-step-role"/);
-  assert.doesNotMatch(html, /<div class="concept-step-copy"|<p class="concept-step-description"/);
-  assert.match(html, /<footer class="concept-footer"/);
-  assert.match(html, /class="concept-footer-inner"/);
+  assert.match(html, /class="portfolio-step-copy"/);
+  assert.match(html, /class="portfolio-step-description"/);
+  assert.match(html, /class="portfolio-step-role"/);
+  assert.doesNotMatch(html, /<div class="portfolio-step-copy"|<p class="portfolio-step-description"/);
+  assert.match(html, /<footer class="portfolio-footer"/);
+  assert.match(html, /class="portfolio-footer-inner"/);
   assert.doesNotMatch(html, /noindex/);
 });
 

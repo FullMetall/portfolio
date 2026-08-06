@@ -6,7 +6,7 @@ import {
   getProcessPresets,
   processPresets,
   remediationByFlag,
-} from "../app/concepts/_lib/process-engine.mjs";
+} from "../app/_lib/process-engine.mjs";
 
 test("detects bottlenecks from explicit process flags", () => {
   const steps = [

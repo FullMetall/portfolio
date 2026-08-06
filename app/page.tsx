@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/golos-text";
 import "@fontsource-variable/oswald";
-import { ConceptPrototype } from "./concepts/_components/ConceptPrototype";
-import "./concepts/concepts.css";
+import { PortfolioExperience } from "./_components/PortfolioExperience";
+import "./portfolio.css";
 
 export const metadata: Metadata = {
   title: "Архитектура рабочих процессов",
@@ -18,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <ConceptPrototype variant="editorial-workflow" />;
+  return <PortfolioExperience />;
 }

@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Locale } from "../../content";
-import { ExternalArrowIcon } from "../../_components/ExternalArrowIcon";
-import { useConceptTheme } from "../../_components/ConceptThemeProvider";
-import { conceptCopy } from "./concept-i18n";
+import type { Locale } from "../content";
+import { ExternalArrowIcon } from "./ExternalArrowIcon";
+import { usePortfolioTheme } from "./PortfolioThemeProvider";
+import { portfolioCopy } from "./portfolio-copy";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   analyzeProcess,
@@ -38,8 +38,6 @@ type Bottleneck = {
   title: string;
   detail: string;
 };
-
-type ConceptVariant = "editorial" | "workflow" | "studio" | "editorial-workflow";
 type PresetKey = "documents" | "appeals" | "approval" | "custom";
 type ProcessPreset = {
   label: string;
@@ -47,58 +45,9 @@ type ProcessPreset = {
   steps: ProcessStep[];
 };
 
-const variantCopy: Record<
-  ConceptVariant,
-  {
-    index: string;
-    label: string;
-    title: string;
-    lead: string;
-    action: string;
-    proofTitle: string;
-  }
-> = {
-  editorial: {
-    index: "01 / Editorial product",
-    label: "Разработка веб-систем",
-    title: "Ручную работу — в систему.",
-    lead:
-      "Разбираю процессы и создаю веб-продукты, которые заменяют таблицы, пересылки и повторный ввод данных.",
-    action: "Разобрать процесс",
-    proofTitle: "Не обещание. Работающий сценарий.",
-  },
-  workflow: {
-    index: "02 / Workflow motif",
-    label: "Процесс → данные → результат",
-    title: "Сложный процесс. Понятная система.",
-    lead:
-      "Показываю, где теряется время, и превращаю разрозненные действия в один управляемый контур.",
-    action: "Провести процесс",
-    proofTitle: "Каждый переход должен что-то объяснять.",
-  },
-  studio: {
-    index: "03 / Product studio",
-    label: "Системы полного цикла",
-    title: "Меньше рутины. Больше контроля.",
-    lead:
-      "Проектирую интерфейс, серверную логику и данные как одну рабочую систему — от первого действия до результата.",
-    action: "Открыть конструктор",
-    proofTitle: "Интерфейс показывает, как я думаю.",
-  },
-  "editorial-workflow": {
-    index: "",
-    label: "Архитектура рабочих процессов",
-    title: "Из ручного процесса — в рабочую систему.",
-    lead:
-      "Сначала разбираю путь данных, ролей и решений. Затем собираю интерфейс, логику и документы в один управляемый контур.",
-    action: "Пройти по процессу",
-    proofTitle: "От гипотезы — к системе в эксплуатации.",
-  },
-};
-
 function RailMarker({ number, label }: { number: string; label: string }) {
   return (
-    <div className="concept-rail-marker" aria-hidden="true">
+    <div className="portfolio-rail-marker" aria-hidden="true">
       <span>{number}</span>
       <strong>{label}</strong>
     </div>
@@ -106,18 +55,18 @@ function RailMarker({ number, label }: { number: string; label: string }) {
 }
 
 function LanguageSwitch({ locale, href }: { locale: Locale; href: string }) {
-  const t = conceptCopy[locale];
+  const t = portfolioCopy[locale];
   return (
-    <Link className="concept-language-switch" href={href} aria-label={t.languageLabel}>
+    <Link className="portfolio-language-switch" href={href} aria-label={t.languageLabel}>
       {t.language}
     </Link>
   );
 }
 
 function ProcessRail({ locale }: { locale: Locale }) {
-  const t = conceptCopy[locale];
+  const t = portfolioCopy[locale];
   return (
-    <aside className="concept-process-rail" aria-label={t.rail.route}>
+    <aside className="portfolio-process-rail" aria-label={t.rail.route}>
       <ol>
         <li aria-label={`01 ${t.rail.positioning}`}><span>01</span><strong>{t.rail.positioning}</strong></li>
         <li aria-label={`02 ${t.rail.demonstration}`}><span>02</span><strong>{t.rail.demonstration}</strong></li>
@@ -132,7 +81,7 @@ function cloneSteps(steps: ProcessStep[]) {
 }
 
 function makeStep(position: number, locale: Locale): ProcessStep {
-  const t = conceptCopy[locale].builder;
+  const t = portfolioCopy[locale].builder;
   return {
     id: `custom-${Date.now()}-${position}`,
     title: t.newStage(position),
@@ -147,7 +96,7 @@ function getStepDescription(step: ProcessStep, bottlenecks: Bottleneck[], locale
   if (remediation) return remediation;
 
   const issue = bottlenecks.find((item) => item.stepId === step.id);
-  return issue?.detail ?? conceptCopy[locale].builder.fallbackDescription;
+  return issue?.detail ?? portfolioCopy[locale].builder.fallbackDescription;
 }
 
 function StepCard({
@@ -155,7 +104,6 @@ function StepCard({
   index,
   total,
   editable,
-  detailed,
   bottlenecks,
   locale,
   onEdit,
@@ -167,7 +115,6 @@ function StepCard({
   index: number;
   total: number;
   editable: boolean;
-  detailed: boolean;
   bottlenecks: Bottleneck[];
   locale: Locale;
   onEdit: () => void;
@@ -175,40 +122,34 @@ function StepCard({
   onDragStart: () => void;
   onDrop: () => void;
 }) {
-  const t = conceptCopy[locale];
+  const t = portfolioCopy[locale];
   const issues = bottlenecks.filter((item) => item.stepId === step.id);
   const description = getStepDescription(step, bottlenecks, locale);
-  const stepContent = detailed ? (
+  const stepContent = (
     <>
-      <span className="concept-step-copy">
-        <span className="concept-step-kind">{t.kindLabels[step.kind]}</span>
+      <span className="portfolio-step-copy">
+        <span className="portfolio-step-kind">{t.kindLabels[step.kind]}</span>
         <strong>{step.title}</strong>
-        <span className="concept-step-description">{description}</span>
+        <span className="portfolio-step-description">{description}</span>
       </span>
-      <span className="concept-step-role">{step.role || t.builder.unassigned}</span>
-    </>
-  ) : (
-    <>
-      <span className="concept-step-kind">{t.kindLabels[step.kind]}</span>
-      <strong>{step.title}</strong>
-      <span>{step.role || t.builder.unassigned}</span>
+      <span className="portfolio-step-role">{step.role || t.builder.unassigned}</span>
     </>
   );
 
   return (
     <article
-      className="concept-step"
+      className="portfolio-step"
       draggable={editable}
       onDragStart={onDragStart}
       onDragOver={(event) => event.preventDefault()}
       onDrop={onDrop}
     >
-      <div className="concept-step-number" aria-hidden="true">
+      <div className="portfolio-step-number" aria-hidden="true">
         {String(index + 1).padStart(2, "0")}
       </div>
       {editable && (
         <span
-          className="concept-drag-handle"
+          className="portfolio-drag-handle"
           aria-hidden="true"
           title={t.builder.dragHint}
         >
@@ -216,14 +157,14 @@ function StepCard({
         </span>
       )}
       {editable ? (
-        <button className="concept-step-main" type="button" onClick={onEdit}>
+        <button className="portfolio-step-main" type="button" onClick={onEdit}>
           {stepContent}
         </button>
       ) : (
-        <div className="concept-step-main">{stepContent}</div>
+        <div className="portfolio-step-main">{stepContent}</div>
       )}
       {editable && (
-        <div className="concept-step-actions">
+        <div className="portfolio-step-actions">
           <button
             type="button"
             onClick={() => onMove(-1)}
@@ -243,7 +184,7 @@ function StepCard({
         </div>
       )}
       {issues.length > 0 && (
-        <span className="concept-step-alert" aria-label={t.builder.issues(issues.length)}>
+        <span className="portfolio-step-alert" aria-label={t.builder.issues(issues.length)}>
           {issues.length}
         </span>
       )}
@@ -264,7 +205,7 @@ function StepEditor({
   onClose: () => void;
   onDelete: () => void;
 }) {
-  const t = conceptCopy[locale];
+  const t = portfolioCopy[locale];
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -288,9 +229,9 @@ function StepEditor({
   };
 
   return (
-    <div className="concept-editor-backdrop" role="presentation" onMouseDown={onClose}>
+    <div className="portfolio-editor-backdrop" role="presentation" onMouseDown={onClose}>
       <section
-        className="concept-editor"
+        className="portfolio-editor"
         role="dialog"
         aria-modal="true"
         aria-labelledby="step-editor-title"
@@ -338,7 +279,7 @@ function StepEditor({
         </label>
         <fieldset>
           <legend>{t.builder.editor.issue}</legend>
-          <div className="concept-flag-grid">
+          <div className="portfolio-flag-grid">
             {(Object.keys(t.flagLabels) as ProcessFlag[]).map((flag) => (
               <label key={flag}>
                 <input
@@ -352,10 +293,10 @@ function StepEditor({
           </div>
         </fieldset>
         <footer>
-          <button className="concept-button concept-button-danger" type="button" onClick={onDelete}>
+          <button className="portfolio-button portfolio-button-danger" type="button" onClick={onDelete}>
             {t.builder.editor.delete}
           </button>
-          <button className="concept-button concept-button-primary" type="button" onClick={onClose}>
+          <button className="portfolio-button portfolio-button-primary" type="button" onClick={onClose}>
             {t.builder.editor.done}
           </button>
         </footer>
@@ -377,15 +318,15 @@ function TechnicalPanel({
   remainingCount: number;
   locale: Locale;
 }) {
-  const t = conceptCopy[locale].builder.technical;
+  const t = portfolioCopy[locale].builder.technical;
   return (
-    <section className="concept-technical" aria-label={t.label}>
+    <section className="portfolio-technical" aria-label={t.label}>
       <header>
         <span>{t.title}</span>
         <strong>Local state → rules → transformation → UI</strong>
       </header>
-      <div className="concept-api-grid">
-        <ol className="concept-api-flow">
+      <div className="portfolio-api-grid">
+        <ol className="portfolio-api-flow">
           <li><span>01</span><strong>React state</strong><em>{t.browserSteps(stepCount)}</em></li>
           <li><span>02</span><strong>analyzeProcess()</strong><em>{t.flags(bottleneckCount)}</em></li>
           <li><span>03</span><strong>createProposedProcess()</strong><em>{t.proposals(remediationCount)}</em></li>
@@ -409,7 +350,7 @@ function TechnicalPanel({
 }
 
 function CompactProcessDemo({ locale }: { locale: Locale }) {
-  const t = conceptCopy[locale];
+  const t = portfolioCopy[locale];
   const [view, setView] = useState<"before" | "after">("before");
   const steps = getProcessPresets(locale).documents.steps as ProcessStep[];
   const bottlenecks = useMemo(() => analyzeProcess(steps, locale), [steps, locale]);
@@ -418,19 +359,19 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
   const summary = view === "before" ? t.compact.beforeSummary : t.compact.afterSummary;
 
   return (
-    <section className="concept-builder concept-compact-demo" id="demonstration">
+    <section className="portfolio-builder portfolio-compact-demo" id="demonstration">
       <RailMarker number="02" label={t.rail.demonstration} />
-      <header className="concept-builder-head">
+      <header className="portfolio-builder-head">
         <div>
-          <span className="concept-kicker">{t.compact.kicker}</span>
+          <span className="portfolio-kicker">{t.compact.kicker}</span>
           <h2>{t.compact.title}</h2>
         </div>
         <p>{t.compact.lead}</p>
       </header>
 
-      <div className="concept-compact-workspace">
-        <div className="concept-compact-toolbar">
-          <div className="concept-segmented" aria-label={t.compact.comparisonLabel}>
+      <div className="portfolio-compact-workspace">
+        <div className="portfolio-compact-toolbar">
+          <div className="portfolio-segmented" aria-label={t.compact.comparisonLabel}>
             <button
               type="button"
               className={view === "before" ? "is-active" : ""}
@@ -451,21 +392,21 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
           <span>{view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}</span>
         </div>
 
-        <div className="concept-compact-grid">
-          <ol className="concept-compact-flow" aria-label={view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}>
+        <div className="portfolio-compact-grid">
+          <ol className="portfolio-compact-flow" aria-label={view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}>
             {visibleSteps.map((step, index) => (
               <li key={step.id}>
-                <span className="concept-compact-number">{String(index + 1).padStart(2, "0")}</span>
-                <div className="concept-compact-copy">
+                <span className="portfolio-compact-number">{String(index + 1).padStart(2, "0")}</span>
+                <div className="portfolio-compact-copy">
                   <small>{t.kindLabels[step.kind]}</small>
                   <strong>{step.title}</strong>
-                  <p className="concept-step-description">{getStepDescription(step, bottlenecks, locale)}</p>
+                  <p className="portfolio-step-description">{getStepDescription(step, bottlenecks, locale)}</p>
                 </div>
-                <em className="concept-step-role">{step.role || t.builder.unassigned}</em>
+                <em className="portfolio-step-role">{step.role || t.builder.unassigned}</em>
               </li>
             ))}
           </ol>
-          <aside className="concept-compact-summary" aria-live="polite">
+          <aside className="portfolio-compact-summary" aria-live="polite">
             <span>{view === "before" ? t.compact.beforeSummaryLabel : t.compact.afterSummaryLabel}</span>
             <ul>
               {summary.map((item) => <li key={item}>{item}</li>)}
@@ -475,8 +416,8 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      <div className="concept-compact-actions">
-        <Link className="concept-button concept-button-primary" href={locale === "en" ? "/en/process-builder" : "/process-builder"}>
+      <div className="portfolio-compact-actions">
+        <Link className="portfolio-button portfolio-button-primary" href={locale === "en" ? "/en/process-builder" : "/process-builder"}>
           {t.compact.openBuilder}
           <ExternalArrowIcon />
         </Link>
@@ -486,18 +427,9 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
   );
 }
 
-function ProcessBuilder({
-  variant,
-  standalone = false,
-  locale = "ru",
-}: {
-  variant: ConceptVariant;
-  standalone?: boolean;
-  locale?: Locale;
-}) {
-  const t = conceptCopy[locale];
+function ProcessBuilder({ locale = "ru" }: { locale?: Locale }) {
+  const t = portfolioCopy[locale];
   const presets = getProcessPresets(locale) as Record<PresetKey, ProcessPreset>;
-  const hasProcessRail = variant === "editorial-workflow" && !standalone;
   const [activePreset, setActivePreset] = useState<PresetKey>("documents");
   const [steps, setSteps] = useState<ProcessStep[]>(() =>
     cloneSteps(presets.documents.steps),
@@ -559,22 +491,11 @@ function ProcessBuilder({
 
   return (
     <section
-      className="concept-builder"
+      className="portfolio-builder"
       id="constructor"
-      aria-labelledby={standalone ? "process-builder-title" : undefined}
+      aria-labelledby="process-builder-title"
     >
-      {hasProcessRail && <RailMarker number="02" label={t.rail.constructor} />}
-      {!standalone && (
-        <header className="concept-builder-head">
-          <div>
-            <span className="concept-kicker">{t.builder.kicker}</span>
-            <h2>{t.builder.title}</h2>
-          </div>
-          <p>{t.builder.lead}</p>
-        </header>
-      )}
-
-      <nav className="concept-presets" aria-label={t.builder.presetsLabel}>
+      <nav className="portfolio-presets" aria-label={t.builder.presetsLabel}>
         {(Object.keys(presets) as PresetKey[]).map((key) => (
           <button
             type="button"
@@ -589,9 +510,9 @@ function ProcessBuilder({
         ))}
       </nav>
 
-      <div className="concept-workspace">
-        <div className="concept-workspace-toolbar">
-          <div className="concept-segmented" aria-label={t.builder.comparisonLabel}>
+      <div className="portfolio-workspace">
+        <div className="portfolio-workspace-toolbar">
+          <div className="portfolio-segmented" aria-label={t.builder.comparisonLabel}>
             <button
               type="button"
               className={view === "before" ? "is-active" : ""}
@@ -610,7 +531,7 @@ function ProcessBuilder({
             </button>
           </div>
           <button
-            className="concept-tech-toggle"
+            className="portfolio-tech-toggle"
             type="button"
             aria-expanded={technical}
             onClick={() => setTechnical((current) => !current)}
@@ -619,13 +540,13 @@ function ProcessBuilder({
           </button>
         </div>
 
-        <div className="concept-workspace-grid">
-          <div className="concept-canvas" data-view={view}>
-            <div className="concept-canvas-label">
+        <div className="portfolio-workspace-grid">
+          <div className="portfolio-canvas" data-view={view}>
+            <div className="portfolio-canvas-label">
               <span>{view === "before" ? t.builder.currentProcess : t.builder.proposedProcess}</span>
               <em>{t.builder.stages(visibleSteps.length)}</em>
             </div>
-            <div className="concept-step-list">
+            <div className="portfolio-step-list">
               {visibleSteps.map((step, index) => (
                 <StepCard
                   key={step.id}
@@ -633,7 +554,6 @@ function ProcessBuilder({
                   index={index}
                   total={visibleSteps.length}
                   editable={view === "before"}
-                  detailed={variant === "editorial-workflow"}
                   bottlenecks={view === "before" ? bottlenecks : afterBottlenecks}
                   locale={locale}
                   onEdit={() => view === "before" && setSelectedId(step.id)}
@@ -645,7 +565,7 @@ function ProcessBuilder({
             </div>
             {view === "before" && (
               <button
-                className="concept-add-step"
+                className="portfolio-add-step"
                 type="button"
                 onClick={() => {
                   const next = makeStep(steps.length + 1, locale);
@@ -658,7 +578,7 @@ function ProcessBuilder({
             )}
           </div>
 
-          <aside className="concept-findings" aria-live="polite">
+          <aside className="portfolio-findings" aria-live="polite">
             <header>
               <span>{view === "before" ? t.builder.found : t.builder.hypotheses}</span>
               <strong>{view === "before" ? bottlenecks.length : remediations.length}</strong>
@@ -674,13 +594,13 @@ function ProcessBuilder({
                 ))}
               </ul>
             ) : view === "after" && remediations.length > 0 ? (
-              <div className="concept-clean-state">
+              <div className="portfolio-clean-state">
                 <span aria-hidden="true">?</span>
                 <strong>{t.builder.hypothesisTitle}</strong>
                 <p>{t.builder.hypothesisBody(afterBottlenecks.length)}</p>
               </div>
             ) : (
-              <div className="concept-clean-state">
+              <div className="portfolio-clean-state">
                 <span aria-hidden="true">✓</span>
                 <strong>{t.builder.cleanTitle}</strong>
                 <p>{t.builder.cleanBody}</p>
@@ -697,15 +617,11 @@ function ProcessBuilder({
                 ))}
               </ul>
             )}
-            <div className="concept-consultation">
+            <div className="portfolio-consultation">
               <p>{t.builder.consultation}</p>
               <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">
-                {variant === "editorial-workflow" ? (
-                  <>
-                    {t.builder.discussAutomation}
-                    <ExternalArrowIcon />
-                  </>
-                ) : `${t.builder.discussAutomation} ↗`}
+                {t.builder.discussAutomation}
+                <ExternalArrowIcon />
               </a>
             </div>
           </aside>
@@ -736,15 +652,15 @@ function ProcessBuilder({
 }
 
 function ExperienceSection({ locale }: { locale: Locale }) {
-  const t = conceptCopy[locale].experience;
+  const t = portfolioCopy[locale].experience;
   return (
-    <section className="concept-experience" id="experience">
+    <section className="portfolio-experience" id="experience">
       <header>
-        <span className="concept-kicker">{t.kicker}</span>
+        <span className="portfolio-kicker">{t.kicker}</span>
         <h2>{t.title}</h2>
         <p>{t.lead}</p>
       </header>
-      <div className="concept-experience-grid">
+      <div className="portfolio-experience-grid">
         {t.cards.map(([period, title, highlight, body]) => (
           <article key={title}>
             <span>{period}</span>
@@ -759,15 +675,15 @@ function ExperienceSection({ locale }: { locale: Locale }) {
 }
 
 function SelectedWorkSection({ locale }: { locale: Locale }) {
-  const t = conceptCopy[locale].work;
+  const t = portfolioCopy[locale].work;
   return (
-    <section className="concept-selected-work" id="selected-work">
+    <section className="portfolio-selected-work" id="selected-work">
       <header>
-        <span className="concept-kicker">{t.kicker}</span>
+        <span className="portfolio-kicker">{t.kicker}</span>
         <h2>{t.title}</h2>
         <p>{t.lead}</p>
       </header>
-      <div className="concept-selected-work-grid">
+      <div className="portfolio-selected-work-grid">
         {t.items.map((work) => (
           <article key={work.number}>
             <span>{work.number}</span>
@@ -784,11 +700,11 @@ function SelectedWorkSection({ locale }: { locale: Locale }) {
   );
 }
 
-function ConceptFooter({ locale }: { locale: Locale }) {
-  const t = conceptCopy[locale];
+function PortfolioFooter({ locale }: { locale: Locale }) {
+  const t = portfolioCopy[locale];
   return (
-    <footer className="concept-footer">
-      <div className="concept-footer-inner">
+    <footer className="portfolio-footer">
+      <div className="portfolio-footer-inner">
         <span>{t.footer.identity}</span>
         <nav aria-label={t.footerNavigationLabel}>
           <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.footer.telegram}<ExternalArrowIcon /></a>
@@ -801,239 +717,148 @@ function ConceptFooter({ locale }: { locale: Locale }) {
 }
 
 export function ProcessBuilderProduct({ locale = "ru" }: { locale?: Locale }) {
-  const t = conceptCopy[locale];
-  const { theme, toggleTheme } = useConceptTheme();
+  const t = portfolioCopy[locale];
+  const { theme, toggleTheme } = usePortfolioTheme();
   const portfolioHref = locale === "en" ? "/en" : "/";
   const languageHref = locale === "en" ? "/process-builder" : "/en/process-builder";
 
   return (
-    <main className="concept concept-editorial-workflow concept-builder-product" data-theme={theme} id="top">
-      <header className="concept-nav">
+    <main className="portfolio portfolio-workflow portfolio-builder-product" data-theme={theme} id="top">
+      <header className="portfolio-nav">
         <Link href={portfolioHref} aria-label={t.returnToPortfolio}>
-          <span className="concept-mark">DU</span>
+          <span className="portfolio-mark">DU</span>
           <span>{t.returnToPortfolio}</span>
         </Link>
         <nav aria-label={t.builderNavigationLabel}>
           <a href="#constructor">{t.nav.builder}</a>
           <a href="#contact">{t.nav.contact}</a>
         </nav>
-        <div className="concept-nav-meta">
+        <div className="portfolio-nav-meta">
           <LanguageSwitch locale={locale} href={languageHref} />
           <ThemeToggle theme={theme} onToggle={toggleTheme} locale={locale} />
           <span>{t.builderProduct.meta}</span>
         </div>
       </header>
-      <section className="concept-builder-product-hero">
-        <span className="concept-kicker">{t.builderProduct.kicker}</span>
+      <section className="portfolio-builder-product-hero">
+        <span className="portfolio-kicker">{t.builderProduct.kicker}</span>
         <h1 id="process-builder-title">{t.builderProduct.title}</h1>
         <p>{t.builderProduct.lead}</p>
       </section>
-      <ProcessBuilder variant="editorial-workflow" standalone locale={locale} />
-      <section className="concept-contact" id="contact">
-        <span className="concept-kicker">{t.builderProduct.contactKicker}</span>
-        <div className="concept-contact-copy"><h2>{t.builderProduct.contactTitle}</h2></div>
-        <div className="concept-contact-links">
+      <ProcessBuilder locale={locale} />
+      <section className="portfolio-contact" id="contact">
+        <span className="portfolio-kicker">{t.builderProduct.contactKicker}</span>
+        <div className="portfolio-contact-copy"><h2>{t.builderProduct.contactTitle}</h2></div>
+        <div className="portfolio-contact-links">
           <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru<ExternalArrowIcon /></a>
           <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram<ExternalArrowIcon /></a>
         </div>
       </section>
-      <ConceptFooter locale={locale} />
+      <PortfolioFooter locale={locale} />
     </main>
   );
 }
 
-export function ConceptPrototype({
-  variant,
-  locale = "ru",
-}: {
-  variant: ConceptVariant;
-  locale?: Locale;
-}) {
-  const hasProcessRail = variant === "editorial-workflow";
-  const t = conceptCopy[locale];
-  const copy = hasProcessRail
-    ? {
-        index: "",
-        label: t.hero.label,
-        title: t.hero.title,
-        lead: t.hero.lead,
-        action: "",
-        proofTitle: t.proof.title,
-      }
-    : variantCopy[variant];
-  const { theme, toggleTheme } = useConceptTheme();
-  const workflowHref = locale === "en" ? "/en" : "/";
+export function PortfolioExperience({ locale = "ru" }: { locale?: Locale }) {
+  const t = portfolioCopy[locale];
+  const { theme, toggleTheme } = usePortfolioTheme();
+  const portfolioHref = locale === "en" ? "/en" : "/";
   const languageHref = locale === "en" ? "/" : "/en";
 
-  const hero = (
-    <section className="concept-hero" id="positioning">
-      <div className="concept-hero-copy">
-        {hasProcessRail && <RailMarker number="01" label={t.rail.positioning} />}
-        <span className="concept-kicker">{copy.label}</span>
-        <h1>{copy.title}</h1>
-        <p>{copy.lead}</p>
-        {hasProcessRail ? (
-          <div className="concept-hero-actions">
-            <a className="concept-button concept-button-primary" href="#contact">
-              {t.hero.contact}
-              <ExternalArrowIcon />
-            </a>
-            <a href="#demonstration">{t.hero.demo}</a>
-          </div>
-        ) : (
-          <a className="concept-button concept-button-primary" href="#constructor">
-            {copy.action} ↓
-          </a>
-        )}
-      </div>
-      {hasProcessRail ? (
-        <aside className="concept-hero-brief" aria-label={t.hero.briefLabel}>
-          <span>{t.hero.briefTitle}</span>
-          <ol>
-            {t.hero.brief.map(([title, body]) => (
-              <li key={title}><strong>{title}</strong><p>{body}</p></li>
-            ))}
-          </ol>
-        </aside>
-      ) : (
-        <div className="concept-hero-proof" aria-label="Ключевые результаты">
-          <div><strong>60 → 9</strong><span>минут на комплект</span></div>
-          <div><strong>−85%</strong><span>ручной подготовки</span></div>
-          <div><strong>2014</strong><span>в веб-разработке</span></div>
-        </div>
-      )}
-      {hasProcessRail ? (
-        <div className="concept-hero-transition" aria-hidden="true">
-          <span>{t.hero.transitionBefore}</span>
-          <i />
-          <span>{t.hero.transitionAfter}</span>
-        </div>
-      ) : (
-        <div className="concept-hero-visual" aria-hidden="true">
-          <span>Входные данные</span>
-          <i />
-          <span>Рабочий процесс</span>
-          <i />
-          <span>Готовый результат</span>
-        </div>
-      )}
-    </section>
-  );
-
-  const proof = (
-    <section className="concept-proof" id="proof">
-      {hasProcessRail && <RailMarker number="03" label={t.rail.case} />}
-      <header>
-        <span className="concept-kicker">{hasProcessRail ? t.proof.kicker : "Проект в эксплуатации"}</span>
-        <h2>{copy.proofTitle}</h2>
-      </header>
-      <div className="concept-proof-grid">
-        <div className="concept-proof-screen">
-          <img
-            src="/case/lift-diagnostics-desktop.png"
-            alt={hasProcessRail ? t.proof.imageAlt : "Интерфейс реестра диагностик лифтов"}
-          />
-        </div>
-        <div className="concept-proof-copy">
-          <strong>{hasProcessRail ? t.proof.projectTitle : "Автоматизация испытательной лаборатории"}</strong>
-          <p>{hasProcessRail ? t.proof.body : "Требования, UX/UI, архитектура, frontend, backend, база данных, документы, тестирование и запуск — один завершённый цикл."}</p>
-          {hasProcessRail ? (
-            <dl aria-label={t.proof.metricsLabel}>
-              <div><dt>{t.proof.preparation}</dt><dd>{t.proof.preparationValue}</dd></div>
-              <div><dt>{t.proof.manualWork}</dt><dd>−85%</dd></div>
-              <div><dt>{t.proof.volume}</dt><dd>{t.proof.volumeValue}</dd></div>
-              <div><dt>{t.proof.status}</dt><dd>{t.proof.statusValue}</dd></div>
-            </dl>
-          ) : (
-            <dl>
-              <div><dt>Срок</dt><dd>3 месяца</dd></div>
-              <div><dt>Статус</dt><dd>В эксплуатации</dd></div>
-              <div><dt>Объём</dt><dd>2 400 комплектов в год</dd></div>
-            </dl>
-          )}
-          <Link href={locale === "en" ? "/en/projects/lift-automation" : "/projects/lift-automation"}>
-            {hasProcessRail ? <>{t.proof.action}<ExternalArrowIcon /></> : "Разобрать кейс ↗"}
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-
   return (
-    <main className={`concept concept-${variant}`} data-theme={hasProcessRail ? theme : undefined} id={hasProcessRail ? "top" : undefined}>
-      <header className="concept-nav">
-        <Link href={workflowHref} aria-label={hasProcessRail ? t.returnToPortfolio : "Вернуться к портфолио"}>
-          <span className="concept-mark">DU</span>
-          <span>{hasProcessRail ? t.name : "Даниил Угловский"}</span>
+    <main className="portfolio portfolio-workflow" data-theme={theme} id="top">
+      <header className="portfolio-nav">
+        <Link href={portfolioHref} aria-label={t.returnToPortfolio}>
+          <span className="portfolio-mark">DU</span>
+          <span>{t.name}</span>
         </Link>
-        <nav aria-label={hasProcessRail ? t.navigationLabel : "Навигация концепта"}>
-          {hasProcessRail ? (
-            <>
-              <a href="#demonstration">{t.nav.demonstration}</a>
-              <a href="#proof">{t.nav.case}</a>
-              <a href="#experience">{t.nav.experience}</a>
-              <a href="#selected-work">{t.nav.work}</a>
-              <a href="#contact">{t.nav.contact}</a>
-            </>
-          ) : (
-            <>
-              <a href="#constructor">Конструктор</a>
-              <a href="#proof">Кейс</a>
-              <a href="#contact">Контакт</a>
-            </>
-          )}
+        <nav aria-label={t.navigationLabel}>
+          <a href="#demonstration">{t.nav.demonstration}</a>
+          <a href="#proof">{t.nav.case}</a>
+          <a href="#experience">{t.nav.experience}</a>
+          <a href="#selected-work">{t.nav.work}</a>
+          <a href="#contact">{t.nav.contact}</a>
         </nav>
-        {hasProcessRail ? (
-          <div className="concept-nav-meta">
-            <LanguageSwitch locale={locale} href={languageHref} />
-            <ThemeToggle theme={theme} onToggle={toggleTheme} locale={locale} />
-          </div>
-        ) : (
-          <span>{copy.index}</span>
-        )}
+        <div className="portfolio-nav-meta">
+          <LanguageSwitch locale={locale} href={languageHref} />
+          <ThemeToggle theme={theme} onToggle={toggleTheme} locale={locale} />
+        </div>
       </header>
 
-      {hasProcessRail ? (
-        <div className="concept-process-story">
-          <ProcessRail locale={locale} />
-          {hero}
-          <CompactProcessDemo locale={locale} />
-          {proof}
-        </div>
-      ) : (
-        <>
-          {hero}
-          <ProcessBuilder variant={variant} locale="ru" />
-          {proof}
-        </>
-      )}
+      <div className="portfolio-process-story">
+        <ProcessRail locale={locale} />
+        <section className="portfolio-hero" id="positioning">
+          <div className="portfolio-hero-copy">
+            <RailMarker number="01" label={t.rail.positioning} />
+            <span className="portfolio-kicker">{t.hero.label}</span>
+            <h1>{t.hero.title}</h1>
+            <p>{t.hero.lead}</p>
+            <div className="portfolio-hero-actions">
+              <a className="portfolio-button portfolio-button-primary" href="#contact">
+                {t.hero.contact}
+                <ExternalArrowIcon />
+              </a>
+              <a href="#demonstration">{t.hero.demo}</a>
+            </div>
+          </div>
+          <aside className="portfolio-hero-brief" aria-label={t.hero.briefLabel}>
+            <span>{t.hero.briefTitle}</span>
+            <ol>
+              {t.hero.brief.map(([title, body]) => (
+                <li key={title}><strong>{title}</strong><p>{body}</p></li>
+              ))}
+            </ol>
+          </aside>
+          <div className="portfolio-hero-transition" aria-hidden="true">
+            <span>{t.hero.transitionBefore}</span>
+            <i />
+            <span>{t.hero.transitionAfter}</span>
+          </div>
+        </section>
 
-      {hasProcessRail && <ExperienceSection locale={locale} />}
-      {hasProcessRail && <SelectedWorkSection locale={locale} />}
+        <CompactProcessDemo locale={locale} />
 
-      <section className="concept-contact" id="contact">
-        <span className="concept-kicker">{hasProcessRail ? t.contact.kicker : "Контакт"}</span>
-        <div className="concept-contact-copy">
-          <h2>{hasProcessRail ? t.contact.title : <>Есть ручной процесс?<br />Разберём его.</>}</h2>
-          {hasProcessRail && (
-            <p>{t.contact.lead}</p>
-          )}
+        <section className="portfolio-proof" id="proof">
+          <RailMarker number="03" label={t.rail.case} />
+          <header>
+            <span className="portfolio-kicker">{t.proof.kicker}</span>
+            <h2>{t.proof.title}</h2>
+          </header>
+          <div className="portfolio-proof-grid">
+            <div className="portfolio-proof-screen">
+              <img src="/case/lift-diagnostics-desktop.png" alt={t.proof.imageAlt} />
+            </div>
+            <div className="portfolio-proof-copy">
+              <strong>{t.proof.projectTitle}</strong>
+              <p>{t.proof.body}</p>
+              <dl aria-label={t.proof.metricsLabel}>
+                <div><dt>{t.proof.preparation}</dt><dd>{t.proof.preparationValue}</dd></div>
+                <div><dt>{t.proof.manualWork}</dt><dd>−85%</dd></div>
+                <div><dt>{t.proof.volume}</dt><dd>{t.proof.volumeValue}</dd></div>
+                <div><dt>{t.proof.status}</dt><dd>{t.proof.statusValue}</dd></div>
+              </dl>
+              <Link href={locale === "en" ? "/en/projects/lift-automation" : "/projects/lift-automation"}>
+                {t.proof.action}<ExternalArrowIcon />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <ExperienceSection locale={locale} />
+      <SelectedWorkSection locale={locale} />
+
+      <section className="portfolio-contact" id="contact">
+        <span className="portfolio-kicker">{t.contact.kicker}</span>
+        <div className="portfolio-contact-copy">
+          <h2>{t.contact.title}</h2>
+          <p>{t.contact.lead}</p>
         </div>
-        <div className="concept-contact-links">
-          {hasProcessRail ? (
-            <>
-              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.contact.telegram}<ExternalArrowIcon /></a>
-              <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru<ExternalArrowIcon /></a>
-            </>
-          ) : (
-            <>
-              <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru ↗</a>
-              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram ↗</a>
-            </>
-          )}
+        <div className="portfolio-contact-links">
+          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.contact.telegram}<ExternalArrowIcon /></a>
+          <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru<ExternalArrowIcon /></a>
         </div>
       </section>
-      {hasProcessRail && <ConceptFooter locale={locale} />}
+      <PortfolioFooter locale={locale} />
     </main>
   );
 }

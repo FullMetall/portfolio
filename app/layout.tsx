@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@fontsource-variable/manrope";
 import "@fontsource/ibm-plex-mono";
 import { AnalyticsConsent } from "./_components/AnalyticsConsent";
-import { ConceptThemeProvider } from "./_components/ConceptThemeProvider";
+import { PortfolioThemeProvider } from "./_components/PortfolioThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -55,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body>
-        <ConceptThemeProvider>{children}</ConceptThemeProvider>
+        <PortfolioThemeProvider>{children}</PortfolioThemeProvider>
         <AnalyticsConsent />
       </body>
     </html>

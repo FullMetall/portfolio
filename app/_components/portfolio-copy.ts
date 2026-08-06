@@ -1,10 +1,10 @@
-import type { Locale } from "../../content";
+import type { Locale } from "../content";
 
 const ru = {
   name: "Даниил Угловский",
   language: "EN",
   languageLabel: "Открыть английскую версию",
-  navigationLabel: "Навигация концепта",
+  navigationLabel: "Навигация портфолио",
   builderNavigationLabel: "Навигация конструктора",
   footerNavigationLabel: "Ссылки в футере",
   returnToPortfolio: "Вернуться к портфолио",
@@ -21,7 +21,6 @@ const ru = {
     positioning: "Позиционирование",
     demonstration: "Демонстрация",
     case: "Работающий кейс",
-    constructor: "Конструктор",
   },
   hero: {
     label: "Архитектура рабочих процессов",
@@ -112,9 +111,6 @@ const ru = {
     contactTitle: "Напиши мне.",
   },
   builder: {
-    kicker: "Интерактивный экспонат",
-    title: "Покажи процесс. Найдём потери.",
-    lead: "Выбери пример, измени этапы и сравни ручной сценарий с предлагаемой схемой автоматизации. Без ИИ и случайных ответов.",
     presetsLabel: "Примеры процессов",
     comparisonLabel: "Сравнение процесса",
     current: "Сейчас",
@@ -182,12 +178,12 @@ const en: typeof ru = {
   name: "Daniil Uglovskiy",
   language: "RU",
   languageLabel: "Open the Russian version",
-  navigationLabel: "Concept navigation",
+  navigationLabel: "Portfolio navigation",
   builderNavigationLabel: "Process builder navigation",
   footerNavigationLabel: "Footer links",
   returnToPortfolio: "Back to portfolio",
   nav: { demonstration: "Demo", case: "Case", experience: "Experience", work: "Work", contact: "Contact", builder: "Builder" },
-  rail: { route: "End-to-end process route", positioning: "Positioning", demonstration: "Demo", case: "Working case", constructor: "Builder" },
+  rail: { route: "End-to-end process route", positioning: "Positioning", demonstration: "Demo", case: "Working case" },
   hero: {
     label: "Workflow architecture",
     title: "From a manual process to a working system.",
@@ -264,9 +260,6 @@ const en: typeof ru = {
     contactTitle: "Contact me.",
   },
   builder: {
-    kicker: "Interactive exhibit",
-    title: "Show the process. Find the losses.",
-    lead: "Choose an example, edit its stages, and compare the manual workflow with a proposed automation flow. No AI or random answers.",
     presetsLabel: "Process examples",
     comparisonLabel: "Process comparison",
     current: "Current",
@@ -330,4 +323,4 @@ const en: typeof ru = {
   },
 };
 
-export const conceptCopy: Record<Locale, typeof ru> = { ru, en };
+export const portfolioCopy: Record<Locale, typeof ru> = { ru, en };

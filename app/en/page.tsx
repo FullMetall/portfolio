@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/golos-text";
 import "@fontsource-variable/oswald";
-import { ConceptPrototype } from "../concepts/_components/ConceptPrototype";
-import "../concepts/concepts.css";
+import { PortfolioExperience } from "../_components/PortfolioExperience";
+import "../portfolio.css";
 
 export const metadata: Metadata = {
   title: { absolute: "Workflow architecture — Daniil Uglovskiy" },
@@ -18,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function EnglishHome() {
-  return <ConceptPrototype variant="editorial-workflow" locale="en" />;
+  return <PortfolioExperience locale="en" />;
 }

@@ -1,7 +1,7 @@
 export function ExternalArrowIcon() {
   return (
     <svg
-      className="concept-external-arrow"
+      className="portfolio-external-arrow"
       aria-hidden="true"
       focusable="false"
       viewBox="0 0 16 16"

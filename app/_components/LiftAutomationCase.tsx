@@ -3,11 +3,11 @@
 import Link from "next/link";
 import type { Locale } from "../content";
 import { profile } from "../content";
-import { useConceptTheme } from "./ConceptThemeProvider";
+import { usePortfolioTheme } from "./PortfolioThemeProvider";
 import { CaseGallery } from "./CaseGallery";
 import { ExternalArrowIcon } from "./ExternalArrowIcon";
-import { ThemeToggle } from "../concepts/_components/ThemeToggle";
-import type { EditorialCaseCopy } from "./CasePage";
+import { ThemeToggle } from "./ThemeToggle";
+import type { LiftCaseCopy } from "./CasePage";
 
 const caseUi = {
   ru: {
@@ -44,15 +44,15 @@ const caseUi = {
   },
 } as const;
 
-export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy; locale: Locale }) {
+export function LiftAutomationCase({ copy: t, locale }: { copy: LiftCaseCopy; locale: Locale }) {
   const ui = caseUi[locale];
-  const { theme, toggleTheme } = useConceptTheme();
+  const { theme, toggleTheme } = usePortfolioTheme();
 
   return (
-    <main className="concept concept-editorial-workflow concept-lift-case" data-theme={theme} id="top">
-      <header className="concept-nav">
+    <main className="portfolio portfolio-workflow portfolio-lift-case" data-theme={theme} id="top">
+      <header className="portfolio-nav">
         <Link href={ui.home} aria-label={ui.homeLabel}>
-          <span className="concept-mark">DU</span>
+          <span className="portfolio-mark">DU</span>
           <span>{ui.name}</span>
         </Link>
         <nav aria-label={ui.navigationLabel}>
@@ -62,8 +62,8 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
           <a href="#result">{ui.nav[3]}</a>
           <a href="#contact">{ui.nav[4]}</a>
         </nav>
-        <div className="concept-nav-meta">
-          <Link className="concept-language-switch" href={ui.languageHref} aria-label={ui.languageLabel}>{ui.language}</Link>
+        <div className="portfolio-nav-meta">
+          <Link className="portfolio-language-switch" href={ui.languageHref} aria-label={ui.languageLabel}>{ui.language}</Link>
           <ThemeToggle theme={theme} onToggle={toggleTheme} locale={locale} />
           <span>{ui.meta}</span>
         </div>
@@ -71,7 +71,7 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
 
       <section className="lift-case-hero">
         <Link className="lift-case-back" href={ui.home}>← {ui.homeLabel}</Link>
-        <span className="concept-kicker">{t.eyebrow}</span>
+        <span className="portfolio-kicker">{t.eyebrow}</span>
         <div className="lift-case-hero-grid">
           <div>
             <h1>{t.title}</h1>
@@ -100,7 +100,7 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
       <section className="lift-case-section" id="context">
         <header className="lift-case-section-head">
           <div>
-            <span className="concept-kicker">{t.contextLabel}</span>
+            <span className="portfolio-kicker">{t.contextLabel}</span>
             <h2>{t.contextTitle}</h2>
           </div>
           <p>{t.contextBody}</p>
@@ -124,7 +124,7 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
       <section className="lift-case-section" id="solution">
         <header className="lift-case-section-head">
           <div>
-            <span className="concept-kicker">{t.systemLabel}</span>
+            <span className="portfolio-kicker">{t.systemLabel}</span>
             <h2>{t.systemTitle}</h2>
           </div>
           <p>{t.systemBody}</p>
@@ -143,7 +143,7 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
       <section className="lift-case-section lift-case-gallery" id="interface">
         <header className="lift-case-section-head">
           <div>
-            <span className="concept-kicker">{t.galleryLabel}</span>
+            <span className="portfolio-kicker">{t.galleryLabel}</span>
             <h2>{t.galleryTitle}</h2>
           </div>
           <p>{t.galleryBody}</p>
@@ -159,7 +159,7 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
 
       <section className="lift-case-section lift-case-role">
         <div>
-          <span className="concept-kicker">{t.roleLabel}</span>
+          <span className="portfolio-kicker">{t.roleLabel}</span>
           <h2>{t.roleTitle}</h2>
           <p>{t.roleBody}</p>
         </div>
@@ -172,7 +172,7 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
       </section>
 
       <section className="lift-case-result" id="result">
-        <span className="concept-kicker">{t.resultLabel}</span>
+        <span className="portfolio-kicker">{t.resultLabel}</span>
         <div>
           <h2>{t.resultTitle}</h2>
           <div>
@@ -182,20 +182,20 @@ export function EditorialLiftCase({ copy: t, locale }: { copy: EditorialCaseCopy
         </div>
       </section>
 
-      <section className="concept-contact lift-case-contact" id="contact">
-        <span className="concept-kicker">{ui.contact}</span>
-        <div className="concept-contact-copy">
+      <section className="portfolio-contact lift-case-contact" id="contact">
+        <span className="portfolio-kicker">{ui.contact}</span>
+        <div className="portfolio-contact-copy">
           <h2>{t.contactTitle}</h2>
           <p>{t.contactBody}</p>
         </div>
-        <div className="concept-contact-links">
+        <div className="portfolio-contact-links">
           <a href={profile.telegram} target="_blank" rel="noreferrer">{t.telegram}<ExternalArrowIcon /></a>
           <a href={`mailto:${profile.email}`}>{t.email}<ExternalArrowIcon /></a>
         </div>
       </section>
 
-      <footer className="concept-footer">
-        <div className="concept-footer-inner">
+      <footer className="portfolio-footer">
+        <div className="portfolio-footer-inner">
           <span>{ui.footerIdentity}</span>
           <nav aria-label={ui.footerLabel}>
             <a href={profile.telegram} target="_blank" rel="noreferrer">{ui.telegram}<ExternalArrowIcon /></a>
