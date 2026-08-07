@@ -260,10 +260,41 @@ test("lift case mobile hero stays inside the viewport", () => {
   );
 });
 
-test("privacy heading keeps long localized words inside the mobile viewport", () => {
+test("privacy page uses one heading scale across the title and sections", () => {
+  assert.match(
+    css,
+    /\.portfolio-privacy\s*\{[^}]*--portfolio-privacy-heading-size:\s*clamp\(28px,\s*3vw,\s*42px\)/s,
+  );
+  assert.match(
+    css,
+    /\.portfolio-privacy-content h1\s*\{[^}]*font-size:\s*var\(--portfolio-privacy-heading-size\)/s,
+  );
+  assert.match(
+    css,
+    /\.portfolio-privacy-sections h2\s*\{[^}]*font-size:\s*var\(--portfolio-privacy-heading-size\)/s,
+  );
   assert.match(
     mobile800,
-    /\.portfolio-privacy-content h1\s*\{[^}]*font-size:\s*clamp\(28px,\s*8\.8vw,\s*44px\)[^}]*overflow-wrap:\s*anywhere/s,
+    /\.portfolio-privacy-content h1\s*\{[^}]*overflow-wrap:\s*anywhere/s,
+  );
+  assert.doesNotMatch(
+    mobile800,
+    /\.portfolio-privacy-content h1\s*\{[^}]*font-size:/s,
+  );
+});
+
+test("privacy actions expose matching pointer and keyboard feedback", () => {
+  assert.match(
+    css,
+    /\.portfolio-privacy-actions \.portfolio-footer-action,[^{]*\.portfolio-privacy-actions a\s*\{[^}]*transition:[^}]*transform/s,
+  );
+  assert.match(
+    css,
+    /\.portfolio-privacy-actions \.portfolio-footer-action:hover,[^{]*\.portfolio-privacy-actions \.portfolio-footer-action:focus-visible\s*\{[^}]*filter:\s*brightness\(0\.88\)[^}]*transform:\s*translateY\(-2px\)/s,
+  );
+  assert.match(
+    css,
+    /\.portfolio-privacy-actions a:hover,[^{]*\.portfolio-privacy-actions a:focus-visible\s*\{[^}]*border-color:\s*var\(--portfolio-ink\)[^}]*color:\s*var\(--portfolio-bg\)[^}]*background:\s*var\(--portfolio-ink\)[^}]*transform:\s*translateY\(-2px\)/s,
   );
 });
 

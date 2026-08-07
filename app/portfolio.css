@@ -2225,6 +2225,7 @@
 }
 
 .portfolio-privacy {
+  --portfolio-privacy-heading-size: clamp(28px, 3vw, 42px);
   min-height: 100vh;
 }
 
@@ -2243,7 +2244,7 @@
   max-width: 900px;
   margin: 18px 0 28px;
   font-family: var(--portfolio-display);
-  font-size: clamp(58px, 7vw, 106px);
+  font-size: var(--portfolio-privacy-heading-size);
   font-weight: 650;
   line-height: 0.88;
   letter-spacing: -0.04em;
@@ -2287,7 +2288,7 @@
 .portfolio-privacy-sections h2 {
   margin: 0 0 12px;
   font-family: var(--portfolio-display);
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: var(--portfolio-privacy-heading-size);
   font-weight: 600;
   line-height: 1;
   text-transform: uppercase;
@@ -2330,12 +2331,32 @@
   letter-spacing: 0.06em;
   text-decoration: none;
   text-transform: uppercase;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    background 180ms ease,
+    filter 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .portfolio-privacy-actions .portfolio-footer-action {
   border-color: var(--portfolio-accent-2);
   color: #101b22;
   background: var(--portfolio-accent-2);
+}
+
+.portfolio-privacy-actions .portfolio-footer-action:hover,
+.portfolio-privacy-actions .portfolio-footer-action:focus-visible {
+  filter: brightness(0.88);
+  transform: translateY(-2px);
+}
+
+.portfolio-privacy-actions a:hover,
+.portfolio-privacy-actions a:focus-visible {
+  border-color: var(--portfolio-ink);
+  color: var(--portfolio-bg);
+  background: var(--portfolio-ink);
+  transform: translateY(-2px);
 }
 
 .portfolio-builder-product-hero {
@@ -2790,7 +2811,6 @@
   }
 
   .portfolio-privacy-content h1 {
-    font-size: clamp(28px, 8.8vw, 44px);
     overflow-wrap: anywhere;
   }
 
