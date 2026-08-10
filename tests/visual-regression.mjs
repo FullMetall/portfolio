@@ -420,7 +420,7 @@ for (const [viewportName, viewport] of Object.entries(viewports)) {
   const errors = [];
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto(`${baseURL}/process-builder`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${baseURL}/process-builder`, { waitUntil: "networkidle" });
   await dismissConsent(page);
 
   const presetButtons = page.locator(".portfolio-presets button");
@@ -583,7 +583,7 @@ for (const [viewportName, viewport] of Object.entries(viewports)) {
 {
   const context = await browser.newContext({ viewport: viewports["1280"], colorScheme: "light" });
   const page = await context.newPage();
-  await page.goto(`${baseURL}/projects/lift-automation`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${baseURL}/projects/lift-automation`, { waitUntil: "networkidle" });
   await dismissConsent(page);
   await page.locator(".case-carousel-dots button").nth(1).click();
   await page.locator(".case-carousel-portrait-copy strong").waitFor();
