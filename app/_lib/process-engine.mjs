@@ -5,6 +5,24 @@
  * @typedef {{ id: string, title: string, role: string, kind: StepKind, flags: ProcessFlag[], proposed?: boolean, remediations?: ProcessRemediation[] }} ProcessStep
  */
 
+/**
+ * @param {number} count
+ * @param {[string, string, string]} forms
+ */
+export function formatRuCount(count, forms) {
+  const absolute = Math.abs(count);
+  const lastTwo = absolute % 100;
+  const last = absolute % 10;
+  const form = lastTwo >= 11 && lastTwo <= 14
+    ? forms[2]
+    : last === 1
+      ? forms[0]
+      : last >= 2 && last <= 4
+        ? forms[1]
+        : forms[2];
+  return `${count} ${form}`;
+}
+
 const bottleneckCopyByLocale = {
   ru: {
     "duplicate-input": {
@@ -208,22 +226,22 @@ export function createProposedProcess(steps, locale = "ru") {
 
     const title = locale === "en"
       ? step.flags.includes("journal-copy")
-        ? "Proposal: update one registry automatically"
+        ? "Update one registry automatically"
         : step.flags.includes("multi-source-document")
-          ? "Proposal: generate the document from a template"
+          ? "Generate the document from a template"
           : step.flags.includes("approval-wait")
-            ? `Proposal: notify the owner to ${step.title.toLowerCase()}`
+            ? `Notify the owner to ${step.title.toLowerCase()}`
             : index === 0 && step.flags.includes("manual-transfer")
-              ? `Proposal: ${step.title.toLowerCase()} automatically`
+              ? `${step.title} automatically`
               : step.title
       : step.flags.includes("journal-copy")
-        ? "Предложение: обновлять единый реестр автоматически"
+        ? "Обновлять единый реестр автоматически"
         : step.flags.includes("multi-source-document")
-          ? "Предложение: собирать документ по шаблону"
+          ? "Собирать документ по шаблону"
           : step.flags.includes("approval-wait")
-            ? `Предложение: ${step.title.toLowerCase()} по уведомлению`
+            ? `${step.title} по уведомлению`
             : index === 0 && step.flags.includes("manual-transfer")
-              ? `Предложение: ${step.title.toLowerCase()} автоматически`
+              ? `${step.title} автоматически`
               : step.title;
 
     return {

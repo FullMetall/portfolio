@@ -5,7 +5,7 @@ const caseCopy = {
   ru: {
     back: "На главную",
     eyebrow: "Кейс · автоматизация процессов",
-    title: "Комплект документов — за 9 минут.",
+    title: "Комплект документов — за 9 минут",
     lead: "Веб-система для процесса технического освидетельствования лифтов в испытательной лаборатории.",
     meta: [
       ["Срок", "3 месяца"],
@@ -18,7 +18,7 @@ const caseCopy = {
       ["4 процесса", "переведены из ручного режима"],
     ],
     contextLabel: "Контекст",
-    contextTitle: "Ручной процесс вместо единой системы.",
+    contextTitle: "Ручной процесс вместо единой системы",
     contextBody:
       "Для каждого освидетельствования требовалось вручную вести журнал, контролировать средства измерений и собирать акт с протоколом. Повторный ввод одних и тех же данных занимал около часа и создавал риск опечаток и расхождений внутри одного комплекта.",
     before: "До системы",
@@ -36,7 +36,7 @@ const caseCopy = {
       "готовый комплект формируется за 9 минут",
     ],
     systemLabel: "Решение",
-    systemTitle: "Один контур для всей работы.",
+    systemTitle: "Один контур для всей работы",
     systemBody:
       "Система ведёт пользователя от исходных данных и результатов проверки до готового комплекта. Связанные поля используются повторно, поэтому акт, протокол и журнал не расходятся между собой.",
     modules: [
@@ -62,7 +62,7 @@ const caseCopy = {
       ],
     ],
     galleryLabel: "Интерфейс",
-    galleryTitle: "Рабочие экраны системы.",
+    galleryTitle: "Рабочие экраны системы",
     galleryBody:
       "Десктопные и мобильные сценарии одного процесса. Производственные данные на изображениях заменены демонстрационными.",
     galleryPrevious: "Предыдущий экран",
@@ -99,7 +99,7 @@ const caseCopy = {
       },
     ],
     roleLabel: "Моя работа",
-    roleTitle: "Один разработчик. Полный цикл.",
+    roleTitle: "Один разработчик — полный цикл",
     roleBody:
       "Я собрал и интерпретировал исходные документы, разобрал реальный рабочий процесс, спроектировал его модель и самостоятельно реализовал продукт. В зону ответственности вошли требования, UX/UI, архитектура, интерфейсы, серверная логика, база данных, генерация документов, тестирование, запуск и развитие системы в эксплуатации.",
     stackLabel: "Технологии",
@@ -114,7 +114,7 @@ const caseCopy = {
       "Automated tests",
     ],
     resultLabel: "Результат",
-    resultTitle: "−85% времени на подготовку комплекта.",
+    resultTitle: "−85% времени на подготовку комплекта",
     resultBody:
       "Время подготовки комплекта сократилось на 85%. Ручное ведение журнала, учёт средств измерений и отдельная сборка акта с протоколом перенесены в систему. Опечатки и различающиеся данные внутри одного комплекта устранены.",
     confidentiality:
@@ -128,7 +128,7 @@ const caseCopy = {
   en: {
     back: "Back home",
     eyebrow: "Case study · process automation",
-    title: "Reducing document-set preparation from one hour to 9 minutes.",
+    title: "Reducing document-set preparation from one hour to 9 minutes",
     lead: "A web system for the lift inspection workflow in a testing laboratory.",
     meta: [
       ["Timeline", "3 months"],
@@ -142,7 +142,7 @@ const caseCopy = {
     ],
     contextLabel: "Context",
     contextTitle:
-      "The problem was not one document, but the entire connected workflow.",
+      "The problem was not one document, but the entire connected workflow",
     contextBody:
       "Each inspection required manual journal entries, measuring equipment records, and separate preparation of an act and protocol. Re-entering the same data took about an hour and introduced typos and inconsistencies within a document set.",
     before: "Before",
@@ -161,7 +161,7 @@ const caseCopy = {
     ],
     systemLabel: "Solution",
     systemTitle:
-      "One operating environment instead of disconnected manual steps.",
+      "One operating environment instead of disconnected manual steps",
     systemBody:
       "The system leads the user from source data and inspection results to a finished set. Related fields are reused, keeping the act, protocol, and journal consistent.",
     modules: [
@@ -187,7 +187,7 @@ const caseCopy = {
       ],
     ],
     galleryLabel: "Interface",
-    galleryTitle: "The system in everyday use.",
+    galleryTitle: "The system in everyday use",
     galleryBody:
       "Desktop and mobile scenarios within one workflow. Operational data in the images has been replaced with demonstration values.",
     galleryPrevious: "Previous screen",
@@ -224,7 +224,7 @@ const caseCopy = {
       },
     ],
     roleLabel: "My work",
-    roleTitle: "Led the product through the full development cycle alone.",
+    roleTitle: "Led the product through the full development cycle alone",
     roleBody:
       "I collected and interpreted the source documents, mapped the real workflow, designed its model, and built the product independently. My scope covered requirements, UX/UI, architecture, interfaces, backend logic, the database, document generation, testing, launch, and continued development in operation.",
     stackLabel: "Technology",
@@ -239,7 +239,7 @@ const caseCopy = {
       "Automated tests",
     ],
     resultLabel: "Result",
-    resultTitle: "Less manual work, faster output, consistent data.",
+    resultTitle: "Less manual work, faster output, consistent data",
     resultBody:
       "Preparation time fell by 85%. Manual journal management, measuring equipment records, and separate act and protocol assembly moved into the system. Typos and inconsistent data within a set were eliminated.",
     confidentiality:

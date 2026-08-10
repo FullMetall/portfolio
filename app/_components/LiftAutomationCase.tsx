@@ -7,6 +7,7 @@ import { AnalyticsSettingsButton } from "./AnalyticsSettingsButton";
 import { usePortfolioTheme } from "./PortfolioThemeProvider";
 import { CaseGallery } from "./CaseGallery";
 import { ExternalArrowIcon } from "./ExternalArrowIcon";
+import { PortfolioContact } from "./PortfolioContact";
 import { ThemeToggle } from "./ThemeToggle";
 import type { LiftCaseCopy } from "./CasePage";
 
@@ -183,17 +184,16 @@ export function LiftAutomationCase({ copy: t, locale }: { copy: LiftCaseCopy; lo
         </div>
       </section>
 
-      <section className="portfolio-contact lift-case-contact" id="contact">
-        <span className="portfolio-kicker">{ui.contact}</span>
-        <div className="portfolio-contact-copy">
-          <h2>{t.contactTitle}</h2>
-          <p>{t.contactBody}</p>
-        </div>
-        <div className="portfolio-contact-links">
-          <a href={profile.telegram} target="_blank" rel="noreferrer">{t.telegram}<ExternalArrowIcon /></a>
-          <a href={`mailto:${profile.email}`}>{t.email}<ExternalArrowIcon /></a>
-        </div>
-      </section>
+      <PortfolioContact
+        className="lift-case-contact"
+        kicker={ui.contact}
+        title={t.contactTitle}
+        body={t.contactBody}
+        links={[
+          { href: profile.telegram, label: t.telegram, external: true },
+          { href: `mailto:${profile.email}`, label: t.email },
+        ]}
+      />
 
       <footer className="portfolio-footer">
         <div className="portfolio-footer-inner">

@@ -3,10 +3,20 @@ import { test } from "node:test";
 import {
   analyzeProcess,
   createProposedProcess,
+  formatRuCount,
   getProcessPresets,
   processPresets,
   remediationByFlag,
 } from "../app/_lib/process-engine.mjs";
+
+test("formats Russian counts for one, few, many, and teens", () => {
+  const forms = ["проблема", "проблемы", "проблем"];
+  assert.equal(formatRuCount(1, forms), "1 проблема");
+  assert.equal(formatRuCount(2, forms), "2 проблемы");
+  assert.equal(formatRuCount(5, forms), "5 проблем");
+  assert.equal(formatRuCount(11, forms), "11 проблем");
+  assert.equal(formatRuCount(21, forms), "21 проблема");
+});
 
 test("detects bottlenecks from explicit process flags", () => {
   const steps = [
@@ -51,6 +61,7 @@ test("creates a proposed flow without claiming implementation", () => {
   );
   assert(proposed.every((step) => Array.isArray(step.remediations)));
   assert(proposed.every((step) => step.remediations.every((item) => item.status === "proposed")));
+  assert(proposed.every((step) => !step.title.startsWith("Предложение:")));
   assert(proposed.some((step) => step.title.includes("автоматически")));
 });
 
@@ -97,6 +108,7 @@ test("localizes presets, findings, and proposed steps for English UI", () => {
 
   assert.equal(presets.documents.label, "Document processing");
   assert.match(findings[0].title, /Manual transfer/);
-  assert(proposed.some((step) => step.title.includes("Proposal:")));
+  assert(proposed.every((step) => !step.title.startsWith("Proposal:")));
+  assert(proposed.some((step) => step.title.includes("automatically")));
   assert.doesNotMatch(visibleCopy, /[А-Яа-яЁё]/);
 });

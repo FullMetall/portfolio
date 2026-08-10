@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/.artifacts/
+/.hermes/
 
 # next.js
 /.next/

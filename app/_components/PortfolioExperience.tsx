@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Locale } from "../content";
 import { AnalyticsSettingsButton } from "./AnalyticsSettingsButton";
 import { ExternalArrowIcon } from "./ExternalArrowIcon";
+import { PortfolioContact } from "./PortfolioContact";
 import { usePortfolioTheme } from "./PortfolioThemeProvider";
 import { portfolioCopy } from "./portfolio-copy";
 import { ThemeToggle } from "./ThemeToggle";
@@ -45,6 +46,8 @@ type ProcessPreset = {
   description: string;
   steps: ProcessStep[];
 };
+type IssuePopoverSource = "hover" | "focus" | "click";
+type OpenIssuePopover = { stepId: string; source: IssuePopoverSource } | null;
 
 function RailMarker({ number, label }: { number: string; label: string }) {
   return (
@@ -100,6 +103,20 @@ function getStepDescription(step: ProcessStep, bottlenecks: Bottleneck[], locale
   return issue?.detail ?? portfolioCopy[locale].builder.fallbackDescription;
 }
 
+function MoveArrowIcon({ direction }: { direction: "previous" | "next" }) {
+  const path = direction === "previous" ? "M15 4 7 12l8 8" : "M9 4l8 8-8 8";
+  return (
+    <svg
+      className="portfolio-move-arrow"
+      data-direction={direction}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d={path} />
+    </svg>
+  );
+}
+
 function StepCard({
   step,
   index,
@@ -111,6 +128,11 @@ function StepCard({
   onMove,
   onDragStart,
   onDrop,
+  issuesOpen,
+  issueOpenSource,
+  onIssuesOpen,
+  onIssuesToggle,
+  onIssuesClose,
 }: {
   step: ProcessStep;
   index: number;
@@ -122,14 +144,64 @@ function StepCard({
   onMove: (direction: -1 | 1) => void;
   onDragStart: () => void;
   onDrop: () => void;
+  issuesOpen: boolean;
+  issueOpenSource: IssuePopoverSource | null;
+  onIssuesOpen: (source: IssuePopoverSource) => void;
+  onIssuesToggle: () => void;
+  onIssuesClose: () => void;
 }) {
   const t = portfolioCopy[locale];
   const issues = bottlenecks.filter((item) => item.stepId === step.id);
+  const remediationActions = step.remediations?.map((item) => item.action) ?? [];
+  const detailItems = remediationActions.length > 0
+    ? remediationActions
+    : issues.map((issue) => issue.title);
+  const detailsLabel = remediationActions.length > 0
+    ? t.builder.proposalListLabel
+    : t.builder.issuesListLabel;
+  const detailsButtonLabel = remediationActions.length > 0
+    ? t.builder.proposals(remediationActions.length)
+    : t.builder.issues(issues.length);
   const description = getStepDescription(step, bottlenecks, locale);
+  const issuesId = useId();
+  const issuesRef = useRef<HTMLDivElement>(null);
+  const issuesButtonRef = useRef<HTMLButtonElement>(null);
+  const suppressFocusOpenRef = useRef(false);
+
+  useEffect(() => {
+    if (!issuesOpen) return;
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!issuesRef.current?.contains(event.target as Node)) onIssuesClose();
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        suppressFocusOpenRef.current = true;
+        onIssuesClose();
+        issuesButtonRef.current?.focus();
+        queueMicrotask(() => {
+          suppressFocusOpenRef.current = false;
+        });
+      }
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [issuesOpen, onIssuesClose]);
+
   const stepContent = (
     <>
       <span className="portfolio-step-copy">
-        <span className="portfolio-step-kind">{t.kindLabels[step.kind]}</span>
+        <span className="portfolio-step-labels">
+          {step.remediations && step.remediations.length > 0 && (
+            <span className="portfolio-step-proposal">{t.builder.proposalLabel}</span>
+          )}
+          <span className="portfolio-step-kind">{t.kindLabels[step.kind]}</span>
+        </span>
         <strong>{step.title}</strong>
         <span className="portfolio-step-description">{description}</span>
       </span>
@@ -170,24 +242,68 @@ function StepCard({
             type="button"
             onClick={() => onMove(-1)}
             disabled={index === 0}
-            aria-label={t.builder.moveUp(step.title)}
+            aria-label={t.builder.movePrevious(step.title)}
           >
-            ↑
+            <MoveArrowIcon direction="previous" />
           </button>
           <button
             type="button"
             onClick={() => onMove(1)}
             disabled={index === total - 1}
-            aria-label={t.builder.moveDown(step.title)}
+            aria-label={t.builder.moveNext(step.title)}
           >
-            ↓
+            <MoveArrowIcon direction="next" />
           </button>
         </div>
       )}
-      {issues.length > 0 && (
-        <span className="portfolio-step-alert" aria-label={t.builder.issues(issues.length)}>
-          {issues.length}
-        </span>
+      {detailItems.length > 0 && (
+        <div
+          className="portfolio-step-alert-wrap"
+          ref={issuesRef}
+          onMouseEnter={() => {
+            if (issueOpenSource !== "click") onIssuesOpen("hover");
+          }}
+          onMouseLeave={() => {
+            if (issueOpenSource === "hover" && !issuesRef.current?.contains(document.activeElement)) {
+              onIssuesClose();
+            }
+          }}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+              onIssuesClose();
+            }
+          }}
+        >
+          <button
+            className="portfolio-step-alert"
+            type="button"
+            ref={issuesButtonRef}
+            aria-label={detailsButtonLabel}
+            aria-expanded={issuesOpen}
+            aria-controls={issuesId}
+            aria-describedby={issuesOpen ? issuesId : undefined}
+            onClick={onIssuesToggle}
+            onFocus={() => {
+              if (suppressFocusOpenRef.current) return;
+              if (issueOpenSource !== "click") onIssuesOpen("focus");
+            }}
+          >
+            {detailItems.length}
+          </button>
+          {issuesOpen && (
+            <div
+              className="portfolio-step-issues"
+              id={issuesId}
+              role="region"
+              aria-label={detailsLabel}
+            >
+              <strong>{detailsLabel}</strong>
+              <ul>
+                {detailItems.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
       )}
     </article>
   );
@@ -365,7 +481,11 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
       <header className="portfolio-builder-head">
         <div>
           <span className="portfolio-kicker">{t.compact.kicker}</span>
-          <h2>{t.compact.title}</h2>
+          <h2>
+            {t.compact.title.map((line) => (
+              <span className="portfolio-heading-line" key={line}>{line}</span>
+            ))}
+          </h2>
         </div>
         <p>{t.compact.lead}</p>
       </header>
@@ -379,7 +499,7 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
               aria-pressed={view === "before"}
               onClick={() => setView("before")}
             >
-              {t.compact.current} <span>{bottlenecks.length}</span>
+              {t.compact.current} <span>{t.compact.problems(bottlenecks.length)}</span>
             </button>
             <button
               type="button"
@@ -387,27 +507,29 @@ function CompactProcessDemo({ locale }: { locale: Locale }) {
               aria-pressed={view === "after"}
               onClick={() => setView("after")}
             >
-              {t.compact.after} <span>{proposedSteps.flatMap((step) => step.remediations ?? []).length}</span>
+              {t.compact.after} <span>{t.compact.hypotheses(proposedSteps.flatMap((step) => step.remediations ?? []).length)}</span>
             </button>
           </div>
           <span>{view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}</span>
         </div>
 
         <div className="portfolio-compact-grid">
-          <ol className="portfolio-compact-flow" aria-label={view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}>
-            {visibleSteps.map((step, index) => (
-              <li key={step.id}>
-                <span className="portfolio-compact-number">{String(index + 1).padStart(2, "0")}</span>
-                <div className="portfolio-compact-copy">
-                  <small>{t.kindLabels[step.kind]}</small>
-                  <strong>{step.title}</strong>
-                  <p className="portfolio-step-description">{getStepDescription(step, bottlenecks, locale)}</p>
-                </div>
-                <em className="portfolio-step-role">{step.role || t.builder.unassigned}</em>
-              </li>
-            ))}
-          </ol>
-          <aside className="portfolio-compact-summary" aria-live="polite">
+          <div className="portfolio-compact-flow-shell">
+            <ol className="portfolio-compact-flow" aria-label={view === "before" ? t.compact.currentProcess : t.compact.proposedProcess}>
+              {visibleSteps.map((step, index) => (
+                <li key={step.id}>
+                  <span className="portfolio-compact-number">{String(index + 1).padStart(2, "0")}</span>
+                  <div className="portfolio-compact-copy">
+                    <small>{t.kindLabels[step.kind]}</small>
+                    <strong>{step.title}</strong>
+                    <p className="portfolio-step-description">{getStepDescription(step, bottlenecks, locale)}</p>
+                  </div>
+                  <em className="portfolio-step-role">{step.role || t.builder.unassigned}</em>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <aside className={`portfolio-compact-summary is-${view}`} aria-live="polite">
             <span>{view === "before" ? t.compact.beforeSummaryLabel : t.compact.afterSummaryLabel}</span>
             <ul>
               {summary.map((item) => <li key={item}>{item}</li>)}
@@ -439,6 +561,7 @@ function ProcessBuilder({ locale = "ru" }: { locale?: Locale }) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [view, setView] = useState<"before" | "after">("before");
   const [technical, setTechnical] = useState(false);
+  const [openIssuePopover, setOpenIssuePopover] = useState<OpenIssuePopover>(null);
 
   const bottlenecks = useMemo(() => analyzeProcess(steps, locale), [steps, locale]);
   const proposedSteps = useMemo(() => createProposedProcess(steps, locale), [steps, locale]);
@@ -451,12 +574,16 @@ function ProcessBuilder({ locale = "ru" }: { locale?: Locale }) {
   );
   const visibleSteps = view === "before" ? steps : proposedSteps;
   const selectedStep = steps.find((step) => step.id === selectedId) ?? null;
+  const guidanceHasNotice =
+    (view === "after" && remediations.length > 0) ||
+    (view === "before" && bottlenecks.length === 0);
 
   const choosePreset = (key: PresetKey) => {
     setActivePreset(key);
     const presetSteps = cloneSteps(presets[key].steps);
     setSteps(presetSteps.length > 0 ? presetSteps : [makeStep(1, locale)]);
     setView("before");
+    setOpenIssuePopover(null);
   };
 
   const moveStep = (index: number, direction: -1 | 1) => {
@@ -518,17 +645,23 @@ function ProcessBuilder({ locale = "ru" }: { locale?: Locale }) {
               type="button"
               className={view === "before" ? "is-active" : ""}
               aria-pressed={view === "before"}
-              onClick={() => setView("before")}
+              onClick={() => {
+                setView("before");
+                setOpenIssuePopover(null);
+              }}
             >
-              {t.builder.current} <span>{bottlenecks.length}</span>
+              {t.builder.current} <span>{t.builder.problems(bottlenecks.length)}</span>
             </button>
             <button
               type="button"
               className={view === "after" ? "is-active" : ""}
               aria-pressed={view === "after"}
-              onClick={() => setView("after")}
+              onClick={() => {
+                setView("after");
+                setOpenIssuePopover(null);
+              }}
             >
-              {t.builder.after} <span>{remediations.length}</span>
+              {t.builder.after} <span>{t.builder.proposals(remediations.length)}</span>
             </button>
           </div>
           <button
@@ -561,6 +694,17 @@ function ProcessBuilder({ locale = "ru" }: { locale?: Locale }) {
                   onMove={(direction) => view === "before" && moveStep(index, direction)}
                   onDragStart={() => view === "before" && setDraggedIndex(index)}
                   onDrop={() => view === "before" && dropStep(index)}
+                  issuesOpen={openIssuePopover?.stepId === step.id}
+                  issueOpenSource={openIssuePopover?.stepId === step.id ? openIssuePopover.source : null}
+                  onIssuesOpen={(source) => setOpenIssuePopover({ stepId: step.id, source })}
+                  onIssuesToggle={() => setOpenIssuePopover((current) =>
+                    current?.stepId === step.id && current.source === "click"
+                      ? null
+                      : { stepId: step.id, source: "click" },
+                  )}
+                  onIssuesClose={() => setOpenIssuePopover((current) =>
+                    current?.stepId === step.id ? null : current,
+                  )}
                 />
               ))}
             </div>
@@ -579,53 +723,37 @@ function ProcessBuilder({ locale = "ru" }: { locale?: Locale }) {
             )}
           </div>
 
-          <aside className="portfolio-findings" aria-live="polite">
-            <header>
-              <span>{view === "before" ? t.builder.found : t.builder.hypotheses}</span>
-              <strong>{view === "before" ? bottlenecks.length : remediations.length}</strong>
-            </header>
-            {view === "before" && bottlenecks.length > 0 ? (
-              <ul>
-                {bottlenecks.slice(0, 5).map((item) => (
-                  <li key={`${item.stepId}-${item.type}`}>
-                    <span>{item.stepTitle}</span>
-                    <strong>{item.title}</strong>
-                    <p>{item.detail}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : view === "after" && remediations.length > 0 ? (
-              <div className="portfolio-clean-state">
-                <span aria-hidden="true">?</span>
+        </div>
+
+        <div
+          className={guidanceHasNotice ? "portfolio-builder-guidance" : "portfolio-builder-guidance is-single"}
+          aria-live="polite"
+        >
+          {view === "after" && remediations.length > 0 && (
+            <div className="portfolio-builder-notice">
+              <span aria-hidden="true">?</span>
+              <div>
                 <strong>{t.builder.hypothesisTitle}</strong>
                 <p>{t.builder.hypothesisBody(afterBottlenecks.length)}</p>
               </div>
-            ) : (
-              <div className="portfolio-clean-state">
-                <span aria-hidden="true">✓</span>
+            </div>
+          )}
+          {view === "before" && bottlenecks.length === 0 && (
+            <div className="portfolio-builder-notice is-clean">
+              <span aria-hidden="true">✓</span>
+              <div>
                 <strong>{t.builder.cleanTitle}</strong>
                 <p>{t.builder.cleanBody}</p>
               </div>
-            )}
-            {view === "after" && remediations.length > 0 && (
-              <ul>
-                {remediations.slice(0, 5).map((item, index) => (
-                  <li key={`${item.stepTitle}-${item.type}-${index}`}>
-                    <span>{item.stepTitle}</span>
-                    <strong>{t.builder.proposedRule}</strong>
-                    <p>{item.action}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div className="portfolio-consultation">
-              <p>{t.builder.consultation}</p>
-              <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">
-                {t.builder.discussAutomation}
-                <ExternalArrowIcon />
-              </a>
             </div>
-          </aside>
+          )}
+          <div className="portfolio-builder-consultation">
+            <p>{t.builder.consultation}</p>
+            <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">
+              {t.builder.discussAutomation}
+              <ExternalArrowIcon />
+            </a>
+          </div>
         </div>
 
         {technical && (
@@ -666,7 +794,9 @@ function ExperienceSection({ locale }: { locale: Locale }) {
           <article key={title}>
             <span>{period}</span>
             <h3>{title}</h3>
-            {highlight && <strong>{highlight}</strong>}
+            <strong className="portfolio-experience-highlight" aria-hidden={!highlight}>
+              {highlight || "\u00A0"}
+            </strong>
             <p>{body}</p>
           </article>
         ))}
@@ -750,14 +880,14 @@ export function ProcessBuilderProduct({ locale = "ru" }: { locale?: Locale }) {
         <p>{t.builderProduct.lead}</p>
       </section>
       <ProcessBuilder locale={locale} />
-      <section className="portfolio-contact" id="contact">
-        <span className="portfolio-kicker">{t.builderProduct.contactKicker}</span>
-        <div className="portfolio-contact-copy"><h2>{t.builderProduct.contactTitle}</h2></div>
-        <div className="portfolio-contact-links">
-          <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru<ExternalArrowIcon /></a>
-          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">Telegram<ExternalArrowIcon /></a>
-        </div>
-      </section>
+      <PortfolioContact
+        kicker={t.builderProduct.contactKicker}
+        title={t.builderProduct.contactTitle}
+        links={[
+          { href: "mailto:abc-xyz9@yandex.ru", label: "abc-xyz9@yandex.ru" },
+          { href: "https://t.me/FullMetall_EGGS", label: "Telegram", external: true },
+        ]}
+      />
       <PortfolioFooter locale={locale} />
     </main>
   );
@@ -813,11 +943,6 @@ export function PortfolioExperience({ locale = "ru" }: { locale?: Locale }) {
               ))}
             </ol>
           </aside>
-          <div className="portfolio-hero-transition" aria-hidden="true">
-            <span>{t.hero.transitionBefore}</span>
-            <i />
-            <span>{t.hero.transitionAfter}</span>
-          </div>
         </section>
 
         <CompactProcessDemo locale={locale} />
@@ -841,9 +966,15 @@ export function PortfolioExperience({ locale = "ru" }: { locale?: Locale }) {
                 <div><dt>{t.proof.volume}</dt><dd>{t.proof.volumeValue}</dd></div>
                 <div><dt>{t.proof.status}</dt><dd>{t.proof.statusValue}</dd></div>
               </dl>
-              <Link href={locale === "en" ? "/en/projects/lift-automation" : "/projects/lift-automation"}>
-                {t.proof.action}<ExternalArrowIcon />
-              </Link>
+              <div className="portfolio-proof-actions">
+                <Link
+                  className="portfolio-button portfolio-button-primary"
+                  href={locale === "en" ? "/en/projects/lift-automation" : "/projects/lift-automation"}
+                >
+                  {t.proof.action}<ExternalArrowIcon />
+                </Link>
+                <a href="#contact">{t.proof.discuss}</a>
+              </div>
             </div>
           </div>
         </section>
@@ -852,17 +983,15 @@ export function PortfolioExperience({ locale = "ru" }: { locale?: Locale }) {
       <ExperienceSection locale={locale} />
       <SelectedWorkSection locale={locale} />
 
-      <section className="portfolio-contact" id="contact">
-        <span className="portfolio-kicker">{t.contact.kicker}</span>
-        <div className="portfolio-contact-copy">
-          <h2>{t.contact.title}</h2>
-          <p>{t.contact.lead}</p>
-        </div>
-        <div className="portfolio-contact-links">
-          <a href="https://t.me/FullMetall_EGGS" target="_blank" rel="noreferrer">{t.contact.telegram}<ExternalArrowIcon /></a>
-          <a href="mailto:abc-xyz9@yandex.ru">abc-xyz9@yandex.ru<ExternalArrowIcon /></a>
-        </div>
-      </section>
+      <PortfolioContact
+        kicker={t.contact.kicker}
+        title={t.contact.title}
+        body={t.contact.lead}
+        links={[
+          { href: "https://t.me/FullMetall_EGGS", label: t.contact.telegram, external: true },
+          { href: "mailto:abc-xyz9@yandex.ru", label: "abc-xyz9@yandex.ru" },
+        ]}
+      />
       <PortfolioFooter locale={locale} />
     </main>
   );

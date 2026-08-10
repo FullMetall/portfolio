@@ -1,10 +1,14 @@
 .git
 .gitignore
+.artifacts
+.hermes
 .next
 .vinext
 .wrangler
 dist
 node_modules
+next-env.d.ts
+out
 outputs
 SS
 work
